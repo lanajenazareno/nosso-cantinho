@@ -157,6 +157,12 @@ function confirmarTermos() {
         });
     }
 
+    const videoTitularidade = document.getElementById("videoTitularidade");
+
+videoTitularidade.addEventListener("ended", function () {
+    this.pause();
+    this.currentTime = this.duration;
+});
 
     // =========================
     // AGUARDA 8 SEGUNDOS
