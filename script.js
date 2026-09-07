@@ -177,7 +177,6 @@ videoTitularidade.addEventListener("ended", function () {
         // PARA O VÍDEO
         if (video) {
             video.pause();
-            video.currentTime = 0;
         }
 
         // MOSTRA O CONTEÚDO DO SITE
