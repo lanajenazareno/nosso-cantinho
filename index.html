@@ -50,9 +50,20 @@ ABERTURA DO SITE
 
             <br><br>
 
-            <button onclick="verificarSenha()">
-                CONFIRMAR ACESSO
-            </button>
+            <button
+    type="button"
+    onclick="
+        if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
+            document.getElementById('aberturaSite').style.display = 'none';
+            document.getElementById('login').style.setProperty('display', 'block', 'important');
+        } else {
+            alert('Senha incorreta. Tente novamente.');
+            document.getElementById('senha').value = '';
+        }
+    "
+>
+    CONFIRMAR ACESSO
+</button>
 
         </section>
 
