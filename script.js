@@ -30,9 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-/* =========================
-   VERIFICAR SENHA
-   ========================= */
+// =========================
+// VERIFICAR SENHA
+// =========================
 
 function verificarSenha() {
     const campoSenha = document.getElementById("senha");
@@ -44,17 +44,34 @@ function verificarSenha() {
 
     if (!campoSenha || campoSenha.value.trim() !== "coracao") {
         alert("Senha incorreta. Tente novamente.");
+
+        if (campoSenha) {
+            campoSenha.value = "";
+            campoSenha.focus();
+        }
+
         return;
     }
 
-    // Esconde todas as telas seguintes
-    if (titularidade) titularidade.style.display = "none";
-    if (conteudo) conteudo.style.display = "none";
-    if (menu) menu.style.display = "none";
+    // Esconde as outras telas
+    if (titularidade) {
+        titularidade.style.setProperty("display", "none", "important");
+    }
 
-    // Esconde a abertura e mostra somente os termos
-    if (abertura) abertura.style.display = "none";
+    if (conteudo) {
+        conteudo.style.setProperty("display", "none", "important");
+    }
 
+    if (menu) {
+        menu.style.display = "none";
+    }
+
+    // Esconde a abertura
+    if (abertura) {
+        abertura.style.display = "none";
+    }
+
+    // Mostra os termos de uso
     if (termos) {
         termos.style.setProperty("display", "block", "important");
     }
@@ -170,28 +187,58 @@ videoTitularidade.addEventListener("ended", function () {
 }
 
 // =========================================================
-// MENU PRINCIPAL — NOSSO CANTINHO
+// MENU PRINCIPAL — NOSSO CANTINHO ❤️
 // =========================================================
 
 function abrirHistoria() {
-    document.getElementById('menuPrincipal').style.display = 'none';
-    document.getElementById('contratoNamoro').style.display = 'none';
-    document.getElementById('historiaAniversario').style.display = 'block';
-    window.scrollTo(0, 0);
+    const menu = document.getElementById("menuPrincipal");
+    const historia = document.getElementById("historiaAniversario");
+    const contrato = document.getElementById("contratoNamoro");
+
+    if (!menu || !historia || !contrato) {
+        alert("Não foi possível abrir as lembranças. Verifique os elementos do menu.");
+        return;
+    }
+
+    menu.style.display = "none";
+    contrato.style.display = "none";
+    historia.style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function abrirContrato() {
-    document.getElementById('menuPrincipal').style.display = 'none';
-    document.getElementById('historiaAniversario').style.display = 'none';
-    document.getElementById('contratoNamoro').style.display = 'block';
-    window.scrollTo(0, 0);
+    const menu = document.getElementById("menuPrincipal");
+    const historia = document.getElementById("historiaAniversario");
+    const contrato = document.getElementById("contratoNamoro");
+
+    if (!menu || !historia || !contrato) {
+        alert("Não foi possível abrir o contrato. Verifique os elementos do menu.");
+        return;
+    }
+
+    menu.style.display = "none";
+    historia.style.display = "none";
+    contrato.style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function voltarMenu() {
-    document.getElementById('historiaAniversario').style.display = 'none';
-    document.getElementById('contratoNamoro').style.display = 'none';
-    document.getElementById('menuPrincipal').style.display = 'block';
-    window.scrollTo(0, 0);
+    const menu = document.getElementById("menuPrincipal");
+    const historia = document.getElementById("historiaAniversario");
+    const contrato = document.getElementById("contratoNamoro");
+
+    if (!menu || !historia || !contrato) {
+        alert("Não foi possível voltar ao menu. Verifique os elementos do menu.");
+        return;
+    }
+
+    historia.style.display = "none";
+    contrato.style.display = "none";
+    menu.style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // =========================================================
