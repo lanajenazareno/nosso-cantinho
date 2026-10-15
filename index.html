@@ -126,26 +126,28 @@ TERMOS DE USO
 
         <br><br>
 
-       <button
+      <button
     id="btnTermos"
     type="button"
     onclick="
-        if (document.getElementById('aceiteTermos').checked) {
-            document.getElementById('login').style.display = 'none';
-            document.getElementById('conteudoSite').style.display = 'none';
-            document.getElementById('menuPrincipal').style.display = 'none';
-
-            const tela = document.getElementById('titularidadeValidada');
-            const video = document.getElementById('videoTitularidade');
-
-            tela.style.display = 'block';
-            video.currentTime = 0;
-            video.play().catch(() => {
-                alert('Não foi possível reproduzir o vídeo. Toque na tela e tente novamente.');
-            });
-        } else {
+        if (!document.getElementById('aceiteTermos').checked) {
             alert('Você precisa aceitar os termos para continuar.');
+            return;
         }
+
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('aberturaSite').style.display = 'none';
+        document.getElementById('conteudoSite').style.display = 'none';
+
+        const tela = document.getElementById('titularidadeValidada');
+        const video = document.getElementById('videoTitularidade');
+
+        tela.style.setProperty('display', 'block', 'important');
+        video.currentTime = 0;
+
+        video.play().catch(function() {
+            alert('Não foi possível iniciar o vídeo. Tente novamente.');
+        });
     "
 >
     Confirmar termos
