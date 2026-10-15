@@ -35,17 +35,32 @@ document.addEventListener("DOMContentLoaded", function () {
    ========================= */
 
 function verificarSenha() {
+    const campoSenha = document.getElementById("senha");
 
-    const senhaDigitada =
-        document.getElementById("senha").value;
-
-    const senhaNormalizada = senhaDigitada
+    const senhaDigitada = campoSenha.value
         .trim()
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "");
 
-    if (senhaNormalizada === "coracao") {
+    if (senhaDigitada === "coracao") {
+        const abertura = document.getElementById("aberturaSite");
+        const login = document.getElementById("login");
+
+        abertura.classList.add("aberturaSaindo");
+
+        setTimeout(function () {
+            abertura.style.display = "none";
+
+            login.style.setProperty("display", "block", "important");
+        }, 800);
+
+    } else {
+        alert("❌ Senha incorreta. Acesso não autorizado.");
+        campoSenha.value = "";
+        campoSenha.focus();
+    }
+}
 
         // =========================
         // ACESSO AUTORIZADO
