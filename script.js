@@ -174,36 +174,24 @@ videoTitularidade.addEventListener("ended", function () {
 // =========================================================
 
 function abrirHistoria() {
-    document.getElementById("menuPrincipal").style.display = "none";
-    document.getElementById("contratoNamoro").style.display = "none";
-    document.getElementById("historiaAniversario").style.display = "block";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    document.getElementById('menuPrincipal').style.display = 'none';
+    document.getElementById('contratoNamoro').style.display = 'none';
+    document.getElementById('historiaAniversario').style.display = 'block';
+    window.scrollTo(0, 0);
 }
 
 function abrirContrato() {
-    document.getElementById("menuPrincipal").style.display = "none";
-    document.getElementById("historiaAniversario").style.display = "none";
-    document.getElementById("contratoNamoro").style.display = "block";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    document.getElementById('menuPrincipal').style.display = 'none';
+    document.getElementById('historiaAniversario').style.display = 'none';
+    document.getElementById('contratoNamoro').style.display = 'block';
+    window.scrollTo(0, 0);
 }
 
 function voltarMenu() {
-    document.getElementById("historiaAniversario").style.display = "none";
-    document.getElementById("contratoNamoro").style.display = "none";
-    document.getElementById("menuPrincipal").style.display = "block";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    document.getElementById('historiaAniversario').style.display = 'none';
+    document.getElementById('contratoNamoro').style.display = 'none';
+    document.getElementById('menuPrincipal').style.display = 'block';
+    window.scrollTo(0, 0);
 }
 
 // =========================================================
