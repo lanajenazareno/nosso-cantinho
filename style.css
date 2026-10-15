@@ -541,16 +541,3 @@ text-align: center;
 font-style: italic;
 margin: 25px 10px;
 }
-
-/* Mostrar somente a tela de termos */
-#login {
-  display: none !important;
-}
-
-#conteudoSite,
-#menuPrincipal,
-#historiaAniversario,
-#contratoNamoro,
-#titularidadeValidada {
-  display: none !important;
-}
