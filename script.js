@@ -5,60 +5,32 @@
 // =========================================================
 
 document.addEventListener("DOMContentLoaded", function () {
-
     const video = document.getElementById("videoAbertura");
-    const sistemaTitularidade =
-        document.getElementById("sistemaTitularidade");
+    const sistemaTitularidade = document.getElementById("sistemaTitularidade");
 
-    // =========================
-    // INICIAR VÍDEO AUTOMATICAMENTE
-    // =========================
+    const login = document.getElementById("login");
+    const titularidade = document.getElementById("titularidadeValidada");
+    const conteudo = document.getElementById("conteudoSite");
 
+    // Mantém as telas seguintes escondidas no início
+    sistemaTitularidade.style.setProperty("display", "none", "important");
+    login.style.setProperty("display", "none", "important");
+    titularidade.style.setProperty("display", "none", "important");
+    conteudo.style.setProperty("display", "none", "important");
+
+    // Inicia o vídeo
     video.muted = true;
-video.playsInline = true;
-
-video.play().catch(function () {
-    console.log("O navegador bloqueou o autoplay.");
-});
-
-    // =========================
-    // ESTADO INICIAL
-    // =========================
-
-    // Esconde a senha enquanto o vídeo estiver passando
-    sistemaTitularidade
-        .style.setProperty("display", "none", "important");
-
-    // Esconde os termos
-    document.getElementById("login")
-        .style.setProperty("display", "none", "important");
-
-    // Esconde titularidade validada
-    document.getElementById("titularidadeValidada")
-        .style.setProperty("display", "none", "important");
-
-    // Esconde conteúdo do site
-    document.getElementById("conteudoSite")
-        .style.setProperty("display", "none", "important");
-
-
-    // =========================
-    // VÍDEO TERMINOU
-    // =========================
+    video.playsInline = true;
 
     video.addEventListener("ended", function () {
-
-        // Mantém o último frame congelado
         video.pause();
+        sistemaTitularidade.style.setProperty("display", "block", "important");
+    }, { once: true });
 
-        // Agora libera a caixa de senha
-        sistemaTitularidade
-            .style.setProperty("display", "block", "important");
-
+    video.play().catch(function (erro) {
+        console.log("O navegador não iniciou o vídeo automaticamente:", erro);
     });
-
 });
-
 
 /* =========================
    VERIFICAR SENHA
