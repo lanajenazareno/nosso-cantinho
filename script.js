@@ -212,6 +212,28 @@ window.scrollTo({
 
 }
 
+function abrirContrato() {
+    document.getElementById("menuPrincipal").style.display = "none";
+    document.getElementById("historiaAniversario").style.display = "none";
+    document.getElementById("contratoNamoro").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+function voltarMenu() {
+    document.getElementById("historiaAniversario").style.display = "none";
+    document.getElementById("contratoNamoro").style.display = "none";
+    document.getElementById("menuPrincipal").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
 // =========================================================
 // QUEM É MAIS?
 // =========================================================
@@ -1778,24 +1800,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-function abrirContrato() {
-    document.getElementById("menuPrincipal").style.display = "none";
-    document.getElementById("historiaAniversario").style.display = "none";
-    document.getElementById("contratoNamoro").style.display = "block";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-function voltarMenu() {
-    document.getElementById("historiaAniversario").style.display = "none";
-    document.getElementById("contratoNamoro").style.display = "none";
-    document.getElementById("menuPrincipal").style.display = "block";
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 }
