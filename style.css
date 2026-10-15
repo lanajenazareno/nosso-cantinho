@@ -23,11 +23,13 @@ body {
 
 
 .card {
+    width: calc(100% - 32px);
+    max-width: 800px;
+    margin: 24px auto;
+    padding: 28px;
     background: #ffffff;
-    border-radius: 28px;
-    padding: 35px 30px;
-    margin-bottom: 35px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    border-radius: 24px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     text-align: center;
 }
 
@@ -65,8 +67,9 @@ p {
 
 img {
     width: 100%;
-    max-width: 650px;
-    border-radius: 25px;
+    max-width: 550px;
+    height: auto;
+    border-radius: 22px;
     margin: 20px auto;
     display: block;
 }
@@ -550,4 +553,50 @@ margin: 25px 10px;
 
 #titularidadeValidada {
     display: none;
+}
+
+/* MENU PRINCIPAL — NOSSO CANTINHO */
+
+#menuPrincipal {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 8px 0;
+}
+
+#menuPrincipal .capa h2 {
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+#menuPrincipal .capa h3 {
+    font-size: 20px;
+    margin: 8px 0 14px;
+}
+
+#menuPrincipal .capa p {
+    max-width: 500px;
+    margin: 0 auto;
+    font-size: 16px;
+}
+
+#menuPrincipal .entradaEspecial h3 {
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+#menuPrincipal button {
+    max-width: 100%;
+    white-space: normal;
+}
+
+@media (max-width: 480px) {
+    #menuPrincipal .capa h2 {
+        font-size: 26px;
+    }
+
+    #menuPrincipal .capa p {
+        font-size: 15px;
+    }
 }
