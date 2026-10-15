@@ -540,17 +540,14 @@ margin: 25px 10px;
 
 /* CONTROLE DAS TELAS DE ACESSO */
 
-/* O site começa escondido */
 #conteudoSite {
-    display: none !important;
+    display: none;
 }
 
-/* Os termos começam escondidos */
 #login {
-    display: none !important;
+    display: none;
 }
 
-/* A titularidade começa escondida */
 #titularidadeValidada {
-    display: none !important;
+    display: none;
 }
