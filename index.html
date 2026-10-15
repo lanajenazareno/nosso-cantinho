@@ -51,18 +51,17 @@ ABERTURA DO SITE
             <br><br>
 
             <button
-    type="button"
-    onclick="
-        if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
-            document.getElementById('aberturaSite').style.display = 'none';
-            document.getElementById('login').style.setProperty('display', 'block', 'important');
-        } else {
-            alert('Senha incorreta. Tente novamente.');
-            document.getElementById('senha').value = '';
-        }
-    "
+  type="button"
+  onclick="
+    if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
+      document.getElementById('aberturaSite').style.display = 'none';
+      document.getElementById('login').style.setProperty('display', 'block', 'important');
+    } else {
+      alert('Senha incorreta. Tente novamente.');
+    }
+  "
 >
-    CONFIRMAR ACESSO
+  CONFIRMAR ACESSO
 </button>
 
         </section>
