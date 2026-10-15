@@ -51,17 +51,19 @@ ABERTURA DO SITE
             <br><br>
 
             <button
-  type="button"
-  onclick="
-    if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
-      document.getElementById('aberturaSite').style.display = 'none';
-      document.getElementById('login').style.setProperty('display', 'block', 'important');
-    } else {
-      alert('Senha incorreta. Tente novamente.');
-    }
-  "
+    type="button"
+    onclick="
+        if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
+            document.getElementById('aberturaSite').style.display = 'none';
+            document.getElementById('titularidadeValidada').style.display = 'none';
+            document.getElementById('conteudoSite').style.display = 'none';
+            document.getElementById('login').style.setProperty('display', 'block', 'important');
+        } else {
+            alert('Senha incorreta. Tente novamente.');
+        }
+    "
 >
-  CONFIRMAR ACESSO
+    CONFIRMAR ACESSO
 </button>
 
         </section>
@@ -125,21 +127,30 @@ TERMOS DE USO
         <br><br>
 
        <button
-  id="btnTermos"
-  type="button"
-  onclick="
-    if (document.getElementById('aceiteTermos').checked) {
-      document.getElementById('login').style.display = 'none';
-      document.getElementById('titularidadeValidada').style.display = 'block';
-      document.getElementById('videoTitularidade').play();
-    } else {
-      alert('Você precisa aceitar os termos para continuar.');
-    }
-  "
->
-  Confirmar termos
-</button>
+    id="btnTermos"
+    type="button"
+    onclick="
+        if (document.getElementById('aceiteTermos').checked) {
+            document.getElementById('login').style.display = 'none';
+            document.getElementById('conteudoSite').style.display = 'none';
+            document.getElementById('menuPrincipal').style.display = 'none';
 
+            const tela = document.getElementById('titularidadeValidada');
+            const video = document.getElementById('videoTitularidade');
+
+            tela.style.display = 'block';
+            video.currentTime = 0;
+            video.play().catch(() => {
+                alert('Não foi possível reproduzir o vídeo. Toque na tela e tente novamente.');
+            });
+        } else {
+            alert('Você precisa aceitar os termos para continuar.');
+        }
+    "
+>
+    Confirmar termos
+</button>
+        
     </section>
 
 </div>
@@ -152,17 +163,18 @@ TITULARIDADE VALIDADA
 
     <!-- VÍDEO DE FUNDO -->
    <video
-  id="videoTitularidade"
-  autoplay
-  muted
-  playsinline
-  onended="
-    document.getElementById('titularidadeValidada').style.display = 'none';
-    document.getElementById('conteudoSite').style.display = 'block';
-    document.getElementById('menuPrincipal').style.display = 'block';
-  "
+    id="videoTitularidade"
+    autoplay
+    muted
+    playsinline
+    onended="
+        document.getElementById('titularidadeValidada').style.display = 'none';
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('conteudoSite').style.display = 'block';
+        document.getElementById('menuPrincipal').style.display = 'block';
+    "
 >
-  <source src="videos/videos/titularidade validada.mp4.mp4" type="video/mp4">
+    <source src="videos/videos/titularidade validada.mp4.mp4" type="video/mp4">
 </video>
 
     <!-- MENSAGEM SOBRE O VÍDEO -->
