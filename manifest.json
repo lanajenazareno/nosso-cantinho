@@ -1,0 +1,11 @@
+{
+  "name": "Nosso Cantinho - Lanaj e Nazareno",
+  "short_name": "Nosso Cantinho",
+  "description": "Um cantinho, muitas histórias e um amor que continua escrevendo novos capítulos.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f0e6",
+  "theme_color": "#f8f0e6",
+  "lang": "pt-BR"
+}
