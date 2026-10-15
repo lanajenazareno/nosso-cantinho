@@ -125,9 +125,21 @@ TERMOS DE USO
 
         <br><br>
 
-        <button id="btnTermos" onclick="confirmarTermos()">
-            Confirmar termos
-        </button>
+       <button
+  id="btnTermos"
+  type="button"
+  onclick="
+    if (document.getElementById('aceiteTermos').checked) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('titularidadeValidada').style.display = 'block';
+      document.getElementById('videoTitularidade').play();
+    } else {
+      alert('Você precisa aceitar os termos para continuar.');
+    }
+  "
+>
+  Confirmar termos
+</button>
 
     </section>
 
