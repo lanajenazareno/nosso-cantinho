@@ -537,3 +537,20 @@ text-align: center;
 font-style: italic;
 margin: 25px 10px;
 }
+
+/* CONTROLE DAS TELAS DE ACESSO */
+
+/* O site começa escondido */
+#conteudoSite {
+    display: none !important;
+}
+
+/* Os termos começam escondidos */
+#login {
+    display: none !important;
+}
+
+/* A titularidade começa escondida */
+#titularidadeValidada {
+    display: none !important;
+}
