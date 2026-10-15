@@ -502,3 +502,42 @@ button[onclick="copiarCodigo()"] {
 #titularidadeValidada .mensagemTitularidade * {
     color: #ffffff !important;
 }
+
+/* =====================================
+MENU PRINCIPAL — NOSSO CANTINHO 
+===================================== */
+
+.entradaEspecial {
+text-align: left;
+padding: 22px;
+border-radius: 14px;
+}
+
+.entradaEspecial h3 {
+margin-top: 0;
+}
+
+.entradaEspecial p {
+line-height: 1.6;
+}
+
+.statusNatal {
+color: #b99a72;
+font-size: 13px;
+}
+
+.natalBloqueado {
+border: 1px solid #72544b;
+opacity: 0.85;
+}
+
+.natalBloqueado button:disabled {
+cursor: not-allowed;
+opacity: 0.65;
+}
+
+.fraseFinalMenu {
+text-align: center;
+font-style: italic;
+margin: 25px 10px;
+}
