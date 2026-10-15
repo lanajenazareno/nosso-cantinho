@@ -8,20 +8,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const video = document.getElementById("videoAbertura");
     const sistemaTitularidade = document.getElementById("sistemaTitularidade");
 
-    sistemaTitularidade.style.setProperty("display", "none", "important");
+    // Esconde a senha enquanto o vídeo estiver passando
+    sistemaTitularidade.style.display = "none";
 
     video.muted = true;
     video.playsInline = true;
+    video.loop = false;
 
     function mostrarSenha() {
         video.pause();
-        sistemaTitularidade.style.setProperty("display", "block", "important");
+
+        // Exibe a senha somente após o término do vídeo
+        sistemaTitularidade.style.display = "block";
     }
 
+    // Aguarda o vídeo terminar
     video.addEventListener("ended", mostrarSenha, { once: true });
 
     video.play().catch(function (erro) {
-        console.log("Erro ao iniciar o vídeo:", erro);
+        console.log("Erro ao reproduzir o vídeo de abertura:", erro);
     });
 });
 
