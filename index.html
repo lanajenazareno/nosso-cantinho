@@ -152,17 +152,19 @@ TITULARIDADE VALIDADA
 <div id="titularidadeValidada" style="display:none;">
 
     <!-- VÍDEO DE FUNDO -->
-    <video
-        id="videoTitularidade"
-        autoplay
-        muted
-        playsinline
-    >
-        <source
-            src="videos/videos/titularidade validada.mp4.mp4"
-            type="video/mp4"
-        >
-    </video>
+   <video
+  id="videoTitularidade"
+  autoplay
+  muted
+  playsinline
+  onended="
+    document.getElementById('titularidadeValidada').style.display = 'none';
+    document.getElementById('conteudoSite').style.display = 'block';
+    document.getElementById('menuPrincipal').style.display = 'block';
+  "
+>
+  <source src="videos/videos/titularidade validada.mp4.mp4" type="video/mp4">
+</video>
 
     <!-- MENSAGEM SOBRE O VÍDEO -->
     <section class="card mensagemTitularidade">
