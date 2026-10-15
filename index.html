@@ -170,11 +170,11 @@ TITULARIDADE VALIDADA
     muted
     playsinline
     onended="
-        document.getElementById('titularidadeValidada').style.display = 'none';
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('conteudoSite').style.display = 'block';
-        document.getElementById('menuPrincipal').style.display = 'block';
-    "
+    document.getElementById('titularidadeValidada').style.setProperty('display', 'none', 'important');
+    document.getElementById('login').style.setProperty('display', 'none', 'important');
+    document.getElementById('conteudoSite').style.setProperty('display', 'block', 'important');
+    document.getElementById('menuPrincipal').style.setProperty('display', 'block', 'important');
+"
 >
     <source src="videos/videos/titularidade validada.mp4.mp4" type="video/mp4">
 </video>
