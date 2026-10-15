@@ -35,31 +35,28 @@ document.addEventListener("DOMContentLoaded", function () {
    ========================= */
 
 function verificarSenha() {
-    alert("O botão está funcionando!");
     const campoSenha = document.getElementById("senha");
+    const abertura = document.getElementById("aberturaSite");
+    const termos = document.getElementById("login");
+    const titularidade = document.getElementById("titularidadeValidada");
+    const conteudo = document.getElementById("conteudoSite");
+    const menu = document.getElementById("menuPrincipal");
 
-    const senhaDigitada = campoSenha.value
-        .trim()
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-
-    if (senhaDigitada === "coracao") {
-        const abertura = document.getElementById("aberturaSite");
-        const login = document.getElementById("login");
-
-        if (!abertura || !login) {
-            alert("Erro: não encontrei a tela inicial ou os termos.");
-            return;
-        }
-
-        abertura.style.display = "none";
-        login.style.setProperty("display", "block", "important");
-
-    } else {
+    if (!campoSenha || campoSenha.value.trim() !== "coracao") {
         alert("Senha incorreta. Tente novamente.");
-        campoSenha.value = "";
-        campoSenha.focus();
+        return;
+    }
+
+    // Esconde todas as telas seguintes
+    if (titularidade) titularidade.style.display = "none";
+    if (conteudo) conteudo.style.display = "none";
+    if (menu) menu.style.display = "none";
+
+    // Esconde a abertura e mostra somente os termos
+    if (abertura) abertura.style.display = "none";
+
+    if (termos) {
+        termos.style.setProperty("display", "block", "important");
     }
 }
 
