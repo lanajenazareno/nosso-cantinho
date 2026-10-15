@@ -47,16 +47,16 @@ function verificarSenha() {
         const abertura = document.getElementById("aberturaSite");
         const login = document.getElementById("login");
 
-        abertura.classList.add("aberturaSaindo");
+        if (!abertura || !login) {
+            alert("Erro: não encontrei a tela inicial ou os termos.");
+            return;
+        }
 
-        setTimeout(function () {
-            abertura.style.display = "none";
-
-            login.style.setProperty("display", "block", "important");
-        }, 800);
+        abertura.style.display = "none";
+        login.style.setProperty("display", "block", "important");
 
     } else {
-        alert("❌ Senha incorreta. Acesso não autorizado.");
+        alert("Senha incorreta. Tente novamente.");
         campoSenha.value = "";
         campoSenha.focus();
     }
