@@ -77,36 +77,6 @@ function verificarSenha() {
     }
 }
 
-        // =========================
-        // ACESSO AUTORIZADO
-        // =========================
-
-        const abertura =
-            document.getElementById("aberturaSite");
-
-        // Faz vídeo + senha desaparecerem juntos
-        abertura.classList.add("aberturaSaindo");
-
-        setTimeout(function () {
-
-            // Esconde completamente a abertura
-            abertura.style.display = "none";
-
-            // Mostra os termos
-            document.getElementById("login")
-                .style.setProperty("display", "block", "important");
-
-        }, 800);
-
-    } else {
-
-        alert("❌ Senha incorreta. Acesso não autorizado.");
-
-        document.getElementById("senha").value = "";
-        document.getElementById("senha").focus();
-    }
-}
-
 /* =========================
    CONFIRMAR TERMOS
    ========================= */
@@ -1777,13 +1747,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // LOGIN
     // =========================
 
-    const login =
-        document.getElementById("login");
+   const login =
+    document.getElementById("login");
 
-    if (login) {
-        login.style.display = "block";
-    }
-
+if (login) {
+    login.style.setProperty("display", "none", "important");
+}
 
     // =========================
     // INICIALIZAR QUIZ
@@ -1806,5 +1775,3 @@ document.addEventListener("DOMContentLoaded", function () {
     atualizarContador();
 
 });
-
-}
