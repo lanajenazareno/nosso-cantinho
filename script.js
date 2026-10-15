@@ -1775,3 +1775,16 @@ if (login) {
     atualizarContador();
 
 });
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker
+            .register("./sw.js")
+            .catch((erro) => {
+                console.error(
+                    "Erro ao registrar o service worker:",
+                    erro
+                );
+            });
+    });
+}
