@@ -8,27 +8,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const video = document.getElementById("videoAbertura");
     const sistemaTitularidade = document.getElementById("sistemaTitularidade");
 
-    const login = document.getElementById("login");
-    const titularidade = document.getElementById("titularidadeValidada");
-    const conteudo = document.getElementById("conteudoSite");
-
-    // Mantém as telas seguintes escondidas no início
+    // A senha fica escondida no início
     sistemaTitularidade.style.setProperty("display", "none", "important");
-    login.style.setProperty("display", "none", "important");
-    titularidade.style.setProperty("display", "none", "important");
-    conteudo.style.setProperty("display", "none", "important");
 
-    // Inicia o vídeo
+    // Configura e inicia o vídeo
     video.muted = true;
     video.playsInline = true;
 
+    // Espera o vídeo terminar completamente
     video.addEventListener("ended", function () {
         video.pause();
+
+        // Congela no último frame
+        video.currentTime = video.duration;
+
+        // Só então mostra a senha
         sistemaTitularidade.style.setProperty("display", "block", "important");
     }, { once: true });
 
     video.play().catch(function (erro) {
-        console.log("O navegador não iniciou o vídeo automaticamente:", erro);
+        console.log("Não foi possível iniciar o vídeo:", erro);
     });
 });
 
