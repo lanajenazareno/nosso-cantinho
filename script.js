@@ -35,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
    ========================= */
 
 function verificarSenha() {
+    alert("O botão está funcionando!");
     const campoSenha = document.getElementById("senha");
 
     const senhaDigitada = campoSenha.value
