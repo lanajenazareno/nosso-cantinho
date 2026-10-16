@@ -5,14 +5,37 @@
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
+
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "b34bc58c-04f8-48aa-80fb-f58c748246e9",
       safari_web_id: "web.onesignal.auto.1150f274-be67-4412-813c-e6f1ba6adf3e",
       notifyButton: {
-        enable: true,
-      },
+        enable: true
+      }
     });
+
+    window.ativarNotificacoes = async function() {
+      const status = document.getElementById("statusNotificacoes");
+
+      try {
+        if (OneSignal.Notifications.permissionNative === "denied") {
+          status.textContent =
+            "As notificações estão bloqueadas. Ative-as nas configurações do navegador.";
+          return;
+        }
+
+        await OneSignal.Notifications.requestPermission();
+        await OneSignal.User.PushSubscription.optIn();
+
+        status.textContent =
+          "Verificando a ativação das notificações... ❤️";
+      } catch (erro) {
+        console.error(erro);
+        status.textContent =
+          "Não foi possível ativar agora. Tente novamente.";
+      }
+    };
   });
 </script>
 <link rel="manifest" href="manifest.json">
@@ -247,6 +270,25 @@ MENU PRINCIPAL DO NOSSO CANTINHO
         que continua escrevendo novos capítulos.
         </p>
 
+    </section>
+
+    <!-- BOTÃO DE NOTIFICAÇÕES -->
+
+    <section class="card entradaEspecial">
+        <h3>Nossos recadinhos</h3>
+
+        <p>
+            Ative as notificações para receber nossas surpresas.
+        </p>
+
+        <button
+            type="button"
+            onclick="ativarNotificacoes()"
+        >
+           🔔 Ativar notificações
+        </button>
+
+        <p id="statusNotificacoes" aria-live="polite"></p>
     </section>
 
     <!-- PRESENTE DE ANIVERSÁRIO -->
