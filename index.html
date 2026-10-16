@@ -6,7 +6,14 @@
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  window.OneSignalDeferred.push(async function(OneSignal) {
+  window.OneSignalDeferred.push(async function (OneSignal) {
+    const botao = document.getElementById("botaoNotificacoes");
+    const status = document.getElementById("statusNotificacoes");
+
+    function informar(texto) {
+      if (status) status.textContent = texto;
+    }
+
     try {
       await OneSignal.init({
         appId: "b34bc58c-04f8-48aa-80fb-f58c748246e9",
@@ -17,57 +24,72 @@
         }
       });
 
-      const botao = document.getElementById("botaoNotificacoes");
-      if (!botao) return;
-
-      async function atualizarBotao() {
+      async function atualizarEstado() {
         const inscricao = OneSignal.User.PushSubscription;
-        botao.textContent = inscricao.optedIn
-          ? "🔕 Desativar notificações"
-          : "🔔 Ativar notificações";
+        const ativo = inscricao.optedIn === true;
+
+        if (botao) {
+          botao.textContent = ativo
+            ? "🔕 Desativar notificações"
+            : "🔔 Ativar notificações";
+        }
+
+        informar(
+          ativo
+            ? "Assinatura ativa no OneSignal."
+            : "Ainda não há confirmação de assinatura ativa."
+        );
       }
 
-      window.ativarNotificacoes = async function() {
-        try {
-          if (OneSignal.Notifications.permissionNative !== "granted") {
-            await OneSignal.Notifications.requestPermission();
+      if (botao) {
+        botao.onclick = async function () {
+          botao.disabled = true;
+          informar("Verificando permissão do navegador...");
+
+          try {
+            if (!OneSignal.Notifications.isPushSupported()) {
+              informar("Este navegador não oferece suporte a push.");
+              return;
+            }
+
+            const permissao =
+              OneSignal.Notifications.permissionNative;
+
+            if (permissao === "denied") {
+              informar(
+                "Notificações bloqueadas. Verifique as permissões do site no navegador."
+              );
+              return;
+            }
+
+            if (permissao !== "granted") {
+              await OneSignal.Notifications.requestPermission();
+            }
+
+            if (
+              OneSignal.Notifications.permissionNative !== "granted"
+            ) {
+              informar(
+                "Permissão não concedida. Autorize as notificações no navegador."
+              );
+              return;
+            }
+
+            await OneSignal.User.PushSubscription.optIn();
+            await atualizarEstado();
+          } catch (erro) {
+            console.error("Erro OneSignal:", erro);
+            informar("Erro no cadastro. Consulte o console do navegador.");
+          } finally {
+            botao.disabled = false;
           }
+        };
 
-          if (OneSignal.Notifications.permissionNative !== "granted") {
-            alert("Permita as notificações para continuar.");
-            return;
-          }
-
-          await OneSignal.User.PushSubscription.optIn();
-          await atualizarBotao();
-        } catch (erro) {
-          console.error("Erro ao ativar:", erro);
-          alert("Não foi possível ativar. Tente novamente.");
-        }
-      };
-
-      window.desativarNotificacoes = async function() {
-        try {
-          await OneSignal.User.PushSubscription.optOut();
-          await atualizarBotao();
-        } catch (erro) {
-          console.error("Erro ao desativar:", erro);
-          alert("Não foi possível desativar. Tente novamente.");
-        }
-      };
-
-      botao.onclick = function() {
-        if (OneSignal.User.PushSubscription.optedIn) {
-          window.desativarNotificacoes();
-        } else {
-          window.ativarNotificacoes();
-        }
-      };
-
-      await atualizarBotao();
-
+        await atualizarEstado();
+      }
     } catch (erro) {
       console.error("Erro ao iniciar OneSignal:", erro);
+      informar("O OneSignal não conseguiu iniciar. Verifique a configuração.");
     }
   });
 </script>
