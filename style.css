@@ -600,3 +600,373 @@ margin: 25px 10px;
         font-size: 15px;
     }
 }
+
+/* =========================
+   NOSSA AGENDA 🫀
+   Edição Vinho & Bordô
+========================= */
+
+#cartaoNossaAgenda,
+#nossaAgenda {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 760px;
+  margin: 24px auto;
+  padding: 22px;
+  color: #392027;
+  background: #fffaf8;
+  border: 1px solid #e8d2d2;
+  border-radius: 22px;
+  box-shadow: 0 8px 28px rgba(75, 13, 29, 0.10);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* TÍTULOS */
+
+#cartaoNossaAgenda h3,
+#nossaAgenda h2,
+#nossaAgenda h3,
+#nossaAgenda h4 {
+  color: #701d32;
+  line-height: 1.4;
+}
+
+#cartaoNossaAgenda h3 {
+  font-size: 25px;
+  margin-top: 4px;
+}
+
+#cartaoNossaAgenda p,
+#nossaAgenda p {
+  line-height: 1.6;
+}
+
+#cartaoNossaAgenda {
+  text-align: center;
+  background: linear-gradient(145deg, #fffaf8, #f4e5e3);
+}
+
+#nossaAgenda h2 {
+  margin: 18px 0 8px;
+  font-size: 28px;
+  text-align: center;
+}
+
+#nossaAgenda > p {
+  color: #80646b;
+  text-align: center;
+}
+
+/* BOTÕES PRINCIPAIS */
+
+#cartaoNossaAgenda button,
+#nossaAgenda button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+
+#cartaoNossaAgenda button,
+#nossaAgenda > button,
+#nossaAgenda #agendaSalvar {
+  padding: 12px 18px;
+  color: #fffaf8;
+  background: #701d32;
+  border: 1px solid #701d32;
+  border-radius: 11px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#cartaoNossaAgenda button:hover,
+#nossaAgenda > button:hover,
+#nossaAgenda #agendaSalvar:hover {
+  background: #501020;
+}
+
+#cartaoNossaAgenda button:active,
+#nossaAgenda button:active {
+  transform: scale(.97);
+}
+
+#cartaoNossaAgenda button:focus-visible,
+#nossaAgenda button:focus-visible {
+  outline: 3px solid #c99ba5;
+  outline-offset: 3px;
+}
+
+/* CALENDÁRIO */
+
+#nossaAgenda .agenda-calendario,
+#nossaAgenda .agenda-dia-selecionado {
+  margin: 22px 0;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid #ead7d6;
+  border-radius: 18px;
+}
+
+#nossaAgenda .agenda-navegacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+#nossaAgenda .agenda-navegacao h3 {
+  flex: 1;
+  margin: 0;
+  color: #701d32;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 18px;
+}
+
+#nossaAgenda .agenda-navegacao button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: #701d32;
+  background: #f4e5e3;
+  border: 1px solid #ead0d0;
+  border-radius: 10px;
+  font-size: 25px;
+}
+
+#nossaAgenda .agenda-dias-semana,
+#nossaAgenda .agenda-grade {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 14px;
+}
+
+#nossaAgenda .agenda-dias-semana span {
+  padding: 7px 0;
+  color: #896c73;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#nossaAgenda .agenda-data {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 42px;
+  padding: 4px 0;
+  color: #482832;
+  background: #fffaf8;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+#nossaAgenda .agenda-data:hover {
+  background: #f4e5e3;
+}
+
+#nossaAgenda .agenda-data.vazio {
+  visibility: hidden;
+}
+
+#nossaAgenda .agenda-data.hoje {
+  border-color: #8e344b;
+  font-weight: 700;
+}
+
+#nossaAgenda .agenda-data.selecionado {
+  color: #fff;
+  background: #701d32;
+  border-color: #701d32;
+  font-weight: 700;
+}
+
+#nossaAgenda .agenda-data.tem-compromisso::after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 3px auto 0;
+  background: #a32e49;
+  border-radius: 50%;
+}
+
+#nossaAgenda .agenda-data.selecionado.tem-compromisso::after {
+  background: #fff;
+}
+
+/* COMPROMISSOS */
+
+#nossaAgenda #agendaDataSelecionada {
+  margin-top: 0;
+  color: #701d32;
+  text-transform: capitalize;
+}
+
+#nossaAgenda .agenda-compromisso {
+  margin-top: 12px;
+  padding: 15px;
+  background: #fffaf8;
+  border: 1px solid #ead7d6;
+  border-left: 4px solid #701d32;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+#nossaAgenda .agenda-compromisso h4 {
+  margin: 0 0 8px;
+  color: #701d32;
+  font-size: 16px;
+}
+
+#nossaAgenda .agenda-compromisso p {
+  margin: 7px 0;
+  color: #72565e;
+  font-size: 14px;
+}
+
+#nossaAgenda .agenda-compromisso.concluido h4 {
+  text-decoration: line-through;
+  opacity: .6;
+}
+
+#nossaAgenda .agenda-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+#nossaAgenda .agenda-acoes button {
+  padding: 8px 12px;
+  color: #701d32;
+  background: #f4e5e3;
+  border: 1px solid #e7cccc;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+#nossaAgenda .agenda-acoes button:hover {
+  color: #fff;
+  background: #701d32;
+}
+
+/* FORMULÁRIO */
+
+#nossaAgenda hr {
+  margin: 26px 0;
+  border: 0;
+  border-top: 1px solid #ead7d6;
+}
+
+#nossaAgenda #agendaFormularioTitulo {
+  margin-bottom: 16px;
+  color: #701d32;
+}
+
+#nossaAgenda #agendaFormulario {
+  display: grid;
+  gap: 10px;
+}
+
+#nossaAgenda #agendaFormulario label {
+  color: #612637;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+#nossaAgenda #agendaFormulario input:not([type="checkbox"]),
+#nossaAgenda #agendaFormulario textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 13px;
+  color: #392027;
+  background: #fff;
+  border: 1px solid #dfc5c7;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+#nossaAgenda #agendaFormulario input:focus,
+#nossaAgenda #agendaFormulario textarea:focus {
+  border-color: #8e344b;
+  box-shadow: 0 0 0 3px rgba(112, 29, 50, .10);
+}
+
+#nossaAgenda #agendaFormulario textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+#nossaAgenda #agendaFormulario label:has(#agendaLembrete) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 0;
+}
+
+#nossaAgenda #agendaLembrete {
+  width: 17px;
+  height: 17px;
+  accent-color: #701d32;
+}
+
+#nossaAgenda .agenda-aviso {
+  padding: 12px;
+  color: #72565e;
+  background: #f4e5e3;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+#nossaAgenda #agendaCancelarEdicao {
+  padding: 11px 15px;
+  color: #701d32;
+  background: #f4e5e3;
+  border: 1px solid #e7cccc;
+  border-radius: 10px;
+}
+
+/* ADAPTAÇÃO PARA CELULAR */
+
+@media (max-width: 480px) {
+  #cartaoNossaAgenda,
+  #nossaAgenda {
+    width: calc(100% - 20px);
+    margin: 12px auto;
+    padding: 15px;
+    border-radius: 18px;
+  }
+
+  #nossaAgenda h2 {
+    font-size: 24px;
+  }
+
+  #nossaAgenda .agenda-calendario,
+  #nossaAgenda .agenda-dia-selecionado {
+    padding: 12px;
+  }
+
+  #nossaAgenda .agenda-dias-semana,
+  #nossaAgenda .agenda-grade {
+    gap: 3px;
+  }
+
+  #nossaAgenda .agenda-data {
+    min-height: 38px;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+
+  #nossaAgenda .agenda-dias-semana span {
+    font-size: 11px;
+  }
+
+  #nossaAgenda .agenda-acoes button {
+    padding: 8px 10px;
+  }
+}
