@@ -272,7 +272,481 @@ MENU PRINCIPAL DO NOSSO CANTINHO
 
     </section>
 
-</div>
+    <!-- =========================
+AGENDA LN 🫀
+========================= -->
+
+<section class="card entradaEspecial" id="cartaoNossaAgenda">
+  <h3>🗓️ Nossa Agenda</h3>
+  <p>Os nossos planos, encontros e compromissos em um só lugar.</p>
+  <button type="button" onclick="abrirNossaAgenda()">Abrir agenda →</button>
+</section>
+
+<section class="card" id="nossaAgenda" style="display:none;">
+  <button type="button" onclick="fecharNossaAgenda()">← Voltar ao Nosso Cantinho</button>
+
+  <h2>🫀 Nossa Agenda</h2>
+  <p>Um espaço para organizar os planos que fazemos juntos.</p>
+
+  <div class="agenda-calendario">
+    <div class="agenda-navegacao">
+      <button type="button" id="agendaMesAnterior">‹</button>
+      <h3 id="agendaMesAno">Mês Ano</h3>
+      <button type="button" id="agendaMesSeguinte">›</button>
+    </div>
+
+    <div class="agenda-dias-semana">
+      <span>Dom</span><span>Seg</span><span>Ter</span>
+      <span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+    </div>
+
+    <div class="agenda-grade" id="agendaGrade"></div>
+  </div>
+
+  <div class="agenda-dia-selecionado">
+    <h3 id="agendaDataSelecionada">Compromissos</h3>
+    <div id="agendaLista">
+      <p>Nenhum compromisso cadastrado para este dia.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 id="agendaFormularioTitulo">Adicionar compromisso</h3>
+
+  <form id="agendaFormulario">
+    <label for="agendaTitulo">Nome do compromisso</label>
+    <input id="agendaTitulo" type="text" maxlength="100"
+      placeholder="Ex.: Nosso passeio" required>
+
+    <label for="agendaData">Data</label>
+    <input id="agendaData" type="date" required>
+
+    <label for="agendaHora">Horário</label>
+    <input id="agendaHora" type="time">
+
+    <label for="agendaLocal">Local (opcional)</label>
+    <input id="agendaLocal" type="text" maxlength="120"
+      placeholder="Ex.: cinema">
+
+    <label for="agendaDetalhes">Observações (opcional)</label>
+    <textarea id="agendaDetalhes" rows="3" maxlength="500"
+      placeholder="O que precisamos lembrar?"></textarea>
+
+    <label>
+      <input id="agendaLembrete" type="checkbox">
+      Quero um lembrete deste compromisso
+    </label>
+
+    <p class="agenda-aviso">
+      Os lembretes automáticos e o compartilhamento entre celulares
+      serão conectados depois.
+    </p>
+
+    <button type="submit" id="agendaSalvar">Salvar compromisso</button>
+    <button type="button" id="agendaCancelarEdicao" style="display:none;">
+      Cancelar edição
+    </button>
+  </form>
+</section>
+
+<style>
+#nossaAgenda .agenda-calendario,
+#nossaAgenda .agenda-dia-selecionado {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #ead5dd;
+  border-radius: 16px;
+}
+
+#nossaAgenda .agenda-navegacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#nossaAgenda .agenda-navegacao h3 {
+  text-align: center;
+}
+
+#nossaAgenda .agenda-dias-semana,
+#nossaAgenda .agenda-grade {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 10px;
+}
+
+#nossaAgenda .agenda-dias-semana span {
+  text-align: center;
+  font-size: 12px;
+}
+
+#nossaAgenda .agenda-data {
+  min-width: 0;
+  min-height: 40px;
+  padding: 4px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+}
+
+#nossaAgenda .agenda-data.vazio {
+  visibility: hidden;
+}
+
+#nossaAgenda .agenda-data.hoje {
+  border-color: #c47d95;
+}
+
+#nossaAgenda .agenda-data.selecionado {
+  background: #f4dfe6;
+  color: #482b35;
+}
+
+#nossaAgenda .agenda-data.tem-compromisso::after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 2px auto 0;
+  border-radius: 50%;
+  background: #b45f7b;
+}
+
+#nossaAgenda form {
+  display: grid;
+  gap: 8px;
+}
+
+#nossaAgenda form input:not([type="checkbox"]),
+#nossaAgenda form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddc5ce;
+  border-radius: 10px;
+  font: inherit;
+}
+
+#nossaAgenda .agenda-aviso {
+  font-size: 13px;
+  opacity: .75;
+}
+
+#nossaAgenda .agenda-compromisso {
+  padding: 12px 0;
+  border-bottom: 1px solid #ead5dd;
+}
+
+#nossaAgenda .agenda-compromisso.concluido h4 {
+  text-decoration: line-through;
+  opacity: .65;
+}
+
+#nossaAgenda .agenda-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+</style>
+
+<script>
+(function () {
+  const raiz = document.getElementById("nossaAgenda");
+  if (!raiz || raiz.dataset.inicializada === "sim") return;
+  raiz.dataset.inicializada = "sim";
+
+  const $ = id => document.getElementById(id);
+  const grade = $("agendaGrade");
+  const lista = $("agendaLista");
+  const formulario = $("agendaFormulario");
+  const campoData = $("agendaData");
+
+  let dataVisualizada = new Date();
+  dataVisualizada = new Date(
+    dataVisualizada.getFullYear(),
+    dataVisualizada.getMonth(), 1
+  );
+
+  let dataSelecionada = dataISO(new Date());
+  let idEditando = null;
+  let compromissos = carregar();
+
+  function dataISO(data) {
+    return [
+      data.getFullYear(),
+      String(data.getMonth() + 1).padStart(2, "0"),
+      String(data.getDate()).padStart(2, "0")
+    ].join("-");
+  }
+
+  function dataLegivel(valor) {
+    const [ano, mes, dia] = valor.split("-").map(Number);
+    return new Date(ano, mes - 1, dia).toLocaleDateString("pt-BR", {
+      day: "numeric", month: "long", year: "numeric"
+    });
+  }
+
+  function carregar() {
+    try {
+      return JSON.parse(
+        localStorage.getItem("nossaAgendaCompromissos") || "[]"
+      );
+    } catch {
+      return [];
+    }
+  }
+
+  function guardar() {
+    try {
+      localStorage.setItem(
+        "nossaAgendaCompromissos",
+        JSON.stringify(compromissos)
+      );
+      return true;
+    } catch {
+      alert("Não foi possível salvar neste dispositivo.");
+      return false;
+    }
+  }
+
+  function renderizarCalendario() {
+    const ano = dataVisualizada.getFullYear();
+    const mes = dataVisualizada.getMonth();
+
+    $("agendaMesAno").textContent =
+      dataVisualizada.toLocaleDateString("pt-BR", {
+        month: "long", year: "numeric"
+      });
+
+    grade.replaceChildren();
+
+    const inicio = new Date(ano, mes, 1).getDay();
+    const total = new Date(ano, mes + 1, 0).getDate();
+    const hoje = dataISO(new Date());
+
+    for (let i = 0; i < inicio; i++) {
+      const vazio = document.createElement("span");
+      vazio.className = "agenda-data vazio";
+      grade.appendChild(vazio);
+    }
+
+    for (let dia = 1; dia <= total; dia++) {
+      const valor = dataISO(new Date(ano, mes, dia));
+      const botao = document.createElement("button");
+      botao.type = "button";
+      botao.className = "agenda-data";
+      botao.textContent = dia;
+
+      if (valor === hoje) botao.classList.add("hoje");
+      if (valor === dataSelecionada) botao.classList.add("selecionado");
+
+      if (compromissos.some(item => item.data === valor)) {
+        botao.classList.add("tem-compromisso");
+      }
+
+      botao.addEventListener("click", () => {
+        dataSelecionada = valor;
+        campoData.value = valor;
+        limparFormulario(false);
+        renderizar();
+      });
+
+      grade.appendChild(botao);
+    }
+  }
+
+  function renderizarLista() {
+    $("agendaDataSelecionada").textContent =
+      dataLegivel(dataSelecionada);
+    lista.replaceChildren();
+
+    const doDia = compromissos
+      .filter(item => item.data === dataSelecionada)
+      .sort((a, b) => (a.hora || "99:99").localeCompare(b.hora || "99:99"));
+
+    if (!doDia.length) {
+      const p = document.createElement("p");
+      p.textContent = "Nenhum compromisso cadastrado para este dia.";
+      lista.appendChild(p);
+      return;
+    }
+
+    doDia.forEach(item => {
+      const cartao = document.createElement("article");
+      cartao.className = "agenda-compromisso" +
+        (item.concluido ? " concluido" : "");
+
+      const titulo = document.createElement("h4");
+      titulo.textContent = (item.hora ? item.hora + " · " : "") + item.titulo;
+      cartao.appendChild(titulo);
+
+      if (item.local) {
+        const p = document.createElement("p");
+        p.textContent = "📍 " + item.local;
+        cartao.appendChild(p);
+      }
+
+      if (item.detalhes) {
+        const p = document.createElement("p");
+        p.textContent = item.detalhes;
+        cartao.appendChild(p);
+      }
+
+      if (item.lembrete) {
+        const p = document.createElement("p");
+        p.textContent = "🔔 Lembrete desejado";
+        cartao.appendChild(p);
+      }
+
+      const acoes = document.createElement("div");
+      acoes.className = "agenda-acoes";
+
+      const concluir = document.createElement("button");
+      concluir.type = "button";
+      concluir.textContent = item.concluido ? "Reabrir" : "Concluir";
+      concluir.onclick = () => {
+        item.concluido = !item.concluido;
+        if (guardar()) renderizar();
+      };
+      acoes.appendChild(concluir);
+
+      const editar = document.createElement("button");
+      editar.type = "button";
+      editar.textContent = "Editar";
+      editar.onclick = () => preencherFormulario(item);
+      acoes.appendChild(editar);
+
+      const excluir = document.createElement("button");
+      excluir.type = "button";
+      excluir.textContent = "Excluir";
+      excluir.onclick = () => {
+        if (!confirm("Excluir este compromisso?")) return;
+        compromissos = compromissos.filter(x => x.id !== item.id);
+        if (guardar()) renderizar();
+      };
+      acoes.appendChild(excluir);
+
+      cartao.appendChild(acoes);
+      lista.appendChild(cartao);
+    });
+  }
+
+  function renderizar() {
+    renderizarCalendario();
+    renderizarLista();
+  }
+
+  function limparFormulario(manterData = true) {
+    const data = manterData ? campoData.value : dataSelecionada;
+    formulario.reset();
+    campoData.value = data || dataSelecionada;
+    idEditando = null;
+    $("agendaFormularioTitulo").textContent = "Adicionar compromisso";
+    $("agendaSalvar").textContent = "Salvar compromisso";
+    $("agendaCancelarEdicao").style.display = "none";
+  }
+
+  function preencherFormulario(item) {
+    idEditando = item.id;
+    $("agendaTitulo").value = item.titulo;
+    campoData.value = item.data;
+    $("agendaHora").value = item.hora || "";
+    $("agendaLocal").value = item.local || "";
+    $("agendaDetalhes").value = item.detalhes || "";
+    $("agendaLembrete").checked = Boolean(item.lembrete);
+    $("agendaFormularioTitulo").textContent = "Editar compromisso";
+    $("agendaSalvar").textContent = "Salvar alterações";
+    $("agendaCancelarEdicao").style.display = "inline-block";
+    formulario.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  $("agendaMesAnterior").onclick = () => {
+    dataVisualizada.setMonth(dataVisualizada.getMonth() - 1);
+    renderizarCalendario();
+  };
+
+  $("agendaMesSeguinte").onclick = () => {
+    dataVisualizada.setMonth(dataVisualizada.getMonth() + 1);
+    renderizarCalendario();
+  };
+
+  $("agendaCancelarEdicao").onclick = () => limparFormulario();
+
+  campoData.value = dataSelecionada;
+  campoData.addEventListener("change", () => {
+    if (!campoData.value) return;
+    dataSelecionada = campoData.value;
+    const [ano, mes] = dataSelecionada.split("-").map(Number);
+    dataVisualizada = new Date(ano, mes - 1, 1);
+    renderizar();
+  });
+
+  formulario.addEventListener("submit", evento => {
+    evento.preventDefault();
+
+    const titulo = $("agendaTitulo").value.trim();
+    const data = campoData.value;
+
+    if (!titulo || !data) {
+      alert("Preencha o nome e a data do compromisso.");
+      return;
+    }
+
+    const anterior = compromissos.find(x => x.id === idEditando);
+
+    const item = {
+      id: idEditando || (
+        Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
+      ),
+      titulo,
+      data,
+      hora: $("agendaHora").value,
+      local: $("agendaLocal").value.trim(),
+      detalhes: $("agendaDetalhes").value.trim(),
+      lembrete: $("agendaLembrete").checked,
+      concluido: anterior ? Boolean(anterior.concluido) : false
+    };
+
+    if (idEditando) {
+      compromissos = compromissos.map(x => x.id === idEditando ? item : x);
+    } else {
+      compromissos.push(item);
+    }
+
+    if (guardar()) {
+      dataSelecionada = data;
+      const [ano, mes] = data.split("-").map(Number);
+      dataVisualizada = new Date(ano, mes - 1, 1);
+      limparFormulario();
+      renderizar();
+      alert("Compromisso salvo neste dispositivo ❤️");
+    }
+  });
+
+  window.abrirNossaAgenda = function () {
+    const menu = $("menuPrincipal");
+    if (menu) menu.style.display = "none";
+    raiz.style.display = "block";
+    renderizar();
+    raiz.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  window.fecharNossaAgenda = function () {
+    raiz.style.display = "none";
+    const menu = $("menuPrincipal");
+    if (menu) menu.style.display = "block";
+    limparFormulario();
+    if (menu) menu.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  renderizar();
+})();
+</script>
+
+    </div>
 
     <!-- =========================
 EXPERIÊNCIA NOSSA HISTÓRIA
