@@ -135,7 +135,7 @@ videoTitularidade.addEventListener("ended", function () {
 });
 
     // =========================
-    // AGUARDA 8 SEGUNDOS
+    // AGUARDA 7 SEGUNDOS
     // =========================
 
     setTimeout(function () {
@@ -153,7 +153,7 @@ videoTitularidade.addEventListener("ended", function () {
         document.getElementById("conteudoSite")
             .style.setProperty("display", "block", "important");
 
-    }, 8000);
+    }, 7000);
 }
 
 // =========================================================
