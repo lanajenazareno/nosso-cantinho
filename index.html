@@ -19,27 +19,35 @@
       }
     });
 
-    window.ativarNotificacoes = async function() {
-      const status = document.getElementById("statusNotificacoes");
+   window.ativarNotificacoes = async function() {
+  const botao = document.getElementById("botaoNotificacoes");
 
-      try {
-        if (OneSignal.Notifications.permissionNative === "denied") {
-          status.textContent =
-            "As notificações estão bloqueadas. Ative-as nas configurações do navegador.";
-          return;
-        }
+  try {
+    if (OneSignal.Notifications.permissionNative !== "granted") {
+      await OneSignal.Notifications.requestPermission();
+    }
 
-        await OneSignal.Notifications.requestPermission();
-        await OneSignal.User.PushSubscription.optIn();
+    if (OneSignal.Notifications.permissionNative === "granted") {
+      await OneSignal.User.PushSubscription.optIn();
+      botao.textContent = "🔕 Desativar notificações";
+      botao.onclick = desativarNotificacoes;
+    }
+  } catch (erro) {
+    console.error("Erro nas notificações:", erro);
+  }
+};
 
-       if (OneSignal.User.PushSubscription.optedIn) {
-  status.textContent =
-    "Notificações ativadas!";
-} else {
-  status.textContent =
-    "Ainda não foi possível confirmar a inscrição. Tente novamente.";
-}
-    };
+window.desativarNotificacoes = async function() {
+  const botao = document.getElementById("botaoNotificacoes");
+
+  try {
+    await OneSignal.User.PushSubscription.optOut();
+    botao.textContent = "🔔 Ativar notificações";
+    botao.onclick = ativarNotificacoes;
+  } catch (erro) {
+    console.error("Erro ao desativar:", erro);
+  }
+};
   });
 </script>
 <link rel="manifest" href="manifest.json">
@@ -279,18 +287,19 @@ MENU PRINCIPAL DO NOSSO CANTINHO
     <!-- BOTÃO DE NOTIFICAÇÕES -->
 
     <section class="card entradaEspecial">
-        <h3>Nossos recadinhos</h3>
+        <h3>Recadinhos</h3>
 
         <p>
             Ative as notificações para receber nossas surpresas.
         </p>
 
         <button
-            type="button"
-            onclick="ativarNotificacoes()"
-        >
-           🔔 Ativar notificações
-        </button>
+  type="button"
+  id="botaoNotificacoes"
+  onclick="ativarNotificacoes()"
+>
+  🔔 Ativar notificações
+</button>
 
         <p id="statusNotificacoes" aria-live="polite"></p>
     </section>
