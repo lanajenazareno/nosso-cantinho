@@ -2,83 +2,6 @@
 <html lang="pt-BR">
 
 <head>
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-  window.OneSignalDeferred.push(async function (OneSignal) {
-    const botao = document.getElementById("botaoNotificacoes");
-    const status = document.getElementById("statusNotificacoes");
-
-    function informar(texto) {
-      if (status) status.textContent = texto;
-    }
-
-    try {
-      await OneSignal.init({
-        appId: "b34bc58c-04f8-48aa-80fb-f58c748246e9",
-        safari_web_id: "web.onesignal.auto.1150f274-be67-4412-813c-e6f1ba6adf3e",
-        serviceWorkerPath: "/nosso-cantinho/OneSignalSDKWorker.js",
-        serviceWorkerParam: {
-          scope: "/nosso-cantinho/"
-        }
-      });
-
-      async function atualizarEstado() {
-        const inscricao = OneSignal.User.PushSubscription;
-        const ativo = inscricao.optedIn === true;
-
-        if (botao) {
-          botao.textContent = ativo
-            ? "🔕 Desativar notificações"
-            : "🔔 Ativar notificações";
-        }
-
-        informar(
-          ativo
-            ? "Assinatura ativa no OneSignal."
-            : "Ainda não há confirmação de assinatura ativa."
-        );
-      }
-
-      if (botao) {
-       botao.onclick = async function () {
-  botao.disabled = true;
-
-  try {
-    const inscricao = OneSignal.User.PushSubscription;
-
-    if (inscricao.optedIn) {
-      await inscricao.optOut();
-      informar("🔕 Notificações desativadas.");
-    } else {
-      if (!OneSignal.Notifications.isPushSupported()) {
-        informar("Este navegador não oferece suporte a notificações.");
-        return;
-      }
-
-      if (OneSignal.Notifications.permissionNative !== "granted") {
-        await OneSignal.Notifications.requestPermission();
-      }
-
-      if (OneSignal.Notifications.permissionNative !== "granted") {
-        informar("Permita as notificações no navegador.");
-        return;
-      }
-
-      await inscricao.optIn();
-      informar("🔔 Notificações ativadas!");
-    }
-
-    await atualizarEstado();
-  } catch (erro) {
-    console.error("Erro nas notificações:", erro);
-    informar("Não foi possível alterar as notificações.");
-  } finally {
-    botao.disabled = false;
-  }
-};
-</script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f8f0e6">
     
@@ -311,26 +234,6 @@ MENU PRINCIPAL DO NOSSO CANTINHO
         que continua escrevendo novos capítulos.
         </p>
 
-    </section>
-
-    <!-- BOTÃO DE NOTIFICAÇÕES -->
-
-    <section class="card entradaEspecial">
-        <h3>Recadinhos</h3>
-
-        <p>
-            Ative as notificações para receber nossas surpresas.
-        </p>
-
-        <button
-  type="button"
-  id="botaoNotificacoes"
-  onclick="ativarNotificacoes()"
->
-  🔔 Ativar notificações
-</button>
-
-        <p id="statusNotificacoes" aria-live="polite"></p>
     </section>
 
     <!-- PRESENTE DE ANIVERSÁRIO -->
