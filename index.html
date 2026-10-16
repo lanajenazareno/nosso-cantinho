@@ -728,21 +728,39 @@ AGENDA LN 🫀
     }
   });
 
-  window.abrirNossaAgenda = function () {
-    const menu = $("menuPrincipal");
-    if (menu) menu.style.display = "none";
-    raiz.style.display = "block";
-    renderizar();
-    raiz.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+window.abrirNossaAgenda = function () {
+    const cartao = $("cartaoNossaAgenda");
 
+    if (cartao) {
+        cartao.style.display = "none";
+    }
+
+    raiz.style.display = "block";
+
+    renderizar();
+
+    raiz.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+};
+    
   window.fecharNossaAgenda = function () {
     raiz.style.display = "none";
-    const menu = $("menuPrincipal");
-    if (menu) menu.style.display = "block";
+
+    const cartao = $("cartaoNossaAgenda");
+
+    if (cartao) {
+        cartao.style.display = "block";
+
+        cartao.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+
     limparFormulario();
-    if (menu) menu.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+};
 
   renderizar();
 })();
