@@ -42,56 +42,42 @@
       }
 
       if (botao) {
-        botao.onclick = async function () {
-          botao.disabled = true;
-          informar("Verificando permissão do navegador...");
+       botao.onclick = async function () {
+  botao.disabled = true;
 
-          try {
-            if (!OneSignal.Notifications.isPushSupported()) {
-              informar("Este navegador não oferece suporte a push.");
-              return;
-            }
+  try {
+    const inscricao = OneSignal.User.PushSubscription;
 
-            const permissao =
-              OneSignal.Notifications.permissionNative;
-
-            if (permissao === "denied") {
-              informar(
-                "Notificações bloqueadas. Verifique as permissões do site no navegador."
-              );
-              return;
-            }
-
-            if (permissao !== "granted") {
-              await OneSignal.Notifications.requestPermission();
-            }
-
-            if (
-              OneSignal.Notifications.permissionNative !== "granted"
-            ) {
-              informar(
-                "Permissão não concedida. Autorize as notificações no navegador."
-              );
-              return;
-            }
-
-            await OneSignal.User.PushSubscription.optIn();
-            await atualizarEstado();
-          } catch (erro) {
-            console.error("Erro OneSignal:", erro);
-            informar("Erro no cadastro. Consulte o console do navegador.");
-          } finally {
-            botao.disabled = false;
-          }
-        };
-
-        await atualizarEstado();
+    if (inscricao.optedIn) {
+      await inscricao.optOut();
+      informar("🔕 Notificações desativadas.");
+    } else {
+      if (!OneSignal.Notifications.isPushSupported()) {
+        informar("Este navegador não oferece suporte a notificações.");
+        return;
       }
-    } catch (erro) {
-      console.error("Erro ao iniciar OneSignal:", erro);
-      informar("O OneSignal não conseguiu iniciar. Verifique a configuração.");
+
+      if (OneSignal.Notifications.permissionNative !== "granted") {
+        await OneSignal.Notifications.requestPermission();
+      }
+
+      if (OneSignal.Notifications.permissionNative !== "granted") {
+        informar("Permita as notificações no navegador.");
+        return;
+      }
+
+      await inscricao.optIn();
+      informar("🔔 Notificações ativadas!");
     }
-  });
+
+    await atualizarEstado();
+  } catch (erro) {
+    console.error("Erro nas notificações:", erro);
+    informar("Não foi possível alterar as notificações.");
+  } finally {
+    botao.disabled = false;
+  }
+};
 </script>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f8f0e6">
