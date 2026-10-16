@@ -211,7 +211,6 @@ function voltarMenu() {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-<script>
 (function () {
   const $ = id => document.getElementById(id);
 
@@ -642,7 +641,6 @@ function voltarMenu() {
 
   renderizar();
 })();
-</script>
 
 // =========================================================
 // QUEM É MAIS?
