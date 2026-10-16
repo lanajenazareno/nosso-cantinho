@@ -157,7 +157,7 @@ videoTitularidade.addEventListener("ended", function () {
 }
 
 // =========================================================
-// MENU PRINCIPAL — NOSSO CANTINHO ❤️
+// MENU PRINCIPAL — NOSSO CANTINHO 
 // =========================================================
 
 function abrirHistoria() {
