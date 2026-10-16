@@ -7,5 +7,13 @@
   "display": "standalone",
   "background_color": "#f8f0e6",
   "theme_color": "#f8f0e6",
-  "lang": "pt-BR"
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "fotos/fotos/luaesol.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
 }
