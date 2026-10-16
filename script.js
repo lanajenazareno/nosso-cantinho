@@ -216,6 +216,8 @@ function voltarMenu() {
 
   const raiz = $("nossaAgenda");
   const cartao = $("cartaoNossaAgenda");
+    console.log("Agenda encontrada:", !!raiz);
+console.log("Botão encontrado:", !!$("cartaoNossaAgenda"));
 
   if (!raiz || !cartao || raiz.dataset.inicializada === "sim") {
     return;
