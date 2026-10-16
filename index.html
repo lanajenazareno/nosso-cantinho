@@ -32,13 +32,13 @@
         await OneSignal.Notifications.requestPermission();
         await OneSignal.User.PushSubscription.optIn();
 
-        status.textContent =
-          "Verificando a ativação das notificações... ❤️";
-      } catch (erro) {
-        console.error(erro);
-        status.textContent =
-          "Não foi possível ativar agora. Tente novamente.";
-      }
+       if (OneSignal.User.PushSubscription.optedIn) {
+  status.textContent =
+    "Notificações ativadas!";
+} else {
+  status.textContent =
+    "Ainda não foi possível confirmar a inscrição. Tente novamente.";
+}
     };
   });
 </script>
