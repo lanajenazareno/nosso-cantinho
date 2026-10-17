@@ -211,6 +211,607 @@ function voltarMenu() {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+(function () {
+  "use strict";
+
+  const SUPABASE_URL = "https://spfgfesqgxfygtgxegvf.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_9gjjw2NYkRvEwwr3zZgPyA_f8jsA8jU";
+  const COUPLE_ID = "6a9b8c1d-2e3f-4a5b-8c7d-9e0f1a2b3c4d";
+
+  const raiz = document.getElementById("nossaAgenda");
+  const cartao = document.getElementById("cartaoNossaAgenda");
+
+  if (!raiz || !cartao) {
+    console.error("Não encontrei os elementos HTML da agenda.");
+    return;
+  }
+
+  if (!window.supabase || !window.supabase.createClient) {
+    alert("Não foi possível carregar a conexão da agenda. Atualize a página e tente novamente.");
+    return;
+  }
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY,
+    {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    }
+  );
+
+  const $ = id => document.getElementById(id);
+
+  let compromissos = [];
+  let dataAtual = new Date();
+  let dataSelecionada = dataISO(new Date());
+  let idEditando = null;
+  let usuarioConectado = false;
+  let carregando = false;
+  let canalAgenda = null;
+  let avisoSemSessaoExibido = false;
+
+  function dataISO(data) {
+    const ano = data.getFullYear();
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+    const dia = String(data.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  function dataLocal(valor) {
+    if (!valor) return new Date();
+    const partes = valor.split("-").map(Number);
+    return new Date(partes[0], partes[1] - 1, partes[2]);
+  }
+
+  function escapar(valor) {
+    return String(valor ?? "").replace(/[&<>"']/g, caractere => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[caractere]);
+  }
+
+  function mostrarAviso(mensagem) {
+    alert(mensagem);
+  }
+
+  function mostrarStatus(mensagem) {
+    let status = $("agendaStatus");
+
+    if (!status) {
+      status = document.createElement("p");
+      status.id = "agendaStatus";
+      status.setAttribute("role", "status");
+      status.style.cssText =
+        "margin:12px 0;padding:10px;border-radius:10px;font-size:14px;";
+      raiz.prepend(status);
+    }
+
+    status.textContent = mensagem;
+    status.style.display = mensagem ? "block" : "none";
+  }
+
+  function converterDoBanco(item) {
+    return {
+      id: item.id,
+      titulo: item.title || "",
+      data: item.event_date || "",
+      hora: item.event_time
+        ? String(item.event_time).slice(0, 5)
+        : "",
+      local: item.location || "",
+      detalhes: item.details || "",
+      lembrete: Boolean(item.reminder_enabled),
+      concluido: Boolean(item.completed)
+    };
+  }
+
+  function converterParaBanco(item) {
+    return {
+      couple_id: COUPLE_ID,
+      title: item.titulo,
+      event_date: item.data,
+      event_time: item.hora || null,
+      location: item.local || null,
+      details: item.detalhes || null,
+      reminder_enabled: Boolean(item.lembrete),
+      reminder_minutes: item.lembrete ? 30 : null,
+      completed: Boolean(item.concluido)
+    };
+  }
+
+  async function verificarSessao() {
+    const { data, error } = await db.auth.getSession();
+
+    if (error) {
+      console.error("Erro ao verificar a sessão:", error);
+      usuarioConectado = false;
+      mostrarStatus("Não foi possível verificar sua conexão. Tente atualizar a página.");
+      return false;
+    }
+
+    usuarioConectado = Boolean(data.session);
+
+    if (!usuarioConectado) {
+      mostrarStatus(
+        "Este aparelho ainda precisa ser conectado à sua conta uma vez para acessar a agenda privada. Nenhum compromisso foi carregado."
+      );
+      avisoSemSessaoExibido = true;
+      return false;
+    }
+
+    mostrarStatus("");
+    return true;
+  }
+
+  async function carregarCompromissos(silencioso = false) {
+    if (!usuarioConectado || carregando) return;
+
+    carregando = true;
+
+    try {
+      const { data, error } = await db
+        .from("agenda_events")
+        .select("*")
+        .eq("couple_id", COUPLE_ID)
+        .order("event_date", { ascending: true })
+        .order("event_time", { ascending: true });
+
+      if (error) throw error;
+
+      compromissos = (data || []).map(converterDoBanco);
+      renderizar();
+
+      if (!silencioso) mostrarStatus("");
+    } catch (erro) {
+      console.error("Erro ao carregar a agenda:", erro);
+      mostrarStatus(
+        "Não consegui carregar os compromissos. Verifique a conexão e as permissões da agenda."
+      );
+    } finally {
+      carregando = false;
+    }
+  }
+
+  function iniciarSincronizacao() {
+    if (canalAgenda) return;
+
+    canalAgenda = db
+      .channel("agenda-do-casal")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "agenda_events",
+          filter: "couple_id=eq." + COUPLE_ID
+        },
+        () => carregarCompromissos(true)
+      )
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+          console.warn("A sincronização em tempo real está indisponível.");
+        }
+      });
+  }
+
+  function renderizarCalendario() {
+    const grade = $("agendaGrade");
+    const titulo = $("agendaMesAno");
+
+    if (!grade) return;
+
+    if (titulo) {
+      titulo.textContent = dataAtual.toLocaleDateString("pt-BR", {
+        month: "long",
+        year: "numeric"
+      });
+    }
+
+    const ano = dataAtual.getFullYear();
+    const mes = dataAtual.getMonth();
+    const primeiroDia = new Date(ano, mes, 1).getDay();
+    const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+    const diasMesAnterior = new Date(ano, mes, 0).getDate();
+
+    let html = "";
+
+    ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"].forEach(dia => {
+      html += `<div class="agenda-dia-semana">${dia}</div>`;
+    });
+
+    for (let i = 0; i < 42; i++) {
+      let dia;
+      let data;
+      let outroMes = false;
+
+      if (i < primeiroDia) {
+        dia = diasMesAnterior - primeiroDia + i + 1;
+        data = new Date(ano, mes - 1, dia);
+        outroMes = true;
+      } else if (i >= primeiroDia + diasNoMes) {
+        dia = i - primeiroDia - diasNoMes + 1;
+        data = new Date(ano, mes + 1, dia);
+        outroMes = true;
+      } else {
+        dia = i - primeiroDia + 1;
+        data = new Date(ano, mes, dia);
+      }
+
+      const chave = dataISO(data);
+      const temEvento = compromissos.some(c => c.data === chave);
+      const selecionado = chave === dataSelecionada;
+      const hoje = chave === dataISO(new Date());
+
+      html += `
+        <button type="button"
+          class="agenda-dia${outroMes ? " outro-mes" : ""}${selecionado ? " selecionado" : ""}${hoje ? " hoje" : ""}${temEvento ? " tem-compromisso" : ""}"
+          data-data="${chave}"
+          aria-label="${escapar(data.toLocaleDateString("pt-BR"))}${temEvento ? ", tem compromisso" : ""}"
+          aria-pressed="${selecionado}">
+          ${dia}${temEvento ? '<span class="agenda-ponto"></span>' : ""}
+        </button>`;
+    }
+
+    grade.innerHTML = html;
+
+    grade.querySelectorAll("[data-data]").forEach(botao => {
+      botao.addEventListener("click", () => {
+        dataSelecionada = botao.dataset.data;
+        dataAtual = dataLocal(dataSelecionada);
+        renderizar();
+        atualizarDataFormulario();
+      });
+    });
+  }
+
+  function renderizarLista() {
+    const lista = $("agendaLista");
+    const dataTexto = $("agendaDataSelecionada");
+
+    if (!lista) return;
+
+    if (dataTexto) {
+      dataTexto.textContent = dataLocal(dataSelecionada).toLocaleDateString(
+        "pt-BR",
+        { day: "numeric", month: "long", year: "numeric" }
+      );
+    }
+
+    const doDia = compromissos
+      .filter(c => c.data === dataSelecionada)
+      .sort((a, b) => (a.hora || "").localeCompare(b.hora || ""));
+
+    if (!doDia.length) {
+      lista.innerHTML = `
+        <p class="agenda-vazia">
+          Nenhum compromisso para este dia. Que tal planejar algo juntos? 🫀
+        </p>`;
+      return;
+    }
+
+    lista.innerHTML = doDia.map(c => `
+      <article class="agenda-compromisso${c.concluido ? " concluido" : ""}">
+        <div class="agenda-compromisso-conteudo">
+          <label>
+            <input type="checkbox"
+              data-concluir="${escapar(c.id)}"
+              ${c.concluido ? "checked" : ""}>
+            <strong>${escapar(c.titulo)}</strong>
+          </label>
+          ${c.hora ? `<p>🕒 ${escapar(c.hora)}</p>` : ""}
+          ${c.local ? `<p>📍 ${escapar(c.local)}</p>` : ""}
+          ${c.detalhes ? `<p>${escapar(c.detalhes)}</p>` : ""}
+          ${c.lembrete ? "<small>🔔 Lembrete ativado</small>" : ""}
+        </div>
+        <div class="agenda-acoes">
+          <button type="button" data-editar="${escapar(c.id)}">Editar</button>
+          <button type="button" data-excluir="${escapar(c.id)}">Excluir</button>
+        </div>
+      </article>
+    `).join("");
+
+    lista.querySelectorAll("[data-concluir]").forEach(caixa => {
+      caixa.addEventListener("change", () => {
+        alterarConclusao(caixa.dataset.concluir, caixa.checked);
+      });
+    });
+
+    lista.querySelectorAll("[data-editar]").forEach(botao => {
+      botao.addEventListener("click", () => editarCompromisso(botao.dataset.editar));
+    });
+
+    lista.querySelectorAll("[data-excluir]").forEach(botao => {
+      botao.addEventListener("click", () => excluirCompromisso(botao.dataset.excluir));
+    });
+  }
+
+  function renderizar() {
+    renderizarCalendario();
+    renderizarLista();
+  }
+
+  function atualizarDataFormulario() {
+    const campo = $("agendaData");
+    if (campo && !idEditando) campo.value = dataSelecionada;
+  }
+
+  function limparFormulario() {
+    idEditando = null;
+
+    if ($("agendaTitulo")) $("agendaTitulo").value = "";
+    if ($("agendaData")) $("agendaData").value = dataSelecionada;
+    if ($("agendaHora")) $("agendaHora").value = "";
+    if ($("agendaLocal")) $("agendaLocal").value = "";
+    if ($("agendaDetalhes")) $("agendaDetalhes").value = "";
+    if ($("agendaLembrete")) $("agendaLembrete").checked = false;
+
+    if ($("agendaFormularioTitulo")) {
+      $("agendaFormularioTitulo").textContent = "Novo compromisso";
+    }
+
+    if ($("agendaSalvar")) $("agendaSalvar").textContent = "Salvar compromisso";
+    if ($("agendaCancelarEdicao")) {
+      $("agendaCancelarEdicao").style.display = "none";
+    }
+  }
+
+  function abrirFormulario() {
+    if (!usuarioConectado) {
+      mostrarAviso("Conecte este aparelho à sua conta uma vez para usar a agenda privada.");
+      return;
+    }
+
+    limparFormulario();
+
+    const formulario = $("agendaFormulario");
+    if (formulario) formulario.style.display = "block";
+
+    if ($("agendaTitulo")) $("agendaTitulo").focus();
+  }
+
+  function editarCompromisso(id) {
+    const c = compromissos.find(item => String(item.id) === String(id));
+    if (!c) return;
+
+    idEditando = c.id;
+
+    if ($("agendaTitulo")) $("agendaTitulo").value = c.titulo;
+    if ($("agendaData")) $("agendaData").value = c.data;
+    if ($("agendaHora")) $("agendaHora").value = c.hora;
+    if ($("agendaLocal")) $("agendaLocal").value = c.local;
+    if ($("agendaDetalhes")) $("agendaDetalhes").value = c.detalhes;
+    if ($("agendaLembrete")) $("agendaLembrete").checked = c.lembrete;
+
+    if ($("agendaFormularioTitulo")) {
+      $("agendaFormularioTitulo").textContent = "Editar compromisso";
+    }
+
+    if ($("agendaSalvar")) $("agendaSalvar").textContent = "Salvar alterações";
+    if ($("agendaCancelarEdicao")) {
+      $("agendaCancelarEdicao").style.display = "inline-block";
+    }
+
+    if ($("agendaFormulario")) {
+      $("agendaFormulario").style.display = "block";
+      $("agendaFormulario").scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    }
+  }
+
+  async function salvarCompromisso() {
+    if (!usuarioConectado) {
+      mostrarAviso("Este aparelho precisa ser conectado uma vez para salvar compromissos.");
+      return;
+    }
+
+    const titulo = $("agendaTitulo")?.value.trim();
+    const data = $("agendaData")?.value;
+
+    if (!titulo || !data) {
+      mostrarAviso("Preencha o título e a data do compromisso.");
+      return;
+    }
+
+    const item = {
+      titulo,
+      data,
+      hora: $("agendaHora")?.value || "",
+      local: $("agendaLocal")?.value.trim() || "",
+      detalhes: $("agendaDetalhes")?.value.trim() || "",
+      lembrete: Boolean($("agendaLembrete")?.checked),
+      concluido: false
+    };
+
+    const botao = $("agendaSalvar");
+    if (botao) botao.disabled = true;
+
+    try {
+      let resultado;
+
+      if (idEditando) {
+        const anterior = compromissos.find(c => String(c.id) === String(idEditando));
+        item.concluido = anterior ? anterior.concluido : false;
+
+        resultado = await db
+          .from("agenda_events")
+          .update(converterParaBanco(item))
+          .eq("id", idEditando)
+          .eq("couple_id", COUPLE_ID)
+          .select()
+          .single();
+      } else {
+        resultado = await db
+          .from("agenda_events")
+          .insert(converterParaBanco(item))
+          .select()
+          .single();
+      }
+
+      if (resultado.error) throw resultado.error;
+
+      dataSelecionada = item.data;
+      dataAtual = dataLocal(item.data);
+
+      if ($("agendaFormulario")) $("agendaFormulario").style.display = "none";
+
+      limparFormulario();
+      await carregarCompromissos(true);
+      mostrarStatus("Compromisso salvo e sincronizado. 🫀");
+    } catch (erro) {
+      console.error("Erro ao salvar:", erro);
+      mostrarAviso(
+        "Não foi possível salvar o compromisso. Confira sua conexão, a sessão e as permissões RLS no Supabase."
+      );
+    } finally {
+      if (botao) botao.disabled = false;
+    }
+  }
+
+  async function alterarConclusao(id, concluido) {
+    try {
+      const { error } = await db
+        .from("agenda_events")
+        .update({ completed: concluido })
+        .eq("id", id)
+        .eq("couple_id", COUPLE_ID);
+
+      if (error) throw error;
+
+      await carregarCompromissos(true);
+    } catch (erro) {
+      console.error("Erro ao atualizar compromisso:", erro);
+      mostrarAviso("Não foi possível atualizar esse compromisso.");
+      await carregarCompromissos(true);
+    }
+  }
+
+  async function excluirCompromisso(id) {
+    const c = compromissos.find(item => String(item.id) === String(id));
+    if (!c) return;
+
+    if (!confirm(`Deseja excluir o compromisso "${c.titulo}"?`)) return;
+
+    try {
+      const { error } = await db
+        .from("agenda_events")
+        .delete()
+        .eq("id", id)
+        .eq("couple_id", COUPLE_ID);
+
+      if (error) throw error;
+
+      await carregarCompromissos(true);
+      mostrarStatus("Compromisso excluído.");
+    } catch (erro) {
+      console.error("Erro ao excluir:", erro);
+      mostrarAviso("Não foi possível excluir esse compromisso.");
+    }
+  }
+
+  window.abrirNossaAgenda = async function () {
+    cartao.style.display = "none";
+    raiz.style.display = "block";
+
+    const conectada = await verificarSessao();
+
+    if (!conectada) {
+      compromissos = [];
+      renderizar();
+      return;
+    }
+
+    avisoSemSessaoExibido = false;
+    iniciarSincronizacao();
+    await carregarCompromissos();
+  };
+
+  window.fecharNossaAgenda = function () {
+    raiz.style.display = "none";
+    cartao.style.display = "";
+  };
+
+  window.novaAgendaCompromisso = abrirFormulario;
+  window.salvarAgendaCompromisso = salvarCompromisso;
+
+  if ($("agendaSalvar")) {
+    $("agendaSalvar").addEventListener("click", salvarCompromisso);
+  }
+
+  if ($("agendaCancelarEdicao")) {
+    $("agendaCancelarEdicao").addEventListener("click", () => {
+      limparFormulario();
+      if ($("agendaFormulario")) $("agendaFormulario").style.display = "none";
+    });
+  }
+
+  if ($("agendaMesAnterior")) {
+    $("agendaMesAnterior").addEventListener("click", () => {
+      dataAtual = new Date(
+        dataAtual.getFullYear(),
+        dataAtual.getMonth() - 1,
+        1
+      );
+      renderizarCalendario();
+    });
+  }
+
+  if ($("agendaMesSeguinte")) {
+    $("agendaMesSeguinte").addEventListener("click", () => {
+      dataAtual = new Date(
+        dataAtual.getFullYear(),
+        dataAtual.getMonth() + 1,
+        1
+      );
+      renderizarCalendario();
+    });
+  }
+
+  if ($("agendaData")) {
+    $("agendaData").addEventListener("change", evento => {
+      if (evento.target.value) {
+        dataSelecionada = evento.target.value;
+        dataAtual = dataLocal(dataSelecionada);
+        renderizar();
+      }
+    });
+  }
+
+  db.auth.onAuthStateChange((evento, sessao) => {
+    usuarioConectado = Boolean(sessao);
+
+    if (evento === "SIGNED_OUT") {
+      compromissos = [];
+      renderizar();
+
+      if (canalAgenda) {
+        db.removeChannel(canalAgenda);
+        canalAgenda = null;
+      }
+
+      mostrarStatus("A sessão foi encerrada. Conecte este aparelho novamente para acessar a agenda privada.");
+    }
+
+    if (evento === "SIGNED_IN" || evento === "TOKEN_REFRESHED") {
+      mostrarStatus("");
+      iniciarSincronizacao();
+      carregarCompromissos(true);
+    }
+  });
+
+  limparFormulario();
+  renderizar();
+
+})();
+
 // =========================================================
 // QUEM É MAIS?
 // =========================================================
