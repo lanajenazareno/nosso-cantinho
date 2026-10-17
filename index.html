@@ -259,7 +259,150 @@ MENU PRINCIPAL DO NOSSO CANTINHO
     </button>
 
 </section>
+    
+<!-- =========================
+LOGIN DO NOSSO CANTINHO
+========================= -->
 
+<section class="card" id="loginNossoCantinho">
+  <h3>🫀 Nosso Cantinho</h3>
+  <p>Entre para acessar a agenda de vocês dois.</p>
+
+  <form id="formLoginCasal">
+    <label for="emailLoginCasal">Seu e-mail</label>
+    <input
+      id="emailLoginCasal"
+      type="email"
+      autocomplete="username"
+      placeholder="seu@email.com"
+      required
+    >
+
+    <label for="senhaLoginCasal">Sua senha</label>
+    <input
+      id="senhaLoginCasal"
+      type="password"
+      autocomplete="current-password"
+      placeholder="Digite sua senha"
+      required
+    >
+
+    <button type="submit" id="botaoLoginCasal">
+      Entrar ❤️
+    </button>
+
+    <button type="button" id="botaoSairCasal" style="display:none;">
+      Sair da conta
+    </button>
+
+    <p id="mensagemLoginCasal" role="status"></p>
+  </form>
+</section>
+
+<script>
+(function () {
+  const URL_SUPABASE = "https://spfgfesqgxfygtgxegvf.supabase.co";
+  const CHAVE_PUBLICA = "sb_publishable_9gjjw2NYkRvEwwr3zZgPyA_f8jsA8jU";
+
+  const login = document.getElementById("loginNossoCantinho");
+  const cartaoAgenda = document.getElementById("cartaoNossaAgenda");
+  const agenda = document.getElementById("nossaAgenda");
+  const formulario = document.getElementById("formLoginCasal");
+  const mensagem = document.getElementById("mensagemLoginCasal");
+  const botaoLogin = document.getElementById("botaoLoginCasal");
+  const botaoSair = document.getElementById("botaoSairCasal");
+
+  if (!login || !formulario || !window.supabase) {
+    if (mensagem) {
+      mensagem.textContent =
+        "Não foi possível carregar o login. Atualize a página e tente novamente.";
+    }
+    return;
+  }
+
+  const cliente = window.supabase.createClient(
+    URL_SUPABASE,
+    CHAVE_PUBLICA
+  );
+
+  function mostrarAgenda(autorizado) {
+    login.style.display = "block";
+    cartaoAgenda.style.display = autorizado ? "block" : "none";
+
+    if (!autorizado) {
+      agenda.style.display = "none";
+    }
+
+    botaoLogin.style.display = autorizado ? "none" : "inline-block";
+    botaoSair.style.display = autorizado ? "inline-block" : "none";
+  }
+
+  async function verificarAcesso() {
+    const { data: { user }, error } = await cliente.auth.getUser();
+
+    if (error || !user) {
+      mostrarAgenda(false);
+      return;
+    }
+
+    const { data: vinculo, error: erroVinculo } = await cliente
+      .from("couple_members")
+      .select("couple_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (erroVinculo || !vinculo) {
+      await cliente.auth.signOut();
+      mostrarAgenda(false);
+      mensagem.textContent =
+        "Esta conta ainda não está autorizada para acessar a agenda.";
+      return;
+    }
+
+    mostrarAgenda(true);
+    mensagem.textContent = "Você entrou com sucesso! ❤️";
+  }
+
+  formulario.addEventListener("submit", async function (evento) {
+    evento.preventDefault();
+    mensagem.textContent = "Verificando seu acesso...";
+    botaoLogin.disabled = true;
+
+    const email = document.getElementById("emailLoginCasal").value.trim();
+    const senha = document.getElementById("senhaLoginCasal").value;
+
+    const { error } = await cliente.auth.signInWithPassword({
+      email,
+      password: senha
+    });
+
+    botaoLogin.disabled = false;
+
+    if (error) {
+      mensagem.textContent =
+        "Não foi possível entrar. Confira o e-mail e a senha.";
+      mostrarAgenda(false);
+      return;
+    }
+
+    await verificarAcesso();
+  });
+
+  botaoSair.addEventListener("click", async function () {
+    await cliente.auth.signOut();
+    mensagem.textContent = "Você saiu da sua conta.";
+    mostrarAgenda(false);
+  });
+
+  cliente.auth.onAuthStateChange(function () {
+    setTimeout(verificarAcesso, 0);
+  });
+
+  mostrarAgenda(false);
+  verificarAcesso();
+})();
+</script>
+    
     <!-- =========================
 AGENDA LN
 ========================= -->
