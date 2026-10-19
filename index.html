@@ -746,6 +746,29 @@ window.abrirNossaAgenda = function () {
 
   renderizar();
 })();
+
+/* Registro do Service Worker para o Nosso Cantinho */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", async () => {
+    try {
+      const registro = await navigator.serviceWorker.register(
+        "/nosso-cantinho/sw.js",
+        { scope: "/nosso-cantinho/" }
+      );
+
+      console.log(
+        "Service Worker registrado:",
+        registro.scope
+      );
+    } catch (erro) {
+      console.error(
+        "Erro ao registrar notificações:",
+        erro
+      );
+    }
+  });
+}
+    
 </script>
 
     </div>
