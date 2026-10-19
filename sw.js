@@ -1,36 +1,46 @@
-const CACHE_NAME = "nosso-cantinho-v1";
-const APP_FILES = [
-  "./",
-  "./index.html",
-  "./manifest.json"
-];
+self.addEventListener("push", event => {
+  let dados = {
+    title: "Nosso Cantinho 🫀",
+    body: "Vocês têm um compromisso marcado!",
+    url: "/nosso-cantinho/"
+  };
 
-self.addEventListener("install", (event) => {
+  if (event.data) {
+    try {
+      dados = { ...dados, ...event.data.json() };
+    } catch {
+      dados.body = event.data.text();
+    }
+  }
+
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) =>
-      cache.addAll(APP_FILES)
-    )
+    self.registration.showNotification(dados.title, {
+      body: dados.body,
+      icon: "/nosso-cantinho/icon-192.png",
+      badge: "/nosso-cantinho/icon-192.png",
+      data: { url: dados.url || "/nosso-cantinho/" }
+    })
   );
-
-  self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener("notificationclick", event => {
+  event.notification.close();
+
+  const destino = new URL(
+    event.notification.data?.url || "/nosso-cantinho/",
+    self.location.origin
+  ).href;
+
   event.waitUntil(
-    self.clients.claim()
-  );
-});
-
-self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-
-  const url = new URL(event.request.url);
-
-  if (url.origin !== self.location.origin) return;
-
-  event.respondWith(
-    fetch(event.request).catch(() =>
-      caches.match(event.request)
-    )
+    clients.matchAll({ type: "window", includeUncontrolled: true })
+      .then(janelas => {
+        for (const janela of janelas) {
+          if (janela.url.startsWith(self.location.origin) && "focus" in janela) {
+            janela.navigate(destino);
+            return janela.focus();
+          }
+        }
+        return clients.openWindow(destino);
+      })
   );
 });
