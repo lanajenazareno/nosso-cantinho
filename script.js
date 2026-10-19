@@ -698,6 +698,86 @@ document.getElementById("agendaData")
 renderizarCalendario();
 renderizarCompromissos();
 
+<script>
+const VAPID_PUBLIC_KEY = "a2dd4bb9a0094fa0833461a2505b4403aaf6eb9fe135d12d67cce7b73aa186a5";
+
+function converterChaveBase64(valor) {
+  const base64 = valor
+    .replace(/-/g, "+")
+    .replace(/_/g, "/");
+
+  const decodificado = atob(
+    base64 + "=".repeat((4 - base64.length % 4) % 4)
+  );
+
+  return Uint8Array.from(
+    decodificado,
+    caractere => caractere.charCodeAt(0)
+  );
+}
+
+document.getElementById("ativarNotificacoes")
+  .addEventListener("click", async () => {
+    const status = document.getElementById("statusNotificacoes");
+    const botao = document.getElementById("ativarNotificacoes");
+
+    try {
+      if (!("serviceWorker" in navigator) ||
+          !("PushManager" in window)) {
+        throw new Error("Este navegador não oferece suporte a notificações push.");
+      }
+
+      if (Notification.permission === "denied") {
+        throw new Error("As notificações estão bloqueadas nas configurações do navegador.");
+      }
+
+      status.textContent = "Solicitando permissão...";
+
+      const permissao = await Notification.requestPermission();
+
+      if (permissao !== "granted") {
+        throw new Error("Você não autorizou as notificações.");
+      }
+
+      const registro = await navigator.serviceWorker.ready;
+
+      let inscricao = await registro.pushManager.getSubscription();
+
+      if (!inscricao) {
+        inscricao = await registro.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey:
+            converterChaveBase64(VAPID_PUBLIC_KEY)
+        });
+      }
+
+      const dados = inscricao.toJSON();
+
+      const { error } = await supabaseClient
+        .from("push_subscriptions")
+        .insert({
+          endpoint: inscricao.endpoint,
+          p256dh: dados.keys.p256dh,
+          auth: dados.keys.auth,
+          enabled: true
+        });
+
+      if (error && !String(error.code).includes("23505")) {
+        throw error;
+      }
+
+      status.textContent =
+        "Celular cadastrado para notificações! 🫀";
+      botao.textContent = "🔔 Celular cadastrado";
+
+    } catch (erro) {
+      console.error(erro);
+      status.textContent =
+        "Não foi possível cadastrar: " + erro.message;
+    }
+  });
+</script>
+
 // =========================================================
 // QUEM É MAIS?
 // =========================================================
