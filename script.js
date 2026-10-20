@@ -750,30 +750,37 @@ document.addEventListener("DOMContentLoaded", () => {
   carregarAlbum();
 })();
 
-// CORREÇÃO DO BOTÃO DO ÁLBUM
+// CORREÇÃO DEFINITIVA — BOTÃO DO ÁLBUM
+(function () {
+    function ativarBotaoAlbum() {
+        const botao = document.getElementById("albumAbrirFormulario");
+        const formulario = document.getElementById("albumFormulario");
 
-document.addEventListener("DOMContentLoaded", function () {
-    const botao = document.getElementById("albumAbrirFormulario");
-    const formulario = document.getElementById("albumFormulario");
+        if (!botao || !formulario) {
+            console.error("Não encontrei o botão ou formulário do álbum.");
+            return;
+        }
 
-    if (!botao || !formulario) {
-        console.error("Botão ou formulário do álbum não encontrado.");
-        return;
-    }
+        botao.disabled = false;
+        botao.onclick = function () {
+            formulario.hidden = false;
+            formulario.style.display = "block";
 
-    botao.disabled = false;
-
-    botao.addEventListener("click", function () {
-        formulario.hidden = !formulario.hidden;
-
-        if (!formulario.hidden) {
             formulario.scrollIntoView({
                 behavior: "smooth",
                 block: "center"
             });
-        }
-    });
-});
+        };
+
+        console.log("Botão do álbum ativado!");
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", ativarBotaoAlbum);
+    } else {
+        ativarBotaoAlbum();
+    }
+})();
       
 // =========================================================
 // QUEM É MAIS?
