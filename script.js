@@ -343,16 +343,23 @@ function converterChaveBase64(valor) {
   );
 }
 
-document.getElementById("ativarNotificacoes")
-  .addEventListener("click", async () => {
-    const status = document.getElementById("statusNotificacoes");
-    const botao = document.getElementById("ativarNotificacoes");
+const botaoNotificacoes =
+  document.getElementById("ativarNotificacoes");
+
+if (botaoNotificacoes) {
+  botaoNotificacoes.addEventListener("click", async () => {
+    const status =
+      document.getElementById("statusNotificacoes");
 
     try {
+      if (typeof clienteSupabase === "undefined") {
+        throw new Error("A conexão com o Supabase não foi encontrada.");
+      }
+
       if (!("serviceWorker" in navigator) ||
           !("PushManager" in window) ||
           !("Notification" in window)) {
-        throw new Error("Navegador sem suporte a notificações.");
+        throw new Error("Este navegador não suporta notificações push.");
       }
 
       status.textContent = "Ativando notificações...";
@@ -360,7 +367,7 @@ document.getElementById("ativarNotificacoes")
       const permissao = await Notification.requestPermission();
 
       if (permissao !== "granted") {
-        throw new Error("Permissão de notificações não concedida.");
+        throw new Error("Permissão para notificações não concedida.");
       }
 
       const registro = await navigator.serviceWorker.ready;
@@ -383,7 +390,8 @@ document.getElementById("ativarNotificacoes")
       if (!inscricao) {
         inscricao = await registro.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey: converterChaveBase64(VAPID_PUBLIC_KEY)
+          applicationServerKey:
+            converterChaveBase64(VAPID_PUBLIC_KEY)
         });
       }
 
@@ -401,7 +409,8 @@ document.getElementById("ativarNotificacoes")
       if (error && error.code === "23505") {
         status.textContent =
           "Este celular já está cadastrado para notificações! 🫀";
-        botao.textContent = "🔔 Notificações ativadas";
+        botaoNotificacoes.textContent =
+          "🔔 Notificações ativadas";
         return;
       }
 
@@ -409,13 +418,15 @@ document.getElementById("ativarNotificacoes")
 
       status.textContent =
         "Celular cadastrado para notificações! 🫀";
-      botao.textContent = "🔔 Notificações ativadas";
+      botaoNotificacoes.textContent =
+        "🔔 Notificações ativadas";
 
     } catch (erro) {
-      console.error("Erro ao ativar notificações:", erro);
+      console.error("Erro nas notificações:", erro);
       status.textContent = "Erro: " + erro.message;
     }
   });
+}
 </script>
       
 // =========================================================
