@@ -727,10 +727,9 @@ document.getElementById("ativarNotificacoes")
         throw new Error("Navegador sem suporte a notificações.");
       }
 
-      if (!VAPID_PUBLIC_KEY ||
-          VAPID_PUBLIC_KEY === "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg") {
-        throw new Error("Falta inserir a chave pública VAPID.");
-      }
+      if (!VAPID_PUBLIC_KEY.trim()) {
+  throw new Error("BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg");
+}
 
       status.textContent = "Ativando notificações...";
 
