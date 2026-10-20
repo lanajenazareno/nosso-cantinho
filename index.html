@@ -894,14 +894,42 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
 <!-- =========================
      NOSSO ÁLBUM DE MEMÓRIAS
 ========================= -->
+
 <section class="card album-casal" id="albumCasal">
   <div class="album-cabecalho">
     <span class="album-selo">L & N</span>
-    <h2>Nosso álbum 🫀</h2>
+    <h2>Nosso álbum</h2>
     <p>Pequenos momentos, lembranças para sempre.</p>
   </div>
 
-  <button type="button" id="albumAbrirFormulario">
+  <!-- LOGIN INDIVIDUAL DO SUPABASE -->
+  <div id="albumAcesso">
+    <h3>Entrar no nosso álbum</h3>
+
+    <label for="albumEmail">Seu e-mail</label>
+    <input
+      id="albumEmail"
+      type="email"
+      autocomplete="username"
+      placeholder="E-mail da sua conta"
+      required
+    >
+
+    <label for="albumSenha">Senha da sua conta</label>
+    <input
+      id="albumSenha"
+      type="password"
+      autocomplete="current-password"
+      placeholder="Senha do Supabase"
+      required
+    >
+
+    <button type="button" id="albumEntrar">Entrar</button>
+    <button type="button" id="albumSair" hidden>Sair da conta</button>
+    <p id="albumLoginStatus" role="status"></p>
+  </div>
+
+  <button type="button" id="albumAbrirFormulario" disabled>
     + Guardar uma lembrança
   </button>
 
@@ -910,7 +938,7 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     <input
       id="albumArquivo"
       type="file"
-      accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+      accept="image/*,video/*"
       multiple
       required
     >
@@ -927,16 +955,17 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     <input id="albumData" type="date" required>
 
     <button type="submit" id="albumEnviar">
-      Guardar no nosso álbum 
+      Guardar no nosso álbum
     </button>
-    <button type="button" id="albumCancelar">
-      Cancelar
-    </button>
+    <button type="button" id="albumCancelar">Cancelar</button>
 
     <p id="albumStatus" role="status"></p>
   </form>
 
-  <p id="albumCarregando" role="status">Preparando nossas lembranças...</p>
+  <p id="albumCarregando" role="status">
+    Entre na sua conta para carregar as lembranças.
+  </p>
+
   <div id="albumGaleria" class="album-galeria"></div>
 </section>
     
