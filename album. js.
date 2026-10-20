@@ -1,1 +1,22 @@
+// ================================
+// ÁLBUM DE FOTOS — NOSSO CANTINHO
+// ================================
 
+const clienteAlbum = window.supabaseClient;
+
+async function verificarUsuario() {
+    if (!clienteAlbum) {
+        console.error("Conexão com Supabase não encontrada.");
+        return false;
+    }
+
+    const { data, error } =
+        await clienteAlbum.auth.getSession();
+
+    if (error) {
+        console.error("Erro ao verificar login:", error.message);
+        return false;
+    }
+
+    return Boolean(data.session);
+}
