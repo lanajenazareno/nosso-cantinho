@@ -226,7 +226,7 @@ const clienteSupabase = window.supabase.createClient(
     }
   }
 );
-
+window.supabaseClient = clienteSupabase;
 let compromissos = [];
 let usuarioConectado = false;
 let carregando = false;
