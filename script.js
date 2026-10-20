@@ -699,7 +699,7 @@ renderizarCalendario();
 renderizarCompromissos();
 
 <script>
-const VAPID_PUBLIC_KEY = "a2dd4bb9a0094fa0833461a2505b4403aaf6eb9fe135d12d67cce7b73aa186a5";
+const VAPID_PUBLIC_KEY = "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg";
 
 function converterChaveBase64(valor) {
   const base64 = valor
@@ -728,7 +728,7 @@ document.getElementById("ativarNotificacoes")
       }
 
       if (!VAPID_PUBLIC_KEY ||
-          VAPID_PUBLIC_KEY === "a2dd4bb9a0094fa0833461a2505b4403aaf6eb9fe135d12d67cce7b73aa186a5") {
+          VAPID_PUBLIC_KEY === "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg") {
         throw new Error("Falta inserir a chave pública VAPID.");
       }
 
