@@ -430,6 +430,308 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
+/*
+ * album.js — Nosso Cantinho
+ * Requer supabaseClient já inicializado.
+ * Bucket privado: album-casal
+ */
+
+(() => {
+  const db = window.supabaseClient;
+  const bucket = "album-casal";
+
+  const $ = id => document.getElementById(id);
+  const formulario = $("albumFormulario");
+  const arquivoInput = $("albumArquivo");
+  const galeria = $("albumGaleria");
+  const status = $("albumStatus");
+  const carregando = $("albumCarregando");
+
+  if (!db || !formulario || !arquivoInput || !galeria) {
+    console.error("Álbum: elementos ou cliente Supabase não encontrados.");
+    return;
+  }
+
+  const idsPermitidos = new Set([
+    "1bb62986-8869-4c11-897e-6f379c85c662",
+    "825420cb-133c-48ab-9ce2-f118d5812906"
+  ]);
+
+  let usuario = null;
+
+  function informar(mensagem) {
+    status.textContent = mensagem;
+  }
+
+  function dataLocalISO() {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  function escaparTexto(valor) {
+    return String(valor ?? "");
+  }
+
+  function nomeSeguro(nome) {
+    return nome.normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9._-]/g, "_")
+      .slice(-100) || "arquivo";
+  }
+
+  function tipoArquivo(arquivo) {
+    if (arquivo.type.startsWith("image/")) return "foto";
+    if (arquivo.type.startsWith("video/")) return "video";
+    return null;
+  }
+
+  function dataLegivel(valor) {
+    if (!valor) return "";
+    const partes = valor.split("-");
+    if (partes.length !== 3) return valor;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+  async function verificarUsuario() {
+    const { data, error } = await db.auth.getUser();
+
+    if (error || !data.user || !idsPermitidos.has(data.user.id)) {
+      usuario = null;
+      informar("Entre com sua conta autorizada para acessar o álbum.");
+      $("albumAbrirFormulario").disabled = true;
+      return false;
+    }
+
+    usuario = data.user;
+    $("albumAbrirFormulario").disabled = false;
+    return true;
+  }
+
+  $("albumAbrirFormulario").addEventListener("click", () => {
+    formulario.hidden = !formulario.hidden;
+
+    if (!formulario.hidden) {
+      $("albumData").value = dataLocalISO();
+      formulario.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+
+  $("albumCancelar").addEventListener("click", () => {
+    formulario.reset();
+    formulario.hidden = true;
+    informar("");
+  });
+
+  async function carregarAlbum() {
+    carregando.hidden = false;
+    galeria.replaceChildren();
+
+    if (!(await verificarUsuario())) {
+      carregando.textContent = "Faça login para visualizar as lembranças.";
+      return;
+    }
+
+    const { data: memorias, error } = await db
+      .from("album_memorias")
+      .select("id,tipo,caminho_arquivo,legenda,data_lembranca,criado_por,criado_em")
+      .order("data_lembranca", { ascending: false });
+
+    if (error) {
+      carregando.textContent = "Não foi possível carregar o álbum.";
+      console.error("Erro ao carregar álbum:", error);
+      return;
+    }
+
+    carregando.hidden = true;
+
+    if (!memorias.length) {
+      const vazio = document.createElement("p");
+      vazio.textContent = "Nosso álbum ainda está esperando a primeira lembrança.";
+      galeria.appendChild(vazio);
+      return;
+    }
+
+    for (const item of memorias) {
+      const { data: arquivo, error: erroUrl } = await db.storage
+        .from(bucket)
+        .createSignedUrl(item.caminho_arquivo, 300);
+
+      if (erroUrl || !arquivo?.signedUrl) {
+        console.warn("Não foi possível abrir um arquivo:", erroUrl);
+        continue;
+      }
+
+      const card = document.createElement("article");
+      card.className = "album-polaroid";
+      card.style.setProperty(
+        "--album-rotacao",
+        `${(Math.random() * 3 - 1.5).toFixed(2)}deg`
+      );
+
+      const midia = document.createElement(
+        item.tipo === "video" ? "video" : "img"
+      );
+      midia.className = "album-midia";
+      midia.src = arquivo.signedUrl;
+
+      if (item.tipo === "video") {
+        midia.controls = true;
+        midia.preload = "metadata";
+        midia.playsInline = true;
+      } else {
+        midia.alt = escaparTexto(item.legenda) || "Lembrança do casal";
+        midia.loading = "lazy";
+      }
+
+      const legenda = document.createElement("p");
+      legenda.className = "album-legenda";
+      legenda.textContent = escaparTexto(item.legenda) || "Nossa lembrança ❤️";
+
+      const data = document.createElement("time");
+      data.className = "album-data";
+      data.dateTime = item.data_lembranca;
+      data.textContent = dataLegivel(item.data_lembranca);
+
+      const acoes = document.createElement("div");
+      acoes.className = "album-acoes";
+
+      const baixar = document.createElement("button");
+      baixar.type = "button";
+      baixar.className = "album-baixar";
+      baixar.textContent = "↓ Baixar";
+      baixar.addEventListener("click", () => {
+        const link = document.createElement("a");
+        link.href = arquivo.signedUrl;
+        link.download = nomeSeguro(item.caminho_arquivo.split("/").pop());
+        link.target = "_blank";
+        link.rel = "noopener";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      });
+
+      const excluir = document.createElement("button");
+      excluir.type = "button";
+      excluir.className = "album-excluir";
+      excluir.textContent = "Excluir";
+      excluir.addEventListener("click", async () => {
+        if (!confirm("Desejam apagar esta lembrança dos dois?")) return;
+
+        excluir.disabled = true;
+
+        const { error: erroArquivo } = await db.storage
+          .from(bucket)
+          .remove([item.caminho_arquivo]);
+
+        if (erroArquivo) {
+          informar("Não foi possível excluir o arquivo.");
+          excluir.disabled = false;
+          return;
+        }
+
+        const { error: erroRegistro } = await db
+          .from("album_memorias")
+          .delete()
+          .eq("id", item.id);
+
+        if (erroRegistro) {
+          informar("Arquivo removido, mas não foi possível remover o registro.");
+          console.error(erroRegistro);
+          await carregarAlbum();
+          return;
+        }
+
+        await carregarAlbum();
+      });
+
+      acoes.append(baixar, excluir);
+      card.append(midia, legenda, data, acoes);
+      galeria.appendChild(card);
+    }
+  }
+
+  formulario.addEventListener("submit", async evento => {
+    evento.preventDefault();
+    informar("");
+
+    if (!(await verificarUsuario())) return;
+
+    const arquivos = Array.from(arquivoInput.files || []);
+    const legenda = $("albumLegenda").value.trim();
+    const dataLembranca = $("albumData").value;
+
+    if (!arquivos.length || !dataLembranca) {
+      informar("Escolha ao menos um arquivo e informe a data.");
+      return;
+    }
+
+    if (arquivos.some(a => !tipoArquivo(a))) {
+      informar("Use apenas fotos JPG, PNG, WEBP, GIF ou vídeos MP4, MOV e WEBM.");
+      return;
+    }
+
+    if (arquivos.some(a => a.size > 50 * 1024 * 1024)) {
+      informar("Cada arquivo deve ter no máximo 50 MB.");
+      return;
+    }
+
+    const enviar = $("albumEnviar");
+    enviar.disabled = true;
+
+    try {
+      for (const arquivo of arquivos) {
+        informar(`Enviando ${arquivo.name}…`);
+
+        const caminho = `${usuario.id}/${crypto.randomUUID()}-${nomeSeguro(arquivo.name)}`;
+
+        const { error: erroUpload } = await db.storage
+          .from(bucket)
+          .upload(caminho, arquivo, {
+            upsert: false,
+            contentType: arquivo.type
+          });
+
+        if (erroUpload) throw erroUpload;
+
+        const { error: erroRegistro } = await db
+          .from("album_memorias")
+          .insert({
+            tipo: tipoArquivo(arquivo),
+            caminho_arquivo: caminho,
+            legenda,
+            data_lembranca: dataLembranca,
+            criado_por: usuario.id
+          });
+
+        if (erroRegistro) {
+          await db.storage.from(bucket).remove([caminho]);
+          throw erroRegistro;
+        }
+      }
+
+      formulario.reset();
+      formulario.hidden = true;
+      informar("Lembrança guardada no nosso álbum!");
+      await carregarAlbum();
+    } catch (erro) {
+      console.error("Erro no envio da lembrança:", erro);
+      informar("Não foi possível enviar. Confira sua conexão e as permissões do Supabase.");
+    } finally {
+      enviar.disabled = false;
+    }
+  });
+
+  db.auth.onAuthStateChange(() => {
+    carregarAlbum();
+  });
+
+  $("albumData").value = dataLocalISO();
+  carregarAlbum();
+})();      
       
 // =========================================================
 // QUEM É MAIS?
