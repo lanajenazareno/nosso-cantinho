@@ -1174,3 +1174,240 @@ video.album-midia {
     animation: none;
   }
 }
+
+/* =========================================
+   NOSSO CANTINHO — RESTAURAÇÃO DAS CORES
+   Paleta original de Lanaj & Nazareno
+========================================= */
+
+:root {
+    --cor-fundo: #f8f0e6;
+    --cor-cartao: #ffffff;
+    --cor-texto: #4b3328;
+    --cor-titulo: #5a3928;
+    --cor-titulo-secundario: #6b4632;
+    --cor-botao: #fffaf7;
+    --cor-borda: #e6d5c7;
+    --cor-selecao: #8b5e3c;
+}
+
+/* AGENDA DO CASAL */
+
+#cartaoNossaAgenda,
+#nossaAgenda {
+    background: var(--cor-cartao);
+    color: var(--cor-texto);
+    border: 1px solid var(--cor-borda);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    font-family: 'Poppins', sans-serif;
+}
+
+#cartaoNossaAgenda {
+    background: var(--cor-cartao);
+}
+
+#cartaoNossaAgenda h3,
+#nossaAgenda h2,
+#nossaAgenda h3,
+#nossaAgenda h4,
+#nossaAgenda #agendaDataSelecionada,
+#nossaAgenda #agendaFormularioTitulo {
+    color: var(--cor-titulo);
+}
+
+#cartaoNossaAgenda p,
+#nossaAgenda p {
+    color: var(--cor-texto);
+}
+
+#cartaoNossaAgenda button,
+#nossaAgenda > button,
+#nossaAgenda #agendaSalvar {
+    background: var(--cor-botao);
+    color: var(--cor-titulo);
+    border: 2px solid var(--cor-borda);
+}
+
+#cartaoNossaAgenda button:hover,
+#nossaAgenda > button:hover,
+#nossaAgenda #agendaSalvar:hover {
+    background: var(--cor-selecao);
+    color: #ffffff;
+    border-color: var(--cor-selecao);
+}
+
+#nossaAgenda .agenda-calendario,
+#nossaAgenda .agenda-dia-selecionado {
+    background: #ffffff;
+    border-color: var(--cor-borda);
+}
+
+#nossaAgenda .agenda-navegacao h3,
+#nossaAgenda .agenda-compromisso h4 {
+    color: var(--cor-titulo);
+}
+
+#nossaAgenda .agenda-navegacao button,
+#nossaAgenda .agenda-acoes button,
+#nossaAgenda #agendaCancelarEdicao {
+    background: var(--cor-botao);
+    color: var(--cor-titulo);
+    border-color: var(--cor-borda);
+}
+
+#nossaAgenda .agenda-dias-semana span {
+    color: var(--cor-titulo-secundario);
+}
+
+#nossaAgenda .agenda-data {
+    background: var(--cor-botao);
+    color: var(--cor-texto);
+}
+
+#nossaAgenda .agenda-data:hover {
+    background: #f1e5d9;
+}
+
+#nossaAgenda .agenda-data.hoje {
+    border-color: var(--cor-selecao);
+}
+
+#nossaAgenda .agenda-data.selecionado,
+#nossaAgenda .agenda-acoes button:hover {
+    background: var(--cor-selecao);
+    border-color: var(--cor-selecao);
+    color: #ffffff;
+}
+
+#nossaAgenda .agenda-data.tem-compromisso::after {
+    background: var(--cor-selecao);
+}
+
+#nossaAgenda .agenda-data.selecionado.tem-compromisso::after {
+    background: #ffffff;
+}
+
+#nossaAgenda .agenda-compromisso {
+    background: var(--cor-botao);
+    border: 1px solid var(--cor-borda);
+    border-left: 4px solid var(--cor-selecao);
+}
+
+#nossaAgenda .agenda-compromisso p,
+#nossaAgenda > p {
+    color: var(--cor-titulo-secundario);
+}
+
+#nossaAgenda #agendaFormulario label {
+    color: var(--cor-titulo);
+}
+
+#nossaAgenda #agendaFormulario input:not([type="checkbox"]),
+#nossaAgenda #agendaFormulario textarea {
+    background: #ffffff;
+    color: var(--cor-texto);
+    border-color: var(--cor-borda);
+}
+
+#nossaAgenda #agendaFormulario input:focus,
+#nossaAgenda #agendaFormulario textarea:focus {
+    border-color: var(--cor-selecao);
+    box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.12);
+}
+
+#nossaAgenda #agendaLembrete {
+    accent-color: var(--cor-selecao);
+}
+
+#nossaAgenda .agenda-aviso {
+    background: var(--cor-fundo);
+    color: var(--cor-titulo-secundario);
+}
+
+#nossaAgenda hr {
+    border-top-color: var(--cor-borda);
+}
+
+/* ÁLBUM DE FOTOS */
+
+.album-casal {
+    --album-vinho: #8b5e3c;
+    --album-papel: #ffffff;
+    --album-tinta: #4b3328;
+
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
+    border-color: var(--cor-borda);
+}
+
+.album-selo {
+    color: var(--cor-titulo);
+    border-color: var(--cor-borda);
+}
+
+.album-casal h2 {
+    color: var(--cor-titulo);
+}
+
+#albumFormulario {
+    background: #fffaf7;
+    border: 1px solid var(--cor-borda);
+}
+
+#albumFormulario label {
+    color: var(--cor-titulo);
+}
+
+#albumFormulario input:not([type="file"]) {
+    background: #ffffff;
+    color: var(--cor-texto);
+    border-color: var(--cor-borda);
+}
+
+#albumAbrirFormulario,
+#albumEnviar {
+    background: var(--cor-selecao);
+    color: #ffffff;
+}
+
+#albumAbrirFormulario:hover,
+#albumEnviar:hover {
+    background: var(--cor-titulo);
+    color: #ffffff;
+}
+
+.album-polaroid {
+    background: #ffffff;
+    border-color: var(--cor-borda);
+    box-shadow: 0 5px 14px rgba(75, 51, 40, 0.12);
+}
+
+.album-polaroid::before {
+    background: #d9c2a3cc;
+}
+
+.album-legenda {
+    color: var(--cor-texto);
+}
+
+.album-data {
+    color: var(--cor-titulo-secundario);
+}
+
+.album-baixar {
+    background: #f1e5d9;
+    color: var(--cor-titulo);
+}
+
+.album-excluir {
+    background: #ead8d2;
+    color: #704038;
+}
+
+/* FOCO DOS ELEMENTOS */
+
+#nossaAgenda button:focus-visible,
+.album-casal button:focus-visible {
+    outline: 2px solid var(--cor-selecao);
+    outline-offset: 3px;
+}
