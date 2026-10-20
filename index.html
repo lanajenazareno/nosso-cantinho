@@ -847,27 +847,39 @@ if (botaoNotificacoes) {
         "sb_publishable_9gjjw2NYkRvEwwr3zZgPyA_f8jsA8jU"
       );
 
-      const { error } = await cliente
-        .from("push_subscriptions")
-        .insert({
-          endpoint: inscricao.endpoint,
-          p256dh: dados.keys.p256dh,
-          auth: dados.keys.auth,
-          enabled: true
-        });
+const senhaAutorizacao = prompt(
+  "Digite a senha permanente de autorização das notificações:"
+);
 
-      if (error) {
-        if (error.code === "23505") {
-          status.textContent =
-            "Este celular já está cadastrado para notificações ❤️";
-          return;
-        }
+if (!senhaAutorizacao) {
+  throw new Error("Autorização cancelada.");
+}
 
-        throw error;
-      }
+const resposta = await fetch(
+  "https://spfgfesqgxfygtgxegvf.supabase.co/functions/v1/registrar-push",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": "sb_publishable_9gjjw2NYkRvEwwr3zZgPyA_f8jsA8jU",
+      "x-push-secret": senhaAutorizacao
+    },
+    body: JSON.stringify({
+      endpoint: inscricao.endpoint,
+      p256dh: dados.keys.p256dh,
+      auth: dados.keys.auth
+    })
+  }
+);
 
-      status.textContent = "Notificações ativadas neste celular! ❤️";
-      botaoNotificacoes.textContent = "🔔 Notificações ativadas";
+const resultado = await resposta.json();
+
+if (!resposta.ok) {
+  throw new Error(resultado.error || "Falha ao cadastrar notificações.");
+}
+
+status.textContent = "Notificações ativadas neste celular!";
+botaoNotificacoes.textContent = "🔔 Notificações ativadas";
 
     } catch (erro) {
       console.error("Erro nas notificações:", erro);
