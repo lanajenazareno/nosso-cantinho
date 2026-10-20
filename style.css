@@ -1411,3 +1411,136 @@ video.album-midia {
     outline: 2px solid var(--cor-selecao);
     outline-offset: 3px;
 }
+
+/* =================================
+   AJUSTE FINAL — ÁLBUM DO CASAL
+================================= */
+
+#albumCasal {
+  display: block;
+  text-align: center;
+  overflow: hidden;
+}
+
+#albumCasal #albumAbrirFormulario {
+  display: block;
+  margin: 0 auto 22px;
+  width: auto;
+  max-width: 100%;
+}
+
+#albumCasal #albumFormulario[hidden] {
+  display: none !important;
+}
+
+#albumCasal #albumFormulario:not([hidden]) {
+  display: block;
+  text-align: left;
+}
+
+#albumCasal .album-galeria {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 14px;
+  width: 100%;
+  margin: 24px auto;
+  align-items: start;
+}
+
+#albumCasal .album-polaroid {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 9px 9px 14px;
+  background: #fffaf7;
+  border: 1px solid #e6d5c7;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(75, 51, 40, 0.12);
+  transform: rotate(var(--album-rotacao, 0deg));
+}
+
+#albumCasal img.album-midia {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 3px;
+  cursor: zoom-in;
+}
+
+#albumCasal .album-legenda {
+  margin: 12px 2px 6px;
+  color: #5a3928;
+  font-family: Georgia, serif;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+#albumCasal .album-data {
+  display: block;
+  margin: 6px 0 12px;
+  color: #8b6d62;
+  font-size: 12px;
+}
+
+#albumCasal .album-acoes {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+#albumCasal .album-acoes button {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 5px;
+  border-radius: 9px;
+  font-size: 12px;
+}
+
+#albumCasal .album-baixar {
+  background: #eee0d3;
+  color: #5a3928;
+}
+
+#albumCasal .album-excluir {
+  background: #f5e2e2;
+  color: #8b3545;
+}
+
+#albumCasal #albumCarregando {
+  margin: 18px auto;
+  font-size: 14px;
+}
+
+#albumCasal #albumStatus {
+  margin-top: 12px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 600px) {
+  #albumCasal .album-galeria {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  #albumCasal {
+    padding: 18px 10px;
+  }
+
+  #albumCasal .album-galeria {
+    gap: 14px 9px;
+  }
+
+  #albumCasal .album-polaroid {
+    padding: 6px 6px 10px;
+  }
+}
