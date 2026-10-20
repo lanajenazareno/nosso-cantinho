@@ -891,6 +891,55 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     
     </div>
 
+<!-- =========================
+     NOSSO ÁLBUM DE MEMÓRIAS
+========================= -->
+<section class="card album-casal" id="albumCasal">
+  <div class="album-cabecalho">
+    <span class="album-selo">L & N</span>
+    <h2>Nosso álbum 🫀</h2>
+    <p>Pequenos momentos, lembranças para sempre.</p>
+  </div>
+
+  <button type="button" id="albumAbrirFormulario">
+    + Guardar uma lembrança
+  </button>
+
+  <form id="albumFormulario" hidden>
+    <label for="albumArquivo">Escolha fotos ou vídeos</label>
+    <input
+      id="albumArquivo"
+      type="file"
+      accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime"
+      multiple
+      required
+    >
+
+    <label for="albumLegenda">Legenda</label>
+    <input
+      id="albumLegenda"
+      type="text"
+      maxlength="300"
+      placeholder="Essa lembrança me faz sorrir porque..."
+    >
+
+    <label for="albumData">Data da lembrança</label>
+    <input id="albumData" type="date" required>
+
+    <button type="submit" id="albumEnviar">
+      Guardar no nosso álbum 
+    </button>
+    <button type="button" id="albumCancelar">
+      Cancelar
+    </button>
+
+    <p id="albumStatus" role="status"></p>
+  </form>
+
+  <p id="albumCarregando" role="status">Preparando nossas lembranças...</p>
+  <div id="albumGaleria" class="album-galeria"></div>
+</section>
+    
     <!-- =========================
 EXPERIÊNCIA NOSSA HISTÓRIA
 ========================= -->
