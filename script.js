@@ -724,19 +724,20 @@ document.getElementById("ativarNotificacoes")
     try {
       if (!("serviceWorker" in navigator) ||
           !("PushManager" in window)) {
-        throw new Error("Este navegador não oferece suporte a notificações push.");
+        throw new Error("Navegador sem suporte a notificações.");
       }
 
-      if (Notification.permission === "denied") {
-        throw new Error("As notificações estão bloqueadas nas configurações do navegador.");
+      if (!VAPID_PUBLIC_KEY ||
+          VAPID_PUBLIC_KEY === "a2dd4bb9a0094fa0833461a2505b4403aaf6eb9fe135d12d67cce7b73aa186a5") {
+        throw new Error("Falta inserir a chave pública VAPID.");
       }
 
-      status.textContent = "Solicitando permissão...";
+      status.textContent = "Ativando notificações...";
 
       const permissao = await Notification.requestPermission();
 
       if (permissao !== "granted") {
-        throw new Error("Você não autorizou as notificações.");
+        throw new Error("Permissão de notificações não concedida.");
       }
 
       const registro = await navigator.serviceWorker.ready;
@@ -755,28 +756,23 @@ document.getElementById("ativarNotificacoes")
 
       const { error } = await supabaseClient
         .from("push_subscriptions")
-        .insert({
+        .upsert({
           endpoint: inscricao.endpoint,
           p256dh: dados.keys.p256dh,
           auth: dados.keys.auth,
           enabled: true
-        });
+        }, { onConflict: "endpoint" });
 
-      if (error && !String(error.code).includes("23505")) {
-        throw error;
-      }
+      if (error) throw error;
 
-      status.textContent =
-        "Celular cadastrado para notificações! 🫀";
-      botao.textContent = "🔔 Celular cadastrado";
-
+      status.textContent = "Celular cadastrado para notificações! 🫀";
+      botao.textContent = "🔔 Notificações ativadas";
     } catch (erro) {
       console.error(erro);
-      status.textContent =
-        "Não foi possível cadastrar: " + erro.message;
+      status.textContent = "Erro: " + erro.message;
     }
   });
-</script>
+</script>c
 
 // =========================================================
 // QUEM É MAIS?
