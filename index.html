@@ -896,79 +896,70 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
 ========================= -->
 
 <section class="card album-casal" id="albumCasal">
+
   <div class="album-cabecalho">
     <span class="album-selo">L & N</span>
     <h2>Nosso álbum</h2>
     <p>Pequenos momentos, lembranças para sempre.</p>
   </div>
 
-  <!-- LOGIN INDIVIDUAL DO SUPABASE -->
-  <div id="albumAcesso">
-    <h3>Entrar no nosso álbum</h3>
-
-    <label for="albumEmail">Seu e-mail</label>
-    <input
-      id="albumEmail"
-      type="email"
-      autocomplete="username"
-      placeholder="E-mail da sua conta"
-      required
-    >
-
-    <label for="albumSenha">Senha da sua conta</label>
-    <input
-      id="albumSenha"
-      type="password"
-      autocomplete="current-password"
-      placeholder="Senha do Supabase"
-      required
-    >
-
-    <button type="button" id="albumEntrar">Entrar</button>
-    <button type="button" id="albumSair" hidden>Sair da conta</button>
-    <p id="albumLoginStatus" role="status"></p>
+  <div class="album-acoes">
+    <button type="button" id="albumAbrirFormulario">
+      + Adicionar fotos
+    </button>
   </div>
 
-  <button type="button" id="albumAbrirFormulario" disabled>
-    + Guardar uma lembrança
-  </button>
-
   <form id="albumFormulario" hidden>
-    <label for="albumArquivo">Escolha fotos ou vídeos</label>
+
+    <label for="albumArquivo">Escolha suas fotos</label>
     <input
       id="albumArquivo"
       type="file"
-      accept="image/*,video/*"
+      accept="image/*"
       multiple
       required
     >
 
-    <label for="albumLegenda">Legenda</label>
+    <label for="albumLegenda">Legenda (opcional)</label>
     <input
       id="albumLegenda"
       type="text"
       maxlength="300"
-      placeholder="Essa lembrança me faz sorrir porque..."
+      placeholder="Uma lembrança especial..."
     >
 
     <label for="albumData">Data da lembrança</label>
-    <input id="albumData" type="date" required>
+    <input
+      id="albumData"
+      type="date"
+      required
+    >
 
-    <button type="submit" id="albumEnviar">
-      Guardar no nosso álbum
-    </button>
-    <button type="button" id="albumCancelar">Cancelar</button>
+    <div class="album-formulario-acoes">
+      <button type="submit" id="albumEnviar">
+        Guardar fotos
+      </button>
+
+      <button type="button" id="albumCancelar">
+        Cancelar
+      </button>
+    </div>
 
     <p id="albumStatus" role="status"></p>
   </form>
 
   <p id="albumCarregando" role="status">
-    Entre na sua conta para carregar as lembranças.
+    Carregando nossas lembranças...
   </p>
 
-  <div id="albumGaleria" class="album-galeria"></div>
-</section>
+  <div
+    id="albumGaleria"
+    class="album-galeria"
+    aria-live="polite"
+  ></div>
 
+</section>
+    
     <!-- =========================
 EXPERIÊNCIA NOSSA HISTÓRIA
 ========================= -->
