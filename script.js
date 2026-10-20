@@ -343,11 +343,12 @@ function converterChaveBase64(valor) {
   );
 }
 
-const botaoNotificacoes =
-  document.getElementById("ativarNotificacoes");
+document.addEventListener("DOMContentLoaded", () => {
+  const botaoNotificacoes =
+    document.getElementById("ativarNotificacoes");
 
-if (botaoNotificacoes) {
-  botaoNotificacoes.addEventListener("click", async () => {
+  if (botaoNotificacoes) {
+    botaoNotificacoes.addEventListener("click", async () => {
     const status =
       document.getElementById("statusNotificacoes");
 
@@ -426,7 +427,8 @@ if (botaoNotificacoes) {
       status.textContent = "Erro: " + erro.message;
     }
   });
-}
+  }
+});
 </script>
       
 // =========================================================
