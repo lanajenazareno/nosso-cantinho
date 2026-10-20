@@ -1,22 +1,331 @@
-// ================================
+// ========================================
 // ÁLBUM DE FOTOS — NOSSO CANTINHO
-// ================================
+// ========================================
 
-const clienteAlbum = window.supabaseClient;
+(() => {
+  const db = window.supabaseClient;
+  const bucket = "album-casal";
 
-async function verificarUsuario() {
-    if (!clienteAlbum) {
-        console.error("Conexão com Supabase não encontrada.");
+  const $ = id => document.getElementById(id);
+
+  const formulario = $("albumFormulario");
+  const arquivoInput = $("albumArquivo");
+  const galeria = $("albumGaleria");
+  const status = $("albumStatus");
+  const carregando = $("albumCarregando");
+  const botaoAbrir = $("albumAbrirFormulario");
+
+  if (!db) {
+    console.error("Álbum: conexão com Supabase não encontrada.");
+    if (status) {
+      status.textContent = "Não foi possível conectar ao álbum.";
+    }
+    return;
+  }
+
+  if (!formulario || !arquivoInput || !galeria ||
+      !status || !carregando || !botaoAbrir) {
+    console.error("Álbum: confira os IDs dos elementos no HTML.");
+    return;
+  }
+
+  let usuario = null;
+  let carregandoAlbum = false;
+
+  function informar(mensagem) {
+    status.textContent = mensagem;
+  }
+
+  function nomeSeguro(nome) {
+    return nome.normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-zA-Z0-9._-]/g, "_")
+      .slice(-100) || "arquivo";
+  }
+
+  function tipoArquivo(arquivo) {
+    if (arquivo.type.startsWith("image/")) return "foto";
+    if (arquivo.type.startsWith("video/")) return "video";
+    return null;
+  }
+
+  function dataLocalISO() {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
+  }
+
+  function dataLegivel(valor) {
+    if (!valor) return "";
+    const partes = valor.split("-");
+    if (partes.length !== 3) return valor;
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+  async function verificarUsuario() {
+    try {
+      const { data, error } = await db.auth.getUser();
+
+      if (error) throw error;
+
+      if (!data.user) {
+        usuario = null;
+        botaoAbrir.disabled = true;
+        informar(
+          "Entre em uma conta autorizada do Supabase para acessar o álbum."
+        );
         return false;
+      }
+
+      usuario = data.user;
+      botaoAbrir.disabled = false;
+      return true;
+    } catch (erro) {
+      usuario = null;
+      botaoAbrir.disabled = true;
+      informar("Não foi possível verificar seu acesso ao álbum.");
+      console.error(erro);
+      return false;
+    }
+  }
+
+  botaoAbrir.addEventListener("click", async () => {
+    if (!(await verificarUsuario())) return;
+
+    formulario.hidden = !formulario.hidden;
+
+    if (!formulario.hidden) {
+      $("albumData").value = dataLocalISO();
+      formulario.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+  });
+
+  $("albumCancelar").addEventListener("click", () => {
+    formulario.reset();
+    formulario.hidden = true;
+    informar("");
+  });
+
+  async function carregarAlbum() {
+    if (carregandoAlbum) return;
+    carregandoAlbum = true;
+    carregando.hidden = false;
+    carregando.textContent = "Carregando nossas lembranças...";
+    galeria.replaceChildren();
+
+    try {
+      if (!(await verificarUsuario())) {
+        carregando.textContent = "Faça login para visualizar as lembranças.";
+        return;
+      }
+
+      const { data: memorias, error } = await db
+        .from("album_memorias")
+        .select(
+          "id,tipo,caminho_arquivo,legenda,data_lembranca,criado_por,criado_em"
+        )
+        .order("data_lembranca", { ascending: false });
+
+      if (error) throw error;
+
+      carregando.hidden = true;
+
+      if (!memorias || memorias.length === 0) {
+        const vazio = document.createElement("p");
+        vazio.textContent =
+          "Nosso álbum está esperando a primeira lembrança.";
+        galeria.appendChild(vazio);
+        return;
+      }
+
+      for (const item of memorias) {
+        const { data: arquivo, error: erroUrl } = await db.storage
+          .from(bucket)
+          .createSignedUrl(item.caminho_arquivo, 300);
+
+        if (erroUrl || !arquivo?.signedUrl) {
+          console.warn("Não foi possível abrir um arquivo:", erroUrl);
+          continue;
+        }
+
+        const card = document.createElement("article");
+        card.className = "album-polaroid";
+
+        const midia = document.createElement(
+          item.tipo === "video" ? "video" : "img"
+        );
+
+        midia.className = "album-midia";
+        midia.src = arquivo.signedUrl;
+
+        if (item.tipo === "video") {
+          midia.controls = true;
+          midia.preload = "metadata";
+          midia.playsInline = true;
+        } else {
+          midia.alt = item.legenda || "Lembrança do casal";
+          midia.loading = "lazy";
+        }
+
+        const legenda = document.createElement("p");
+        legenda.className = "album-legenda";
+        legenda.textContent = item.legenda || "Nossa lembrança";
+
+        const data = document.createElement("time");
+        data.className = "album-data";
+        data.dateTime = item.data_lembranca || "";
+        data.textContent = dataLegivel(item.data_lembranca);
+
+        const acoes = document.createElement("div");
+        acoes.className = "album-acoes";
+
+        const baixar = document.createElement("button");
+        baixar.type = "button";
+        baixar.className = "album-baixar";
+        baixar.textContent = "↓ Baixar";
+
+        baixar.addEventListener("click", () => {
+          const link = document.createElement("a");
+          link.href = arquivo.signedUrl;
+          link.download = nomeSeguro(
+            item.caminho_arquivo.split("/").pop()
+          );
+          link.target = "_blank";
+          link.rel = "noopener";
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        });
+
+        const excluir = document.createElement("button");
+        excluir.type = "button";
+        excluir.className = "album-excluir";
+        excluir.textContent = "Excluir";
+
+        excluir.addEventListener("click", async () => {
+          if (!confirm("Desejam apagar esta lembrança dos dois?")) return;
+
+          excluir.disabled = true;
+
+          try {
+            const { error: erroArquivo } = await db.storage
+              .from(bucket)
+              .remove([item.caminho_arquivo]);
+
+            if (erroArquivo) throw erroArquivo;
+
+            const { error: erroRegistro } = await db
+              .from("album_memorias")
+              .delete()
+              .eq("id", item.id);
+
+            if (erroRegistro) throw erroRegistro;
+
+            informar("Lembrança excluída.");
+            await carregarAlbum();
+          } catch (erro) {
+            console.error("Erro ao excluir lembrança:", erro);
+            informar("Não foi possível excluir. Confira as permissões.");
+            excluir.disabled = false;
+          }
+        });
+
+        acoes.append(baixar, excluir);
+        card.append(midia, legenda, data, acoes);
+        galeria.appendChild(card);
+      }
+    } catch (erro) {
+      console.error("Erro ao carregar álbum:", erro);
+      carregando.textContent =
+        "Não foi possível carregar as lembranças. Confira as permissões do Supabase.";
+    } finally {
+      carregandoAlbum = false;
+    }
+  }
+
+  formulario.addEventListener("submit", async evento => {
+    evento.preventDefault();
+    informar("");
+
+    if (!(await verificarUsuario())) return;
+
+    const arquivos = Array.from(arquivoInput.files || []);
+    const legenda = $("albumLegenda").value.trim();
+    const dataLembranca = $("albumData").value;
+
+    if (!arquivos.length || !dataLembranca) {
+      informar("Escolha ao menos um arquivo e informe a data.");
+      return;
     }
 
-    const { data, error } =
-        await clienteAlbum.auth.getSession();
-
-    if (error) {
-        console.error("Erro ao verificar login:", error.message);
-        return false;
+    if (arquivos.some(arquivo => !tipoArquivo(arquivo))) {
+      informar("Selecione fotos ou vídeos compatíveis.");
+      return;
     }
 
-    return Boolean(data.session);
-}
+    if (arquivos.some(arquivo => arquivo.size > 50 * 1024 * 1024)) {
+      informar("Cada arquivo deve ter no máximo 50 MB.");
+      return;
+    }
+
+    const enviar = $("albumEnviar");
+    enviar.disabled = true;
+
+    try {
+      for (const arquivo of arquivos) {
+        informar(`Enviando ${arquivo.name}...`);
+
+        const caminho =
+          `${usuario.id}/${crypto.randomUUID()}-${nomeSeguro(arquivo.name)}`;
+
+        const { error: erroUpload } = await db.storage
+          .from(bucket)
+          .upload(caminho, arquivo, {
+            upsert: false,
+            contentType: arquivo.type
+          });
+
+        if (erroUpload) throw erroUpload;
+
+        const { error: erroRegistro } = await db
+          .from("album_memorias")
+          .insert({
+            tipo: tipoArquivo(arquivo),
+            caminho_arquivo: caminho,
+            legenda,
+            data_lembranca: dataLembranca,
+            criado_por: usuario.id
+          });
+
+        if (erroRegistro) {
+          await db.storage.from(bucket).remove([caminho]);
+          throw erroRegistro;
+        }
+      }
+
+      formulario.reset();
+      formulario.hidden = true;
+      informar("Lembrança guardada no nosso álbum!");
+      await carregarAlbum();
+    } catch (erro) {
+      console.error("Erro ao enviar lembrança:", erro);
+      informar(
+        "Não foi possível enviar. Confira o login e as permissões do Supabase."
+      );
+    } finally {
+      enviar.disabled = false;
+    }
+  });
+
+  db.auth.onAuthStateChange(() => {
+    carregarAlbum();
+  });
+
+  $("albumData").value = dataLocalISO();
+  carregarAlbum();
+})();
