@@ -42,7 +42,7 @@ function verificarSenha() {
     const conteudo = document.getElementById("conteudoSite");
     const menu = document.getElementById("menuPrincipal");
 
-    if (!campoSenha || campoSenha.value.trim() !== "laninha") {
+    if (!campoSenha || campoSenha.value.trim() !== "coracao") {
         alert("Senha incorreta. Tente novamente.");
 
         if (campoSenha) {
