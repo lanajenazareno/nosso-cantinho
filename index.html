@@ -786,8 +786,7 @@ if ("serviceWorker" in navigator) {
 </script>
 
 <script>
-const VAPID_PUBLIC_KEY = "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg
-";
+const VAPID_PUBLIC_KEY = "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg";
 
 function converterChaveBase64(valor) {
   const base64 = valor
@@ -820,13 +819,7 @@ if (botaoNotificacoes) {
           !("PushManager" in window)) {
         throw new Error("Este navegador não suporta notificações push.");
       }
-
-      if (VAPID_PUBLIC_KEY ===
-          "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg
-") {
-        throw new Error("BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg");
-      }
-
+        
       status.textContent = "Ativando notificações...";
 
       const permissao = await Notification.requestPermission();
