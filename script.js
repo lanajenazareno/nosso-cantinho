@@ -749,6 +749,31 @@ document.addEventListener("DOMContentLoaded", () => {
   $("albumData").value = dataHoje();
   carregarAlbum();
 })();
+
+// CORREÇÃO DO BOTÃO DO ÁLBUM
+
+document.addEventListener("DOMContentLoaded", function () {
+    const botao = document.getElementById("albumAbrirFormulario");
+    const formulario = document.getElementById("albumFormulario");
+
+    if (!botao || !formulario) {
+        console.error("Botão ou formulário do álbum não encontrado.");
+        return;
+    }
+
+    botao.disabled = false;
+
+    botao.addEventListener("click", function () {
+        formulario.hidden = !formulario.hidden;
+
+        if (!formulario.hidden) {
+            formulario.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        }
+    });
+});
       
 // =========================================================
 // QUEM É MAIS?
