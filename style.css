@@ -970,3 +970,207 @@ margin: 25px 10px;
     padding: 8px 10px;
   }
 }
+
+/* NOSSO CANTINHO — ÁLBUM SCRAPBOOK */
+.album-casal {
+  --album-vinho: #792b43;
+  --album-papel: #fff8ed;
+  --album-tinta: #4b3035;
+  margin: 28px auto;
+  padding: 22px 14px;
+  background: #f6ecdf;
+  color: var(--album-tinta);
+  border: 1px solid #e7d4c3;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.album-cabecalho {
+  text-align: center;
+  padding: 12px 8px 20px;
+}
+
+.album-selo {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border: 1px solid #b98b79;
+  border-radius: 50%;
+  color: var(--album-vinho);
+  font-family: Georgia, serif;
+  letter-spacing: 2px;
+}
+
+.album-casal h2 {
+  color: var(--album-vinho);
+  font-family: Georgia, serif;
+  margin-bottom: 8px;
+}
+
+.album-casal button {
+  border: 0;
+  border-radius: 22px;
+  padding: 11px 16px;
+  cursor: pointer;
+  font: inherit;
+}
+
+#albumAbrirFormulario,
+#albumEnviar {
+  background: var(--album-vinho);
+  color: white;
+}
+
+#albumAbrirFormulario {
+  display: block;
+  margin: 0 auto 18px;
+}
+
+#albumFormulario {
+  padding: 16px;
+  margin-bottom: 22px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 16px;
+}
+
+#albumFormulario[hidden] {
+  display: none !important;
+}
+
+#albumFormulario label {
+  display: block;
+  margin: 12px 0 5px;
+  font-weight: 600;
+}
+
+#albumFormulario input:not([type="file"]) {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #d8bfc3;
+  border-radius: 10px;
+  background: white;
+  font: inherit;
+}
+
+#albumArquivo {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+}
+
+#albumFormulario button {
+  margin: 10px 5px 0 0;
+}
+
+#albumStatus,
+#albumCarregando {
+  font-size: 14px;
+}
+
+.album-galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 22px 16px;
+  align-items: start;
+}
+
+.album-polaroid {
+  position: relative;
+  min-width: 0;
+  padding: 9px 9px 14px;
+  background: var(--album-papel);
+  box-shadow: 0 5px 14px #593a351c;
+  border: 1px solid #eadfd2;
+  transform: rotate(var(--album-rotacao, -1deg));
+  animation: album-chegou .35s ease both;
+}
+
+.album-polaroid::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 52px;
+  height: 15px;
+  top: -7px;
+  left: calc(50% - 26px);
+  background: #d9c2a3cc;
+  transform: rotate(-4deg);
+}
+
+.album-midia {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: #e8ded6;
+}
+
+video.album-midia {
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+}
+
+.album-legenda {
+  margin: 12px 2px 5px;
+  overflow-wrap: anywhere;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  text-align: center;
+}
+
+.album-data {
+  display: block;
+  margin-top: 7px;
+  font-size: 12px;
+  text-align: center;
+  color: #866a69;
+}
+
+.album-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.album-acoes button {
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.album-baixar {
+  background: #eadbd2;
+  color: #4b3035;
+}
+
+.album-excluir {
+  background: #f2d9d9;
+  color: #8b2635;
+}
+
+@keyframes album-chegou {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(var(--album-rotacao, -1deg));
+  }
+}
+
+@media (max-width: 380px) {
+  .album-galeria {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .album-polaroid {
+    animation: none;
+  }
+}
