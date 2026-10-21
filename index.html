@@ -891,25 +891,41 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     
     </div>
 
-<!-- =========================
-     NOSSO ÁLBUM DE MEMÓRIAS
-========================= -->
+<!-- ==========================================
+     NOSSO CANTINHO — ÁLBUM DE MEMÓRIAS
+     Lanaj & Nazareno
+========================================== -->
 
 <section class="card album-casal" id="albumCasal">
 
-  <div class="album-cabecalho">
-    <span class="album-selo">L & N</span>
+  <header class="album-cabecalho">
+    <span class="album-selo">L &amp; N</span>
     <h2>Nosso álbum</h2>
     <p>Pequenos momentos, lembranças para sempre.</p>
-  </div>
+  </header>
 
-  <div class="album-acoes">
-    <button type="button" id="albumAbrirFormulario">
-      + Adicionar fotos
+  <div class="album-controles">
+    <label for="albumDataNavegacao">Escolher um dia</label>
+    <input id="albumDataNavegacao" type="date">
+
+    <button type="button" id="albumNovoRegistro">
+      + Novo registro deste dia
     </button>
   </div>
 
+  <section class="album-meses" id="albumMemoriasMeses">
+    <h3>Mesmo dia nos meses anteriores</h3>
+    <div id="albumListaMeses"></div>
+  </section>
+
+  <section class="album-dia-atual">
+    <h3 id="albumTituloDia">Todas as lembranças</h3>
+    <p id="albumResumoDia"></p>
+    <div id="albumGaleria" class="album-galeria"></div>
+  </section>
+
   <form id="albumFormulario" hidden>
+    <h3 id="albumFormularioTitulo">Guardar uma lembrança</h3>
 
     <label for="albumArquivo">Escolha suas fotos</label>
     <input
@@ -929,17 +945,12 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     >
 
     <label for="albumData">Data da lembrança</label>
-    <input
-      id="albumData"
-      type="date"
-      required
-    >
+    <input id="albumData" type="date" required>
 
     <div class="album-formulario-acoes">
       <button type="submit" id="albumEnviar">
         Guardar fotos
       </button>
-
       <button type="button" id="albumCancelar">
         Cancelar
       </button>
@@ -952,13 +963,47 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     Carregando nossas lembranças...
   </p>
 
-  <div
-    id="albumGaleria"
-    class="album-galeria"
-    aria-live="polite"
-  ></div>
+  <button type="button" id="albumMostrarTodas">
+    Ver todas as datas
+  </button>
 
 </section>
+
+<div
+  id="albumVisualizador"
+  class="album-visualizador"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Visualizador de lembranças"
+  hidden
+>
+  <div class="album-visualizador-conteudo">
+    <button type="button" id="albumFecharVisualizador">
+      ✕ Fechar
+    </button>
+
+    <button type="button" id="albumFotoAnterior">
+      ← Anterior
+    </button>
+
+    <img id="albumFotoAmpliada" alt="Lembrança do casal">
+
+    <button type="button" id="albumFotoSeguinte">
+      Próxima →
+    </button>
+
+    <p id="albumFotoLegenda"></p>
+    <p id="albumFotoData"></p>
+    <p id="albumFotoPosicao"></p>
+
+    <button type="button" id="albumBaixarFoto">
+      Baixar foto
+    </button>
+    <button type="button" id="albumExcluirFoto">
+      Excluir foto
+    </button>
+  </div>
+</div>
     
     <!-- =========================
 EXPERIÊNCIA NOSSA HISTÓRIA
