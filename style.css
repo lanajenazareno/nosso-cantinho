@@ -971,207 +971,207 @@ margin: 25px 10px;
   }
 }
 
-/* NOSSO CANTINHO — ÁLBUM SCRAPBOOK */
-.album-casal {
+/* ==========================================
+   ÁLBUM — GRADE E LEMBRANÇAS MENSAIS
+========================================== */
+
+#albumCasal {
   --album-vinho: #792b43;
   --album-papel: #fff8ed;
   --album-tinta: #4b3035;
-  margin: 28px auto;
-  padding: 22px 14px;
-  background: #f6ecdf;
   color: var(--album-tinta);
-  border: 1px solid #e7d4c3;
-  border-radius: 22px;
-  overflow: hidden;
 }
 
-.album-cabecalho {
+#albumCasal .album-cabecalho {
   text-align: center;
-  padding: 12px 8px 20px;
+  margin-bottom: 22px;
 }
 
-.album-selo {
-  display: inline-grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border: 1px solid #b98b79;
-  border-radius: 50%;
-  color: var(--album-vinho);
-  font-family: Georgia, serif;
+#albumCasal .album-selo {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 30px;
+  background: var(--album-vinho);
+  color: white;
   letter-spacing: 2px;
 }
 
-.album-casal h2 {
-  color: var(--album-vinho);
-  font-family: Georgia, serif;
-  margin-bottom: 8px;
+#albumCasal .album-controles {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
 }
 
-.album-casal button {
-  border: 0;
-  border-radius: 22px;
-  padding: 11px 16px;
-  cursor: pointer;
+#albumCasal input[type="date"],
+#albumCasal input[type="text"],
+#albumCasal input[type="file"] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  padding: 10px;
+  border: 1px solid #ddc5ce;
+  border-radius: 10px;
   font: inherit;
 }
 
-#albumAbrirFormulario,
-#albumEnviar {
+#albumCasal button,
+.album-visualizador button {
+  padding: 10px 13px;
+  border: 1px solid #ddc5ce;
+  border-radius: 10px;
   background: var(--album-vinho);
   color: white;
+  font: inherit;
+  cursor: pointer;
 }
 
-#albumAbrirFormulario {
+#albumCasal button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+#albumCasal .album-meses {
+  margin: 22px 0;
+}
+
+#albumCasal #albumListaMeses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#albumCasal .album-mes-botao {
+  background: #fff0f4;
+  color: var(--album-tinta);
+}
+
+#albumCasal .album-galeria {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  margin: 12px 0 22px;
+}
+
+#albumCasal .album-dia-cartao,
+#albumCasal .album-foto-cartao {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#albumCasal .album-dia-cartao {
+  position: relative;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: #f5e8ec;
+  color: var(--album-tinta);
+  text-align: left;
+}
+
+#albumCasal .album-capa {
   display: block;
-  margin: 0 auto 18px;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
 }
 
-#albumFormulario {
-  padding: 16px;
-  margin-bottom: 22px;
-  background: rgba(255, 255, 255, 0.55);
-  border-radius: 16px;
+#albumCasal .album-dia-info {
+  display: block;
+  padding: 6px;
+  overflow-wrap: anywhere;
+  font-size: 12px;
 }
 
-#albumFormulario[hidden] {
+#albumCasal .album-foto-cartao {
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+}
+
+#albumCasal .album-miniatura {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+#albumCasal .album-sem-foto {
+  grid-column: 1 / -1;
+  padding: 15px;
+  background: #fff8ed;
+  border-radius: 10px;
+}
+
+#albumCasal #albumFormulario {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid #ead5dd;
+  border-radius: 14px;
+  background: var(--album-papel);
+}
+
+#albumCasal #albumFormulario[hidden],
+#albumVisualizador[hidden] {
   display: none !important;
 }
 
-#albumFormulario label {
-  display: block;
-  margin: 12px 0 5px;
-  font-weight: 600;
+#albumCasal .album-formulario-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
-#albumFormulario input:not([type="file"]) {
-  box-sizing: border-box;
+#albumCasal #albumStatus,
+#albumCasal #albumCarregando {
+  overflow-wrap: anywhere;
+}
+
+.album-visualizador {
+  position: fixed;
+  z-index: 99999;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(24, 12, 17, .94);
+  color: white;
+}
+
+.album-visualizador-conteudo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   width: 100%;
-  padding: 11px;
-  border: 1px solid #d8bfc3;
-  border-radius: 10px;
-  background: white;
-  font: inherit;
+  max-width: 560px;
+  max-height: 95dvh;
+  overflow: auto;
 }
 
-#albumArquivo {
+.album-visualizador-conteudo img {
   display: block;
-  width: 100%;
-  margin: 8px 0;
-}
-
-#albumFormulario button {
-  margin: 10px 5px 0 0;
-}
-
-#albumStatus,
-#albumCarregando {
-  font-size: 14px;
-}
-
-.album-galeria {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
-  gap: 22px 16px;
-  align-items: start;
-}
-
-.album-polaroid {
-  position: relative;
-  min-width: 0;
-  padding: 9px 9px 14px;
-  background: var(--album-papel);
-  box-shadow: 0 5px 14px #593a351c;
-  border: 1px solid #eadfd2;
-  transform: rotate(var(--album-rotacao, -1deg));
-  animation: album-chegou .35s ease both;
-}
-
-.album-polaroid::before {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  width: 52px;
-  height: 15px;
-  top: -7px;
-  left: calc(50% - 26px);
-  background: #d9c2a3cc;
-  transform: rotate(-4deg);
-}
-
-.album-midia {
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  background: #e8ded6;
-}
-
-video.album-midia {
-  aspect-ratio: 4 / 5;
+  max-width: 100%;
+  max-height: 58dvh;
   object-fit: contain;
 }
 
-.album-legenda {
-  margin: 12px 2px 5px;
+.album-visualizador-conteudo p {
+  margin: 2px;
+  text-align: center;
   overflow-wrap: anywhere;
-  font-family: Georgia, serif;
-  font-size: 16px;
-  text-align: center;
 }
 
-.album-data {
-  display: block;
-  margin-top: 7px;
-  font-size: 12px;
-  text-align: center;
-  color: #866a69;
-}
-
-.album-acoes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.album-acoes button {
-  padding: 7px 10px;
-  font-size: 12px;
-}
-
-.album-baixar {
-  background: #eadbd2;
-  color: #4b3035;
-}
-
-.album-excluir {
-  background: #f2d9d9;
-  color: #8b2635;
-}
-
-@keyframes album-chegou {
-  from {
-    opacity: 0;
-    transform: translateY(10px) rotate(0);
+@media (min-width: 650px) {
+  #albumCasal .album-galeria {
+    gap: 8px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) rotate(var(--album-rotacao, -1deg));
-  }
-}
 
-@media (max-width: 380px) {
-  .album-galeria {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px 12px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .album-polaroid {
-    animation: none;
+  #albumCasal .album-dia-info {
+    font-size: 14px;
   }
 }
 
@@ -1326,221 +1326,4 @@ video.album-midia {
 
 #nossaAgenda hr {
     border-top-color: var(--cor-borda);
-}
-
-/* ÁLBUM DE FOTOS */
-
-.album-casal {
-    --album-vinho: #8b5e3c;
-    --album-papel: #ffffff;
-    --album-tinta: #4b3328;
-
-    background: var(--cor-fundo);
-    color: var(--cor-texto);
-    border-color: var(--cor-borda);
-}
-
-.album-selo {
-    color: var(--cor-titulo);
-    border-color: var(--cor-borda);
-}
-
-.album-casal h2 {
-    color: var(--cor-titulo);
-}
-
-#albumFormulario {
-    background: #fffaf7;
-    border: 1px solid var(--cor-borda);
-}
-
-#albumFormulario label {
-    color: var(--cor-titulo);
-}
-
-#albumFormulario input:not([type="file"]) {
-    background: #ffffff;
-    color: var(--cor-texto);
-    border-color: var(--cor-borda);
-}
-
-#albumAbrirFormulario,
-#albumEnviar {
-    background: var(--cor-selecao);
-    color: #ffffff;
-}
-
-#albumAbrirFormulario:hover,
-#albumEnviar:hover {
-    background: var(--cor-titulo);
-    color: #ffffff;
-}
-
-.album-polaroid {
-    background: #ffffff;
-    border-color: var(--cor-borda);
-    box-shadow: 0 5px 14px rgba(75, 51, 40, 0.12);
-}
-
-.album-polaroid::before {
-    background: #d9c2a3cc;
-}
-
-.album-legenda {
-    color: var(--cor-texto);
-}
-
-.album-data {
-    color: var(--cor-titulo-secundario);
-}
-
-.album-baixar {
-    background: #f1e5d9;
-    color: var(--cor-titulo);
-}
-
-.album-excluir {
-    background: #ead8d2;
-    color: #704038;
-}
-
-/* FOCO DOS ELEMENTOS */
-
-#nossaAgenda button:focus-visible,
-.album-casal button:focus-visible {
-    outline: 2px solid var(--cor-selecao);
-    outline-offset: 3px;
-}
-
-/* =================================
-   AJUSTE FINAL — ÁLBUM DO CASAL
-================================= */
-
-#albumCasal {
-  display: block;
-  text-align: center;
-  overflow: hidden;
-}
-
-#albumCasal #albumAbrirFormulario {
-  display: block;
-  margin: 0 auto 22px;
-  width: auto;
-  max-width: 100%;
-}
-
-#albumCasal #albumFormulario[hidden] {
-  display: none !important;
-}
-
-#albumCasal #albumFormulario:not([hidden]) {
-  display: block;
-  text-align: left;
-}
-
-#albumCasal .album-galeria {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px 14px;
-  width: 100%;
-  margin: 24px auto;
-  align-items: start;
-}
-
-#albumCasal .album-polaroid {
-  width: 100%;
-  min-width: 0;
-  margin: 0;
-  padding: 9px 9px 14px;
-  background: #fffaf7;
-  border: 1px solid #e6d5c7;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(75, 51, 40, 0.12);
-  transform: rotate(var(--album-rotacao, 0deg));
-}
-
-#albumCasal img.album-midia {
-  display: block;
-  width: 100%;
-  max-width: none;
-  height: auto;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  margin: 0;
-  border-radius: 3px;
-  cursor: zoom-in;
-}
-
-#albumCasal .album-legenda {
-  margin: 12px 2px 6px;
-  color: #5a3928;
-  font-family: Georgia, serif;
-  font-size: 15px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-
-#albumCasal .album-data {
-  display: block;
-  margin: 6px 0 12px;
-  color: #8b6d62;
-  font-size: 12px;
-}
-
-#albumCasal .album-acoes {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 10px;
-}
-
-#albumCasal .album-acoes button {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 5px;
-  border-radius: 9px;
-  font-size: 12px;
-}
-
-#albumCasal .album-baixar {
-  background: #eee0d3;
-  color: #5a3928;
-}
-
-#albumCasal .album-excluir {
-  background: #f5e2e2;
-  color: #8b3545;
-}
-
-#albumCasal #albumCarregando {
-  margin: 18px auto;
-  font-size: 14px;
-}
-
-#albumCasal #albumStatus {
-  margin-top: 12px;
-  font-size: 14px;
-  overflow-wrap: anywhere;
-}
-
-@media (min-width: 600px) {
-  #albumCasal .album-galeria {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px 18px;
-  }
-}
-
-@media (max-width: 360px) {
-  #albumCasal {
-    padding: 18px 10px;
-  }
-
-  #albumCasal .album-galeria {
-    gap: 14px 9px;
-  }
-
-  #albumCasal .album-polaroid {
-    padding: 6px 6px 10px;
-  }
 }
