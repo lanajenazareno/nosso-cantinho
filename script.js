@@ -348,85 +348,100 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("ativarNotificacoes");
 
   if (botaoNotificacoes) {
-    botaoNotificacoes.addEventListener("click", async () => {
-    const status =
-      document.getElementById("statusNotificacoes");
+   botaoNotificacoes.addEventListener("click", async () => {
+  const status = document.getElementById("statusNotificacoes");
 
-    try {
-      if (typeof clienteSupabase === "undefined") {
-        throw new Error("A conexão com o Supabase não foi encontrada.");
-      }
+  try {
+    if (typeof clienteSupabase === "undefined") {
+      throw new Error("A conexão com o Supabase não foi encontrada.");
+    }
 
-      if (!("serviceWorker" in navigator) ||
-          !("PushManager" in window) ||
-          !("Notification" in window)) {
-        throw new Error("Este navegador não suporta notificações push.");
-      }
+    if (
+      !("serviceWorker" in navigator) ||
+      !("PushManager" in window) ||
+      !("Notification" in window)
+    ) {
+      throw new Error("Este navegador não suporta notificações push.");
+    }
 
-      status.textContent = "Ativando notificações...";
+    const registro = await navigator.serviceWorker.ready;
+    let inscricao = await registro.pushManager.getSubscription();
 
-      const permissao = await Notification.requestPermission();
-
-      if (permissao !== "granted") {
-        throw new Error("Permissão para notificações não concedida.");
-      }
-
-      const registro = await navigator.serviceWorker.ready;
-      let inscricao = await registro.pushManager.getSubscription();
-
-      if (inscricao) {
-        const chaveAtual = inscricao.options.applicationServerKey;
-        const chaveNova = converterChaveBase64(VAPID_PUBLIC_KEY);
-
-        const mesmaChave = chaveAtual &&
-          chaveAtual.length === chaveNova.length &&
-          chaveAtual.every((byte, i) => byte === chaveNova[i]);
-
-        if (!mesmaChave) {
-          await inscricao.unsubscribe();
-          inscricao = null;
-        }
-      }
-
-      if (!inscricao) {
-        inscricao = await registro.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey:
-            converterChaveBase64(VAPID_PUBLIC_KEY)
-        });
-      }
-
-      const dados = inscricao.toJSON();
+    // DESATIVAR NOTIFICAÇÕES
+    if (inscricao) {
+      status.textContent = "Desativando notificações...";
 
       const { error } = await clienteSupabase
         .from("push_subscriptions")
-        .insert({
+        .update({ enabled: false })
+        .eq("endpoint", inscricao.endpoint);
+
+      if (error) throw error;
+
+      await inscricao.unsubscribe();
+
+      botaoNotificacoes.textContent = "🔔 Ativar notificações";
+      botaoNotificacoes.dataset.ativadas = "false";
+      status.textContent = "Notificações desativadas.";
+      return;
+    }
+
+    // ATIVAR NOTIFICAÇÕES
+    status.textContent = "Ativando notificações...";
+
+    if (Notification.permission === "denied") {
+      throw new Error(
+        "As notificações estão bloqueadas. Libere a permissão nas configurações do navegador."
+      );
+    }
+
+    const permissao = await Notification.requestPermission();
+
+    if (permissao !== "granted") {
+      throw new Error("Permissão para notificações não concedida.");
+    }
+
+    if (
+      typeof VAPID_PUBLIC_KEY === "undefined" ||
+      typeof converterChaveBase64 !== "function"
+    ) {
+      throw new Error("A configuração das notificações está incompleta.");
+    }
+
+    inscricao = await registro.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: converterChaveBase64(VAPID_PUBLIC_KEY)
+    });
+
+    const dados = inscricao.toJSON();
+
+    const { error } = await clienteSupabase
+      .from("push_subscriptions")
+      .upsert(
+        {
           endpoint: inscricao.endpoint,
           p256dh: dados.keys.p256dh,
           auth: dados.keys.auth,
           enabled: true
-        });
+        },
+        { onConflict: "endpoint" }
+      );
 
-      if (error && error.code === "23505") {
-        status.textContent =
-          "Este celular já está cadastrado para notificações!";
-        botaoNotificacoes.textContent =
-          "🔔 Notificações ativadas";
-        return;
-      }
-
-      if (error) throw error;
-
-      status.textContent =
-        "Celular cadastrado para notificações!";
-      botaoNotificacoes.textContent =
-        "🔔 Notificações ativadas";
-
-    } catch (erro) {
-      console.error("Erro nas notificações:", erro);
-      status.textContent = "Erro: " + erro.message;
+    if (error) {
+      await inscricao.unsubscribe();
+      throw error;
     }
-  });
+
+    botaoNotificacoes.textContent = "🔕 Desativar notificações";
+    botaoNotificacoes.dataset.ativadas = "true";
+    status.textContent = "Notificações ativadas!";
+
+  } catch (erro) {
+    console.error("Erro nas notificações:", erro);
+    status.textContent =
+      "Erro: " + (erro.message || "Não foi possível atualizar as notificações.");
+  }
+});
   }
 });
 </script>
