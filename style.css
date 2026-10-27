@@ -1432,3 +1432,59 @@ margin: 25px 10px;
     padding: 9px 11px;
   }
 }
+
+.album-cartao-mes,
+.album-item-foto {
+  padding: 0;
+  border: 1px solid #ead5dc;
+  background: #fffdfb;
+  color: #571b30;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+
+.album-capa-mes {
+  display: grid;
+  place-items: center;
+  min-height: 100px;
+  background: #f5e8eb;
+  color: #762c46;
+  font-size: 32px;
+}
+
+.album-capa-mes img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.album-detalhes-mes {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+}
+
+.album-detalhes-mes strong {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.album-detalhes-mes span,
+.album-data-foto {
+  color: #86616e;
+  font-size: 11px;
+}
+
+.album-item-foto img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1.2;
+  object-fit: cover;
+}
+
+.album-data-foto {
+  display: block;
+  padding: 7px;
+  text-align: center;
+}
