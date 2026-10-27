@@ -896,43 +896,63 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
      Lanaj & Nazareno
 ========================================== -->
 
-<section class="card album-casal" id="albumCasal">
-
+    <section id="albumCasal" class="album-casal">
   <header class="album-cabecalho">
-    <span class="album-selo">L &amp; N</span>
-    <h2>Nosso álbum</h2>
-    <p>Pequenos momentos, lembranças para sempre.</p>
+    <button type="button" id="albumVoltar" class="album-voltar">
+      ← Voltar
+    </button>
+
+    <p class="album-assinatura">LANAJ & NAZARENO</p>
+    <h2>Nosso Álbum</h2>
+    <p class="album-subtitulo">
+      Nossas fotos, nossas lembranças.
+    </p>
   </header>
 
-  <div class="album-controles">
-    <label for="albumDataNavegacao">Escolher um dia</label>
-    <input id="albumDataNavegacao" type="date">
-
-    <button type="button" id="albumNovoRegistro">
-      + Novo registro deste dia
+  <div id="albumInicio">
+    <button type="button" id="albumAdicionar" class="album-botao">
+      + Adicionar fotos
     </button>
+
+    <p id="albumStatus" class="album-status" role="status">
+      Carregando nossas lembranças...
+    </p>
+
+    <div id="albumMeses" class="album-meses"></div>
   </div>
 
-  <section class="album-meses" id="albumMemoriasMeses">
-    <h3>Mesmo dia nos meses anteriores</h3>
-    <div id="albumListaMeses"></div>
-  </section>
+  <div id="albumConteudoMes" hidden>
+    <button type="button" id="albumVoltarMes"
+      class="album-voltar-mes">
+      ← Todos os meses
+    </button>
 
-  <section class="album-dia-atual">
-    <h3 id="albumTituloDia">Todas as lembranças</h3>
-    <p id="albumResumoDia"></p>
+    <h3 id="albumTituloMes"></h3>
+
+    <button type="button" id="albumAdicionarMes"
+      class="album-botao">
+      + Adicionar fotos deste mês
+    </button>
+
     <div id="albumGaleria" class="album-galeria"></div>
-  </section>
+  </div>
 
-  <form id="albumFormulario" hidden>
-    <h3 id="albumFormularioTitulo">Guardar uma lembrança</h3>
+  <form id="albumFormulario" class="album-formulario" hidden>
+    <h3>Adicionar lembranças</h3>
 
-    <label for="albumArquivo">Escolha suas fotos</label>
+    <label for="albumArquivos">Escolha as fotos</label>
     <input
-      id="albumArquivo"
+      id="albumArquivos"
       type="file"
       accept="image/*"
       multiple
+      required
+    >
+
+    <label for="albumData">Data das fotos</label>
+    <input
+      id="albumData"
+      type="date"
       required
     >
 
@@ -940,126 +960,44 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
     <input
       id="albumLegenda"
       type="text"
-      maxlength="300"
+      maxlength="200"
       placeholder="Uma lembrança especial..."
     >
 
-    <label for="albumData">Data da lembrança</label>
-    <input id="albumData" type="date" required>
+    <button type="submit" class="album-botao">
+      Salvar fotos
+    </button>
 
-    <div class="album-formulario-acoes">
-      <button type="submit" id="albumEnviar">
-        Guardar fotos
-      </button>
-      <button type="button" id="albumCancelar">
-        Cancelar
-      </button>
-    </div>
+    <button type="button" id="albumCancelar"
+      class="album-cancelar">
+      Cancelar
+    </button>
 
-    <p id="albumStatus" role="status"></p>
+    <p id="albumUploadStatus" role="status"></p>
   </form>
 
-  <p id="albumCarregando" role="status">
-    Carregando nossas lembranças...
-  </p>
-
-  <button type="button" id="albumMostrarTodas">
-    Ver todas as datas
-  </button>
-
-</section>
-
-<div
-  id="albumVisualizador"
-  class="album-visualizador"
-  role="dialog"
-  aria-modal="true"
-  aria-label="Visualizador de lembranças"
-  hidden
->
-  <div class="album-visualizador-conteudo">
-    <button type="button" id="albumFecharVisualizador">
-      ✕ Fechar
+  <dialog id="albumVisualizador" class="album-visualizador">
+    <button type="button" id="albumFechar"
+      class="album-fechar" aria-label="Fechar foto">
+      ×
     </button>
 
-    <button type="button" id="albumFotoAnterior">
-      ← Anterior
-    </button>
+    <img id="albumFotoAmpliada" src="" alt="Foto do casal">
 
-    <img id="albumFotoAmpliada" alt="Lembrança do casal">
+    <p id="albumLegendaAmpliada"></p>
 
-    <button type="button" id="albumFotoSeguinte">
-      Próxima →
-    </button>
+    <div class="album-acoes">
+      <a id="albumBaixar" class="album-botao"
+        href="#" download>
+        Baixar foto
+      </a>
 
-    <p id="albumFotoLegenda"></p>
-    <p id="albumFotoData"></p>
-    <p id="albumFotoPosicao"></p>
-
-    <button type="button" id="albumBaixarFoto">
-      Baixar foto
-    </button>
-    <button type="button" id="albumExcluirFoto">
-      Excluir foto
-    </button>
-  </div>
-</div>
-    
-    <!-- =========================
-EXPERIÊNCIA NOSSA HISTÓRIA
-========================= -->
-
-<div id="historiaAniversario" style="display:none;">
-
-    <button onclick="voltarMenu()">
-        ← Voltar ao Nosso Cantinho
-    </button>
-    
-   <!-- =========================
-BEM-VINDO AO NOSSO CANTINHO
-========================= -->
-
-<section class="card" id="bemVindo">
-
-    <h2>❤️ Bem-vindo ao nosso cantinho</h2>
-
-    <img
-        src="fotos/imagens/capa.jpg"
-        alt="Nós dois">
-
-    <p>
-    Oi, coração!
-</p>
-
-<p>
-    Lembra do site que eu falei que estava fazendo? Então... ele é todinho para você.
-</p>
-
-<p>
-    É minha primeira vez criando um site, então eu precisava de um cobaia, né? Kkkkk.
-</p>
-
-<p>
-    Brigadinha por ter aceitado entrar nesse meu mundinho criativo. Agora ele também é seu.
-</p>
-
-</section>
-    
-<!-- =========================
-UMA TRILHA PARA ESSE MOMENTO
-========================= -->
-
-<section class="card">
-
-    <h2>🎧 Uma trilha para esse momento</h2>
-
-    <h3> Olhos Castanhos — Luísa Sonza</h3>
-
-    <audio controls>
-        <source src="musicas/olhos-castanhos.mp3" type="audio/mpeg">
-        Seu navegador não suporta áudio.
-    </audio>
-
+      <button type="button" id="albumExcluir"
+        class="album-excluir">
+        Excluir foto
+      </button>
+    </div>
+  </dialog>
 </section>
     
     <!-- =========================
