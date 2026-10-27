@@ -1,364 +1,475 @@
-/* NOSSO CANTINHO — ÁLBUM DE MEMÓRIAS */
+/* ==========================================
+   NOSSO CANTINHO — ÁLBUM DE FOTOS
+   Tabela: album_memoria
+   Bucket: album-casal
+========================================== */
+
 (() => {
   "use strict";
 
   const db = window.supabaseClient;
-  const $ = id => document.getElementById(id);
-  const tabela = "album_memoria";
-  const bucket = "album-casal";
+  const TABELA = "album_memoria";
+  const BUCKET = "album-casal";
 
-  const tela = $("albumCasal");
-  const vazio = $("albumVazio");
-  const inicio = $("albumInicio");
-  const mesesEl = $("albumMeses");
-  const conteudoMes = $("albumConteudoMes");
-  const tituloMes = $("albumTituloMes");
-  const galeria = $("albumGaleria");
-  const formulario = $("albumFormulario");
+  const $ = (id) => document.getElementById(id);
 
-  if (!db || !tela || !formulario || !galeria) {
-    console.error("Álbum: confira a conexão Supabase e os IDs do HTML.");
-    return;
-  }
+  let memorias = [];
+  let fotoAtual = 0;
+  let enviando = false;
+  let inicializado = false;
 
-  let fotos = [];
-  let mesAtual = null;
-  let usuario = null;
-  let carregando = false;
-
-  const campoArquivo = formulario.querySelector('input[type="file"]');
-  const campoData = formulario.querySelector('input[type="date"]');
-  const campoLegenda = formulario.querySelector(
-    'textarea, input[name="legenda"], input[type="text"]'
-  );
+  const el = {
+    secao: $("albumCasal"),
+    vazio: $("albumVazio"),
+    inicio: $("albumInicio"),
+    meses: $("albumMeses"),
+    conteudoMes: $("albumConteudoMes"),
+    tituloMes: $("albumTituloMes"),
+    galeria: $("albumGaleria"),
+    formulario: $("albumFormulario"),
+    arquivos: $("albumArquivos"),
+    data: $("albumData"),
+    legenda: $("albumLegenda"),
+    status: $("albumUploadStatus"),
+    visualizador: $("albumVisualizador"),
+    fotoAmpliada: $("albumFotoAmpliada"),
+    legendaAmpliada: $("albumLegendaAmpliada"),
+    baixar: $("albumBaixar")
+  };
 
   function mensagem(texto) {
-    let status = $("albumStatus");
-
-    if (!status) {
-      status = document.createElement("p");
-      status.id = "albumStatus";
-      status.setAttribute("role", "status");
-      formulario.prepend(status);
-    }
-
-    status.textContent = texto;
+    if (el.status) el.status.textContent = texto;
   }
 
-  function hoje() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  function erro(texto) {
+    mensagem(texto);
   }
 
-  function dataBonita(valor) {
-    if (!valor) return "";
-    const [ano, mes, dia] = valor.slice(0, 10).split("-");
-    return `${dia}/${mes}/${ano}`;
+  function dataLocalHoje() {
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, "0");
+    const dia = String(agora.getDate()).padStart(2, "0");
+    return `${ano}-${mes}-${dia}`;
   }
 
-  function nomeMes(valor) {
-    const [ano, mes] = valor.split("-").map(Number);
-    return new Date(ano, mes - 1, 1).toLocaleDateString("pt-BR", {
-      month: "long",
-      year: "numeric"
-    });
+  function formatarData(data) {
+    if (!data) return "";
+    const [ano, mes, dia] = data.split("-").map(Number);
+    return new Date(ano, mes - 1, dia).toLocaleDateString("pt-BR");
   }
 
-  async function autenticar() {
-    const atual = await db.auth.getUser();
+  function chaveMes(data) {
+    return (data || "").slice(0, 7);
+  }
 
-    if (atual.data?.user) {
-      usuario = atual.data.user;
-      return usuario;
-    }
+  function nomeMes(chave) {
+    const [ano, mes] = chave.split("-").map(Number);
+    const nome = new Date(ano, mes - 1, 1)
+      .toLocaleDateString("pt-BR", {
+        month: "long",
+        year: "numeric"
+      });
 
-    const email = prompt("Digite o e-mail cadastrado no Supabase:");
-    if (!email) throw new Error("Login cancelado.");
+    return nome.charAt(0).toUpperCase() + nome.slice(1);
+  }
 
-    const senha = prompt("Digite a senha dessa conta do Supabase:");
-    if (!senha) throw new Error("Login cancelado.");
+  function textoSeguro(texto) {
+    return String(texto ?? "").replace(/[&<>"']/g, (caractere) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[caractere]);
+  }
 
-    const { data, error } = await db.auth.signInWithPassword({
-      email: email.trim(),
-      password: senha
-    });
+  function mostrar(id) {
+    const elemento = $(id);
+    if (elemento) elemento.hidden = false;
+  }
 
-    if (error) throw error;
-
-    usuario = data.user;
-    return usuario;
+  function esconder(id) {
+    const elemento = $(id);
+    if (elemento) elemento.hidden = true;
   }
 
   function mostrarInicio() {
-    vazio.hidden = fotos.length !== 0;
-    inicio.hidden = fotos.length === 0;
-    conteudoMes.hidden = true;
+    esconder("albumFormulario");
+    esconder("albumConteudoMes");
+
+    if (memorias.length) {
+      esconder("albumVazio");
+      mostrar("albumInicio");
+    } else {
+      esconder("albumInicio");
+      mostrar("albumVazio");
+    }
   }
 
   function abrirFormulario() {
-    formulario.hidden = false;
+    esconder("albumVazio");
+    esconder("albumInicio");
+    esconder("albumConteudoMes");
 
-    if (campoData && !campoData.value) {
-      campoData.value = hoje();
-    }
+    el.formulario.hidden = false;
+    el.data.value = el.data.value || dataLocalHoje();
+    mensagem("");
 
-    formulario.scrollIntoView({
+    el.formulario.scrollIntoView({
       behavior: "smooth",
-      block: "center"
+      block: "start"
     });
   }
 
-  async function carregar() {
-    if (carregando) return;
-    carregando = true;
-
-    try {
-      await autenticar();
-
-      const { data, error } = await db
-        .from(tabela)
-        .select("id,tipo,caminho_arquivo,legenda,data_lembraca")
-        .order("data_lembraca", { ascending: false });
-
-      if (error) throw error;
-
-      fotos = data || [];
-      renderizarMeses();
-      mostrarInicio();
-    } catch (erro) {
-      console.error("Erro ao carregar álbum:", erro);
-      mensagem("Não foi possível carregar o álbum: " + erro.message);
-    } finally {
-      carregando = false;
-    }
+  function fecharFormulario() {
+    esconder("albumFormulario");
+    mostrarInicio();
+    mensagem("");
   }
 
-  function renderizarMeses() {
-    mesesEl.replaceChildren();
+  async function obterUsuario() {
+    if (!db?.auth) {
+      throw new Error(
+        "O cliente Supabase não foi encontrado. Confira a inicialização no index.html."
+      );
+    }
+
+    const { data, error: erroSessao } = await db.auth.getSession();
+
+    if (erroSessao) throw erroSessao;
+
+    if (!data.session?.user) {
+      throw new Error(
+        "Não há sessão autenticada no Supabase. O acesso do site, sozinho, não autentica o álbum."
+      );
+    }
+
+    return data.session.user;
+  }
+
+  async function urlFoto(caminho) {
+    const { data, error: erroUrl } = await db.storage
+      .from(BUCKET)
+      .createSignedUrl(caminho, 3600);
+
+    if (erroUrl) throw erroUrl;
+
+    return data.signedUrl;
+  }
+
+  async function carregarMemorias() {
+    await obterUsuario();
+
+    const { data, error: erroConsulta } = await db
+      .from(TABELA)
+      .select("id, tipo, caminho_arquivo, legenda, data_lembranca")
+      .order("data_lembranca", { ascending: false });
+
+    if (erroConsulta) throw erroConsulta;
+
+    memorias = data || [];
+    await desenharMeses();
+    mostrarInicio();
+  }
+
+  async function desenharMeses() {
+    el.meses.replaceChildren();
 
     const grupos = {};
 
-    fotos.forEach(foto => {
-      const mes = (foto.data_lembraca || "").slice(0, 7);
-      if (!mes) return;
-      grupos[mes] = (grupos[mes] || 0) + 1;
+    memorias.forEach((memoria) => {
+      const chave = chaveMes(memoria.data_lembranca);
+      if (!chave) return;
+
+      if (!grupos[chave]) grupos[chave] = [];
+      grupos[chave].push(memoria);
     });
 
-    Object.keys(grupos).sort().reverse().forEach(mes => {
-      const botao = document.createElement("button");
-      botao.type = "button";
-      botao.className = "album-mes";
-      botao.textContent = `${nomeMes(mes)} · ${grupos[mes]} foto(s)`;
-
-      botao.addEventListener("click", () => abrirMes(mes));
-      mesesEl.appendChild(botao);
-    });
-  }
-
-  async function abrirMes(mes) {
-    mesAtual = mes;
-    tituloMes.textContent = nomeMes(mes);
-    inicio.hidden = true;
-    vazio.hidden = true;
-    conteudoMes.hidden = false;
-    galeria.replaceChildren();
-
-    const doMes = fotos.filter(f =>
-      (f.data_lembranca || "").startsWith(mes)
+    const chaves = Object.keys(grupos).sort((a, b) =>
+      b.localeCompare(a)
     );
 
-    for (const foto of doMes) {
-      const { data, error } = await db.storage
-        .from(bucket)
-        .createSignedUrl(foto.caminho_arquivo, 600);
+    for (const chave of chaves) {
+      const itens = grupos[chave];
+      const cartao = document.createElement("button");
 
-      if (error || !data?.signedUrl) {
-        console.error("Não foi possível abrir uma foto:", error);
-        continue;
+      cartao.type = "button";
+      cartao.className = "album-cartao-mes";
+      cartao.setAttribute("aria-label", `Abrir ${nomeMes(chave)}`);
+
+      const capa = document.createElement("div");
+      capa.className = "album-capa-mes";
+
+      try {
+        const imagemUrl = await urlFoto(itens[0].caminho_arquivo);
+        const imagem = document.createElement("img");
+        imagem.src = imagemUrl;
+        imagem.alt = `Capa de ${nomeMes(chave)}`;
+        imagem.loading = "lazy";
+        capa.appendChild(imagem);
+      } catch {
+        capa.textContent = "♡";
       }
 
-      const card = document.createElement("article");
-      card.className = "album-polaroid";
+      const detalhes = document.createElement("div");
+      detalhes.className = "album-detalhes-mes";
+      detalhes.innerHTML = `
+        <strong>${textoSeguro(nomeMes(chave))}</strong>
+        <span>${itens.length} ${itens.length === 1 ? "foto" : "fotos"}</span>
+      `;
 
-      const imagem = document.createElement("img");
-      imagem.src = data.signedUrl;
-      imagem.alt = foto.legenda || "Nossa lembrança";
-      imagem.loading = "lazy";
-      imagem.className = "album-midia";
-
-      imagem.addEventListener("click", () => {
-        const fundo = document.createElement("div");
-        fundo.className = "album-visualizador";
-
-        const ampliada = document.createElement("img");
-        ampliada.src = data.signedUrl;
-        ampliada.alt = imagem.alt;
-
-        fundo.appendChild(ampliada);
-        fundo.addEventListener("click", () => fundo.remove());
-        document.body.appendChild(fundo);
-      });
-
-      const legenda = document.createElement("p");
-      legenda.className = "album-legenda";
-      legenda.textContent = foto.legenda || "Um momento nosso";
-
-      const dataFoto = document.createElement("time");
-      dataFoto.className = "album-data";
-      dataFoto.textContent = dataBonita(foto.data_lembranca);
-
-      const baixar = document.createElement("button");
-      baixar.type = "button";
-      baixar.textContent = "↓ Baixar";
-      baixar.addEventListener("click", () => {
-        const link = document.createElement("a");
-        link.href = data.signedUrl;
-        link.download = foto.caminho_arquivo.split("/").pop() || "foto";
-        link.click();
-      });
-
-      const excluir = document.createElement("button");
-      excluir.type = "button";
-      excluir.textContent = "Excluir";
-
-      excluir.addEventListener("click", async () => {
-        if (!confirm("Deseja excluir esta foto?")) return;
-
-        excluir.disabled = true;
-
-        try {
-          const { error: erroRegistro } = await db
-            .from(tabela)
-            .delete()
-            .eq("id", foto.id);
-
-          if (erroRegistro) throw erroRegistro;
-
-          const { error: erroArquivo } = await db.storage
-            .from(bucket)
-            .remove([foto.caminho_arquivo]);
-
-          if (erroArquivo) {
-            mensagem("Registro excluído; confira o arquivo no Storage.");
-          } else {
-            mensagem("Foto excluída.");
-          }
-
-          await carregar();
-          if (fotos.some(f => (f.data_lembranca || "").startsWith(mes))) {
-            await abrirMes(mes);
-          }
-        } catch (erro) {
-          console.error(erro);
-          mensagem("Não foi possível excluir: " + erro.message);
-          excluir.disabled = false;
-        }
-      });
-
-      const acoes = document.createElement("div");
-      acoes.className = "album-acoes";
-      acoes.append(baixar, excluir);
-
-      card.append(imagem, legenda, dataFoto, acoes);
-      galeria.appendChild(card);
+      cartao.append(capa, detalhes);
+      cartao.addEventListener("click", () => abrirMes(chave));
+      el.meses.appendChild(cartao);
     }
   }
 
-  formulario.addEventListener("submit", async evento => {
+  async function abrirMes(chave) {
+    esconder("albumInicio");
+    esconder("albumVazio");
+    esconder("albumFormulario");
+    mostrar("albumConteudoMes");
+
+    el.tituloMes.textContent = nomeMes(chave);
+    el.galeria.replaceChildren();
+
+    const itens = memorias
+      .filter((memoria) => chaveMes(memoria.data_lembranca) === chave)
+      .sort((a, b) =>
+        (b.data_lembranca || "").localeCompare(a.data_lembranca || "")
+      );
+
+    for (const memoria of itens) {
+      const cartao = document.createElement("button");
+      cartao.type = "button";
+      cartao.className = "album-item-foto";
+      cartao.setAttribute("aria-label", "Abrir foto");
+
+      try {
+        const imagem = document.createElement("img");
+        imagem.src = await urlFoto(memoria.caminho_arquivo);
+        imagem.alt = memoria.legenda || "Lembrança do casal";
+        imagem.loading = "lazy";
+
+        const data = document.createElement("span");
+        data.className = "album-data-foto";
+        data.textContent = formatarData(memoria.data_lembranca);
+
+        cartao.append(imagem, data);
+        cartao.addEventListener("click", () => abrirFoto(memoria));
+        el.galeria.appendChild(cartao);
+      } catch (e) {
+        console.error("Não foi possível carregar uma foto:", e);
+      }
+    }
+  }
+
+  async function abrirFoto(memoria) {
+    fotoAtual = memorias.findIndex((item) => item.id === memoria.id);
+
+    try {
+      el.fotoAmpliada.src = await urlFoto(memoria.caminho_arquivo);
+      el.legendaAmpliada.textContent = [
+        memoria.legenda,
+        formatarData(memoria.data_lembranca)
+      ].filter(Boolean).join(" · ");
+
+      el.baixar.href = el.fotoAmpliada.src;
+      el.baixar.download = `lembranca-${memoria.data_lembranca || "casal"}.jpg`;
+
+      if (typeof el.visualizador.showModal === "function") {
+        el.visualizador.showModal();
+      } else {
+        window.open(el.fotoAmpliada.src, "_blank");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Não foi possível abrir essa foto.");
+    }
+  }
+
+  async function enviarFotos(evento) {
     evento.preventDefault();
 
-    if (!campoArquivo?.files?.length || !campoData?.value) {
-      mensagem("Escolha pelo menos uma foto e informe a data.");
+    if (enviando) return;
+
+    const arquivos = Array.from(el.arquivos.files || []);
+    const data = el.data.value;
+    const legenda = el.legenda.value.trim();
+
+    if (!arquivos.length) {
+      mensagem("Escolha pelo menos uma foto.");
       return;
     }
 
-    const enviar = formulario.querySelector(
-      'button[type="submit"], input[type="submit"]'
-    );
+    if (!data) {
+      mensagem("Escolha a data das lembranças.");
+      return;
+    }
 
-    if (enviar) enviar.disabled = true;
+    if (arquivos.some((arquivo) => !arquivo.type.startsWith("image/"))) {
+      mensagem("Escolha apenas arquivos de imagem.");
+      return;
+    }
+
+    enviando = true;
+    const botao = el.formulario.querySelector('[type="submit"]');
+    const textoOriginal = botao.textContent;
+    botao.disabled = true;
+    botao.textContent = "Guardando fotos…";
+
+    let enviadas = 0;
 
     try {
-      const user = await autenticar();
+      const usuario = await obterUsuario();
 
-      for (const arquivo of Array.from(campoArquivo.files)) {
-        if (!arquivo.type.startsWith("image/")) {
-          throw new Error("Selecione apenas arquivos de imagem.");
-        }
+      for (const arquivo of arquivos) {
+        mensagem(`Enviando foto ${enviadas + 1} de ${arquivos.length}…`);
 
-        const nome = arquivo.name
+        const nomeLimpo = arquivo.name
           .normalize("NFKD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-zA-Z0-9._-]/g, "_");
+          .replace(/[^\w.-]/g, "_");
 
-        const caminho = `${user.id}/${crypto.randomUUID()}-${nome}`;
+        const caminho =
+          `${usuario.id}/${Date.now()}_${crypto.randomUUID()}_${nomeLimpo}`;
 
-        mensagem("Enviando foto...");
-
-        const { error: uploadError } = await db.storage
-          .from(bucket)
+        const { error: erroUpload } = await db.storage
+          .from(BUCKET)
           .upload(caminho, arquivo, {
-            upsert: false,
-            contentType: arquivo.type
+            contentType: arquivo.type,
+            upsert: false
           });
 
-        if (uploadError) throw uploadError;
+        if (erroUpload) throw erroUpload;
 
-        const { error: insertError } = await db
-          .from(tabela)
+        const { error: erroBanco } = await db
+          .from(TABELA)
           .insert({
             tipo: "foto",
             caminho_arquivo: caminho,
-            legenda: campoLegenda?.value?.trim() || "",
-            data_lembranca: campoData.value
+            legenda: legenda || null,
+            data_lembranca: data
           });
 
-        if (insertError) {
-          await db.storage.from(bucket).remove([caminho]);
-          throw insertError;
+        if (erroBanco) {
+          await db.storage.from(BUCKET).remove([caminho]);
+          throw erroBanco;
         }
+
+        enviadas++;
       }
 
-      formulario.reset();
-      formulario.hidden = true;
-      mensagem("Fotos guardadas!");
-      await carregar();
-    } catch (erro) {
-      console.error("Erro no envio:", erro);
-      mensagem("Falha ao enviar: " + erro.message);
+      mensagem("Fotos guardadas com sucesso! ♡");
+      el.formulario.reset();
+      el.data.value = dataLocalHoje();
+
+      await carregarMemorias();
+
+      if (typeof window.mostrarAvisoAlbum === "function") {
+        window.mostrarAvisoAlbum("Fotos adicionadas ao álbum!");
+      }
+    } catch (e) {
+      console.error("Erro no envio das fotos:", e);
+
+      const detalhe = e?.message || "Erro desconhecido.";
+
+      erro(
+        enviadas
+          ? `${enviadas} foto(s) foram salvas. O restante não foi enviado. ${detalhe}`
+          : `Não foi possível enviar as fotos. ${detalhe}`
+      );
     } finally {
-      if (enviar) enviar.disabled = false;
+      enviando = false;
+      botao.disabled = false;
+      botao.textContent = textoOriginal;
     }
-  });
+  }
 
-  $("albumAdicionar")?.addEventListener("click", abrirFormulario);
-  $("albumAdicionarTopo")?.addEventListener("click", abrirFormulario);
-  $("albumAdicionarMes")?.addEventListener("click", abrirFormulario);
+  async function excluirFoto() {
+    const memoria = memorias[fotoAtual];
+    if (!memoria) return;
 
-  $("albumVoltarMes")?.addEventListener("click", () => {
-    mostrarInicio();
-  });
+    if (!confirm("Deseja excluir esta lembrança? Essa ação não pode ser desfeita.")) {
+      return;
+    }
 
-  $("albumVoltar")?.addEventListener("click", () => {
-    tela.hidden = true;
-  });
+    try {
+      await obterUsuario();
 
-  const cancelar = formulario.querySelector(
-    '[data-album-cancelar], #albumCancelar'
-  );
+      const { error: erroBanco } = await db
+        .from(TABELA)
+        .delete()
+        .eq("id", memoria.id);
 
-  cancelar?.addEventListener("click", () => {
-    formulario.reset();
-    formulario.hidden = true;
-  });
+      if (erroBanco) throw erroBanco;
 
-  window.abrirAlbum = async function () {
-    tela.hidden = false;
-    tela.scrollIntoView({ behavior: "smooth", block: "start" });
-    await carregar();
-  };
+      const { error: erroArquivo } = await db.storage
+        .from(BUCKET)
+        .remove([memoria.caminho_arquivo]);
 
-  if (campoData) campoData.value = hoje();
+      if (erroArquivo) {
+        console.warn("O registro foi excluído, mas o arquivo não:", erroArquivo);
+      }
 
-  mostrarInicio();
+      el.visualizador.close();
+      await carregarMemorias();
+    } catch (e) {
+      console.error(e);
+      alert("Não foi possível excluir a foto: " + (e.message || ""));
+    }
+  }
+
+  async function abrirAlbum() {
+    if (!el.secao) return;
+
+    el.secao.hidden = false;
+    esconder("albumFormulario");
+    esconder("albumConteudoMes");
+    mensagem("");
+
+    if (!inicializado) {
+      inicializado = true;
+
+      $("albumAdicionar")?.addEventListener("click", abrirFormulario);
+      $("albumAdicionarTopo")?.addEventListener("click", abrirFormulario);
+      $("albumAdicionarMes")?.addEventListener("click", abrirFormulario);
+
+      $("albumCancelar")?.addEventListener("click", fecharFormulario);
+
+      $("albumVoltar")?.addEventListener("click", () => {
+        el.secao.hidden = true;
+      });
+
+      $("albumVoltarMes")?.addEventListener("click", mostrarInicio);
+
+      el.formulario?.addEventListener("submit", enviarFotos);
+
+      $("albumFechar")?.addEventListener("click", () => {
+        el.visualizador.close();
+      });
+
+      $("albumExcluir")?.addEventListener("click", excluirFoto);
+
+      el.visualizador?.addEventListener("click", (evento) => {
+        if (evento.target === el.visualizador) {
+          el.visualizador.close();
+        }
+      });
+
+      el.data.value = dataLocalHoje();
+    }
+
+    try {
+      await carregarMemorias();
+    } catch (e) {
+      console.error("Erro ao abrir álbum:", e);
+      mostrar("albumInicio");
+      esconder("albumVazio");
+      erro("Não foi possível carregar o álbum: " + (e.message || ""));
+    }
+  }
+
+  window.abrirAlbum = abrirAlbum;
+  window.abrirNossoAlbum = abrirAlbum;
 })();
