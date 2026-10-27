@@ -322,8 +322,15 @@ async function carregarCompromissos() {
 
     renderizarCalendario();
     renderizarCompromissos();
-  
-</script>
+
+  } catch (erro) {
+    console.error("Erro ao carregar compromissos:", erro);
+    mostrarMensagem("Não foi possível carregar os compromissos.");
+
+  } finally {
+    carregando = false;
+  }
+}
 
 <script>
 const VAPID_PUBLIC_KEY = "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg";
