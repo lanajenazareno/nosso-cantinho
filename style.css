@@ -971,210 +971,6 @@ margin: 25px 10px;
   }
 }
 
-/* ==========================================
-   ÁLBUM — GRADE E LEMBRANÇAS MENSAIS
-========================================== */
-
-#albumCasal {
-  --album-vinho: #792b43;
-  --album-papel: #fff8ed;
-  --album-tinta: #4b3035;
-  color: var(--album-tinta);
-}
-
-#albumCasal .album-cabecalho {
-  text-align: center;
-  margin-bottom: 22px;
-}
-
-#albumCasal .album-selo {
-  display: inline-block;
-  padding: 7px 12px;
-  border-radius: 30px;
-  background: var(--album-vinho);
-  color: white;
-  letter-spacing: 2px;
-}
-
-#albumCasal .album-controles {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 22px;
-}
-
-#albumCasal input[type="date"],
-#albumCasal input[type="text"],
-#albumCasal input[type="file"] {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 100%;
-  padding: 10px;
-  border: 1px solid #ddc5ce;
-  border-radius: 10px;
-  font: inherit;
-}
-
-#albumCasal button,
-.album-visualizador button {
-  padding: 10px 13px;
-  border: 1px solid #ddc5ce;
-  border-radius: 10px;
-  background: var(--album-vinho);
-  color: white;
-  font: inherit;
-  cursor: pointer;
-}
-
-#albumCasal button:disabled {
-  opacity: .55;
-  cursor: wait;
-}
-
-#albumCasal .album-meses {
-  margin: 22px 0;
-}
-
-#albumCasal #albumListaMeses {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-#albumCasal .album-mes-botao {
-  background: #fff0f4;
-  color: var(--album-tinta);
-}
-
-#albumCasal .album-galeria {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
-  margin: 12px 0 22px;
-}
-
-#albumCasal .album-dia-cartao,
-#albumCasal .album-foto-cartao {
-  min-width: 0;
-  overflow: hidden;
-}
-
-#albumCasal .album-dia-cartao {
-  position: relative;
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: #f5e8ec;
-  color: var(--album-tinta);
-  text-align: left;
-}
-
-#albumCasal .album-capa {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-}
-
-#albumCasal .album-dia-info {
-  display: block;
-  padding: 6px;
-  overflow-wrap: anywhere;
-  font-size: 12px;
-}
-
-#albumCasal .album-foto-cartao {
-  padding: 0;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-}
-
-#albumCasal .album-miniatura {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-}
-
-#albumCasal .album-sem-foto {
-  grid-column: 1 / -1;
-  padding: 15px;
-  background: #fff8ed;
-  border-radius: 10px;
-}
-
-#albumCasal #albumFormulario {
-  display: grid;
-  gap: 10px;
-  margin: 18px 0;
-  padding: 14px;
-  border: 1px solid #ead5dd;
-  border-radius: 14px;
-  background: var(--album-papel);
-}
-
-#albumCasal #albumFormulario[hidden],
-#albumVisualizador[hidden] {
-  display: none !important;
-}
-
-#albumCasal .album-formulario-acoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-#albumCasal #albumStatus,
-#albumCasal #albumCarregando {
-  overflow-wrap: anywhere;
-}
-
-.album-visualizador {
-  position: fixed;
-  z-index: 99999;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  background: rgba(24, 12, 17, .94);
-  color: white;
-}
-
-.album-visualizador-conteudo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  max-width: 560px;
-  max-height: 95dvh;
-  overflow: auto;
-}
-
-.album-visualizador-conteudo img {
-  display: block;
-  max-width: 100%;
-  max-height: 58dvh;
-  object-fit: contain;
-}
-
-.album-visualizador-conteudo p {
-  margin: 2px;
-  text-align: center;
-  overflow-wrap: anywhere;
-}
-
-@media (min-width: 650px) {
-  #albumCasal .album-galeria {
-    gap: 8px;
-  }
-
-  #albumCasal .album-dia-info {
-    font-size: 14px;
-  }
-}
-
 /* =========================================
    NOSSO CANTINHO — RESTAURAÇÃO DAS CORES
    Paleta original de Lanaj & Nazareno
@@ -1326,4 +1122,273 @@ margin: 25px 10px;
 
 #nossaAgenda hr {
     border-top-color: var(--cor-borda);
+}
+
+/* NOSSO CANTINHO — ÁLBUM SIMPLES */
+
+.album-casal {
+  --album-vinho: #702638;
+  --album-vinho-escuro: #481522;
+  --album-fundo: #fffaf8;
+  --album-texto: #38252a;
+
+  color: var(--album-texto);
+  background: var(--album-fundo);
+  padding: 22px 15px 35px;
+  border-radius: 18px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: inherit;
+}
+
+.album-casal *,
+.album-visualizador * {
+  box-sizing: border-box;
+}
+
+.album-cabecalho {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.album-voltar,
+.album-voltar-mes {
+  display: block;
+  border: 0;
+  background: transparent;
+  color: var(--album-vinho);
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.album-voltar {
+  text-align: left;
+}
+
+.album-assinatura {
+  color: var(--album-vinho);
+  letter-spacing: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  margin: 15px 0 8px;
+}
+
+.album-cabecalho h2 {
+  font-size: 30px;
+  margin: 0;
+  color: var(--album-vinho-escuro);
+}
+
+.album-subtitulo {
+  font-size: 14px;
+  opacity: .75;
+}
+
+.album-botao {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 17px;
+  background: var(--album-vinho);
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 8px 0 15px;
+}
+
+.album-botao:hover {
+  background: var(--album-vinho-escuro);
+}
+
+.album-status {
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.album-meses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.album-mes {
+  display: block;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  background: white;
+  color: var(--album-texto);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px #48152212;
+  cursor: pointer;
+}
+
+.album-capa {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #f0e5e7;
+}
+
+.album-mes-info {
+  display: block;
+  padding: 11px;
+}
+
+.album-mes-info strong {
+  display: block;
+  font-size: 14px;
+}
+
+.album-mes-info small {
+  display: block;
+  margin-top: 4px;
+  opacity: .7;
+}
+
+.album-galeria {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  margin-top: 18px;
+}
+
+.album-foto {
+  display: block;
+  border: 0;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f0e5e7;
+  cursor: pointer;
+}
+
+.album-foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.album-formulario {
+  margin-top: 20px;
+  padding: 18px;
+  background: white;
+  border: 1px solid #ead9de;
+  border-radius: 14px;
+}
+
+.album-formulario h3 {
+  color: var(--album-vinho);
+  margin-top: 0;
+}
+
+.album-formulario label {
+  display: block;
+  margin: 15px 0 7px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.album-formulario input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 11px;
+  border: 1px solid #d9c5ca;
+  border-radius: 8px;
+  background: white;
+  color: #38252a;
+}
+
+.album-cancelar,
+.album-excluir {
+  padding: 11px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.album-cancelar {
+  background: transparent;
+  border: 1px solid #d9c5ca;
+  color: var(--album-vinho);
+}
+
+.album-excluir {
+  border: 1px solid #a52a3b;
+  background: transparent;
+  color: #a52a3b;
+}
+
+.album-visualizador {
+  width: min(94vw, 650px);
+  max-height: 92vh;
+  overflow: auto;
+  padding: 18px;
+  border: 0;
+  border-radius: 15px;
+  background: white;
+  color: var(--album-texto);
+}
+
+.album-visualizador::backdrop {
+  background: rgb(25 10 15 / 80%);
+}
+
+.album-fechar {
+  display: block;
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--album-vinho);
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#albumFotoAmpliada {
+  display: block;
+  max-width: 100%;
+  max-height: 65vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+#albumLegendaAmpliada {
+  overflow-wrap: anywhere;
+}
+
+.album-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.album-acoes .album-botao {
+  margin-bottom: 0;
+}
+
+.album-casal [hidden] {
+  display: none !important;
+}
+
+@media (min-width: 600px) {
+  .album-meses {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .album-galeria {
+    gap: 6px;
+  }
 }
