@@ -449,7 +449,506 @@ document.addEventListener("DOMContentLoaded", () => {
 <script>
 (() => {
   "use strict";
-      
+
+    // =========================================================
+// NOSSO CANTINHO — ÁLBUM DE FOTOS
+// =========================================================
+    
+(() => {
+  "use strict";
+
+  const db = window.supabaseClient;
+  const BUCKET = "album-casal";
+  const TABELA = "album_memorias";
+
+  const $ = (id) => document.getElementById(id);
+
+  const el = {
+    secao: $("albumCasal"),
+    vazio: $("albumVazio"),
+    inicio: $("albumInicio"),
+    meses: $("albumMeses"),
+    conteudoMes: $("albumConteudoMes"),
+    tituloMes: $("albumTituloMes"),
+    galeria: $("albumGaleria"),
+    formulario: $("albumFormulario"),
+    arquivos: $("albumArquivos"),
+    data: $("albumData"),
+    legenda: $("albumLegenda"),
+    uploadStatus: $("albumUploadStatus"),
+    status: $("albumStatus"),
+    visualizador: $("albumVisualizador"),
+    fotoAmpliada: $("albumFotoAmpliada"),
+    legendaAmpliada: $("albumLegendaAmpliada"),
+    baixar: $("albumBaixar"),
+    excluir: $("albumExcluir")
+  };
+
+  let usuario = null;
+  let fotos = [];
+  let mesAtual = null;
+  let fotoAtual = null;
+  let enviando = false;
+  let urls = new Map();
+
+  const nomesMeses = [
+    "Janeiro", "Fevereiro", "Março", "Abril",
+    "Maio", "Junho", "Julho", "Agosto",
+    "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+
+  function dataHoje() {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0, 10);
+  }
+
+  function chaveMes(data) {
+    return String(data || "").slice(0, 7);
+  }
+
+  function nomeMes(chave) {
+    const [ano, mes] = chave.split("-").map(Number);
+    return `${nomesMeses[mes - 1]} de ${ano}`;
+  }
+
+  function aviso(texto) {
+    if (el.status) el.status.textContent = texto;
+  }
+
+  function botao(texto, classe, acao) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = classe;
+    b.textContent = texto;
+    b.addEventListener("click", acao);
+    return b;
+  }
+
+  function mostrarInicio() {
+    el.inicio.hidden = true;
+    el.vazio.hidden = true;
+    el.conteudoMes.hidden = true;
+    el.formulario.hidden = true;
+
+    el.secao.hidden = false;
+    el.secao.scrollIntoView({ behavior: "smooth" });
+
+    carregarFotos();
+  }
+
+  function fecharAlbum() {
+    el.secao.hidden = true;
+
+    if (typeof window.voltarParaInicio === "function") {
+      window.voltarParaInicio();
+    }
+  }
+
+  async function obterUrl(caminho) {
+    if (urls.has(caminho)) return urls.get(caminho);
+
+    const { data, error } = await db.storage
+      .from(BUCKET)
+      .createSignedUrl(caminho, 3600);
+
+    if (error) throw error;
+
+    urls.set(caminho, data.signedUrl);
+    return data.signedUrl;
+  }
+
+  async function carregarFotos() {
+    if (!db) {
+      aviso("A conexão com o Supabase não foi encontrada.");
+      return;
+    }
+
+    aviso("Carregando nossas lembranças...");
+
+    try {
+      const { data: sessao, error: erroAuth } =
+        await db.auth.getUser();
+
+      if (erroAuth) throw erroAuth;
+
+      if (!sessao.user) {
+        fotos = [];
+        mostrarVazio(
+          "Entre no site com uma sessão autorizada para acessar o álbum."
+        );
+        return;
+      }
+
+      usuario = sessao.user;
+
+      const { data, error } = await db
+        .from(TABELA)
+        .select(
+          "id,tipo,caminho_arquivo,legenda,data_lembranca,criado_por,criado_em"
+        )
+        .eq("tipo", "foto")
+        .order("data_lembranca", { ascending: false });
+
+      if (error) throw error;
+
+      fotos = data || [];
+
+      if (mesAtual) {
+        const existe = fotos.some(
+          f => chaveMes(f.data_lembranca || f.criado_em) === mesAtual
+        );
+
+        if (existe) {
+          abrirMes(mesAtual);
+        } else {
+          mesAtual = null;
+          mostrarListaInicial();
+        }
+      } else {
+        mostrarListaInicial();
+      }
+
+      aviso(
+        fotos.length
+          ? `${fotos.length} foto(s) no nosso álbum.`
+          : "Nosso álbum ainda está vazio."
+      );
+    } catch (erro) {
+      console.error("Erro ao carregar álbum:", erro);
+      aviso(
+        "Não foi possível carregar as fotos. Verifique as permissões do Supabase."
+      );
+    }
+  }
+
+  function mostrarVazio(texto) {
+    el.inicio.hidden = true;
+    el.conteudoMes.hidden = true;
+    el.formulario.hidden = true;
+    el.vazio.hidden = false;
+
+    const p = el.vazio.querySelector("p");
+    if (p && texto) p.textContent = texto;
+  }
+
+  function mostrarListaInicial() {
+    el.vazio.hidden = true;
+    el.conteudoMes.hidden = true;
+    el.formulario.hidden = true;
+
+    if (!fotos.length) {
+      mostrarVazio();
+      return;
+    }
+
+    el.inicio.hidden = false;
+    el.meses.replaceChildren();
+
+    const grupos = new Map();
+
+    for (const foto of fotos) {
+      const chave = chaveMes(foto.data_lembranca || foto.criado_em);
+      if (!/^\d{4}-\d{2}$/.test(chave)) continue;
+
+      if (!grupos.has(chave)) grupos.set(chave, []);
+      grupos.get(chave).push(foto);
+    }
+
+    for (const [chave, grupo] of [...grupos.entries()].sort(
+      (a, b) => b[0].localeCompare(a[0])
+    )) {
+      const cartao = botao("", "album-mes", () => abrirMes(chave));
+
+      const capa = document.createElement("img");
+      capa.className = "album-capa";
+      capa.alt = nomeMes(chave);
+      capa.loading = "lazy";
+
+      const info = document.createElement("span");
+      info.className = "album-mes-info";
+
+      const titulo = document.createElement("strong");
+      titulo.textContent = nomeMes(chave);
+
+      const quantidade = document.createElement("small");
+      quantidade.textContent =
+        `${grupo.length} ${grupo.length === 1 ? "foto" : "fotos"}`;
+
+      info.append(titulo, quantidade);
+      cartao.append(capa, info);
+      el.meses.append(cartao);
+
+      obterUrl(grupo[0].caminho_arquivo)
+        .then(url => { capa.src = url; })
+        .catch(erro => console.error("Erro na capa:", erro));
+    }
+  }
+
+  function abrirMes(chave) {
+    mesAtual = chave;
+    el.vazio.hidden = true;
+    el.inicio.hidden = true;
+    el.conteudoMes.hidden = false;
+    el.formulario.hidden = true;
+    el.tituloMes.textContent = nomeMes(chave);
+    el.galeria.replaceChildren();
+
+    const grupo = fotos.filter(
+      f => chaveMes(f.data_lembranca || f.criado_em) === chave
+    );
+
+    for (const foto of grupo) {
+      const b = botao("", "album-foto", () => abrirFoto(foto));
+      const img = document.createElement("img");
+
+      img.alt = foto.legenda || "Lembrança do casal";
+      img.loading = "lazy";
+      b.append(img);
+      el.galeria.append(b);
+
+      obterUrl(foto.caminho_arquivo)
+        .then(url => { img.src = url; })
+        .catch(erro => console.error("Erro na foto:", erro));
+    }
+  }
+
+  function escolherFotos() {
+    if (enviando) return;
+
+    el.arquivos.value = "";
+    el.arquivos.click();
+  }
+
+  function formularioComFotos() {
+    if (!el.arquivos.files.length) return;
+
+    el.formulario.hidden = false;
+    el.vazio.hidden = true;
+    el.uploadStatus.textContent =
+      `${el.arquivos.files.length} foto(s) selecionada(s).`;
+
+    el.data.value = mesAtual
+      ? `${mesAtual}-${dataHoje().slice(8, 10)}`
+      : dataHoje();
+
+    // Garante uma data válida dentro do mês selecionado.
+    if (mesAtual && chaveMes(el.data.value) !== mesAtual) {
+      const [ano, mes] = mesAtual.split("-").map(Number);
+      const ultimoDia = new Date(ano, mes, 0).getDate();
+
+      el.data.value =
+        `${mesAtual}-${String(ultimoDia).padStart(2, "0")}`;
+    }
+
+    el.legenda.value = "";
+  }
+
+  async function salvarFotos(evento) {
+    evento.preventDefault();
+
+    if (enviando) return;
+
+    const arquivos = Array.from(el.arquivos.files || []);
+    const data = el.data.value;
+    const legenda = el.legenda.value.trim();
+
+    if (!usuario || !arquivos.length || !data) {
+      el.uploadStatus.textContent =
+        "Selecione fotos e informe a data.";
+      return;
+    }
+
+    if (arquivos.some(f => !f.type.startsWith("image/"))) {
+      el.uploadStatus.textContent =
+        "Escolha somente arquivos de imagem.";
+      return;
+    }
+
+    if (arquivos.some(f => f.size > 15 * 1024 * 1024)) {
+      el.uploadStatus.textContent =
+        "Cada foto deve ter no máximo 15 MB.";
+      return;
+    }
+
+    enviando = true;
+
+    const enviarBotao = el.formulario.querySelector(
+      'button[type="submit"]'
+    );
+
+    enviarBotao.disabled = true;
+    el.uploadStatus.textContent = "Salvando suas fotos...";
+
+    let salvas = 0;
+
+    try {
+      for (const arquivo of arquivos) {
+        const nomeSeguro = arquivo.name
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-zA-Z0-9._-]/g, "_");
+
+        const caminho =
+          `${usuario.id}/${crypto.randomUUID()}-${nomeSeguro}`;
+
+        const { error: erroUpload } = await db.storage
+          .from(BUCKET)
+          .upload(caminho, arquivo, {
+            upsert: false,
+            contentType: arquivo.type
+          });
+
+        if (erroUpload) throw erroUpload;
+
+        const { error: erroRegistro } = await db
+          .from(TABELA)
+          .insert({
+            tipo: "foto",
+            caminho_arquivo: caminho,
+            legenda: legenda || null,
+            data_lembranca: data,
+            criado_por: usuario.id
+          });
+
+        if (erroRegistro) {
+          await db.storage.from(BUCKET).remove([caminho]);
+          throw erroRegistro;
+        }
+
+        salvas++;
+      }
+
+      el.uploadStatus.textContent = "Fotos salvas com sucesso!";
+      el.arquivos.value = "";
+      el.formulario.hidden = true;
+
+      await carregarFotos();
+
+      if (mesAtual && chaveMes(data) === mesAtual) {
+        abrirMes(mesAtual);
+      } else if (mesAtual) {
+        mesAtual = null;
+        mostrarListaInicial();
+      }
+    } catch (erro) {
+      console.error("Erro ao enviar fotos:", erro);
+
+      el.uploadStatus.textContent = salvas
+        ? `${salvas} foto(s) salvas. Algumas não puderam ser enviadas.`
+        : "Não foi possível salvar. Confira a conexão e as permissões do Supabase.";
+
+      await carregarFotos();
+    } finally {
+      enviando = false;
+      enviarBotao.disabled = false;
+    }
+  }
+
+  async function abrirFoto(foto) {
+    fotoAtual = foto;
+
+    try {
+      const url = await obterUrl(foto.caminho_arquivo);
+
+      el.fotoAmpliada.src = url;
+      el.legendaAmpliada.textContent = foto.legenda || "";
+      el.baixar.href = url;
+      el.baixar.download =
+        foto.caminho_arquivo.split("/").pop() || "lembranca.jpg";
+
+      el.visualizador.showModal();
+    } catch (erro) {
+      console.error("Erro ao abrir foto:", erro);
+      aviso("Não foi possível abrir esta foto.");
+    }
+  }
+
+  async function excluirFoto() {
+    if (!fotoAtual || enviando) return;
+
+    if (!confirm("Deseja excluir esta foto do álbum?")) return;
+
+    enviando = true;
+    el.excluir.disabled = true;
+
+    try {
+      const { error: erroRegistro } = await db
+        .from(TABELA)
+        .delete()
+        .eq("id", fotoAtual.id);
+
+      if (erroRegistro) throw erroRegistro;
+
+      const { error: erroArquivo } = await db.storage
+        .from(BUCKET)
+        .remove([fotoAtual.caminho_arquivo]);
+
+      if (erroArquivo) {
+        console.error("Arquivo não removido:", erroArquivo);
+      }
+
+      urls.delete(fotoAtual.caminho_arquivo);
+      el.visualizador.close();
+      el.fotoAmpliada.removeAttribute("src");
+      fotoAtual = null;
+
+      await carregarFotos();
+
+      if (mesAtual) abrirMes(mesAtual);
+    } catch (erro) {
+      console.error("Erro ao excluir:", erro);
+      aviso("Não foi possível excluir. Confira as permissões.");
+    } finally {
+      enviando = false;
+      el.excluir.disabled = false;
+    }
+  }
+
+  $("albumAdicionar").addEventListener("click", escolherFotos);
+  $("albumAdicionarTopo").addEventListener("click", escolherFotos);
+  $("albumAdicionarMes").addEventListener("click", escolherFotos);
+
+  el.arquivos.addEventListener("change", formularioComFotos);
+  el.formulario.addEventListener("submit", salvarFotos);
+  el.excluir.addEventListener("click", excluirFoto);
+
+  $("albumCancelar").addEventListener("click", () => {
+    el.formulario.hidden = true;
+    el.arquivos.value = "";
+    if (!fotos.length) mostrarVazio();
+  });
+
+  $("albumFechar").addEventListener("click", () => {
+    el.visualizador.close();
+  });
+
+  $("albumVoltarMes").addEventListener("click", () => {
+    mesAtual = null;
+    mostrarListaInicial();
+  });
+
+  $("albumVoltar").addEventListener("click", fecharAlbum);
+
+  el.visualizador.addEventListener("click", evento => {
+    if (evento.target === el.visualizador) {
+      el.visualizador.close();
+    }
+  });
+
+  // Usada pelo botão "Nossas Memórias" no menu.
+  window.abrirNossoAlbum = mostrarInicio;
+
+  if (db) {
+    // Não altera a agenda; carrega os dados quando o álbum é aberto.
+    el.vazio.hidden = true;
+    el.inicio.hidden = true;
+    el.conteudoMes.hidden = true;
+  } else {
+    aviso("Configure a conexão do Supabase antes de usar o álbum.");
+  }
+})();
+    
 // =========================================================
 // QUEM É MAIS?
 // =========================================================
