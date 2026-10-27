@@ -268,6 +268,17 @@ MENU PRINCIPAL DO NOSSO CANTINHO
     </button>
 
 </section>
+
+    <!-- BOTÃO DO ÁLBUM NO MENU PRINCIPAL -->
+<section class="card entradaEspecial" id="cartaoAlbumCasal">
+  <h3>♡ Nossas Memórias</h3>
+  <p>Os nossos momentos guardados em um só lugar.</p>
+
+  <button type="button" onclick="abrirNossoAlbum()">
+    <span aria-hidden="true">▧</span>
+    Abrir álbum →
+  </button>
+</section>
     
     <!-- =========================
 AGENDA LN
@@ -890,6 +901,164 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
 </script>
     
     </div>
+
+<!-- =========================
+    NOSSO CANTINHO — ÁLBUM DE FOTOS
+========================= -->
+    
+<section id="albumCasal" class="album-casal" hidden>
+
+  <header class="album-cabecalho">
+    <button type="button" id="albumVoltar" class="album-voltar">
+      <span aria-hidden="true">←</span> Voltar
+    </button>
+
+    <div class="album-titulo">
+      <span class="album-icone" aria-hidden="true">♡</span>
+      <div>
+        <h2>Nossas Memórias</h2>
+        <p>Lanaj &amp; Nazareno 🫀</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- TELA INICIAL: ÁLBUM VAZIO -->
+  <div id="albumVazio" class="album-vazio" hidden>
+    <div class="album-ilustracao" aria-hidden="true">
+      <svg viewBox="0 0 100 100" width="86" height="86"
+        fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="15" y="23" width="62" height="60"
+          rx="9" stroke="currentColor" stroke-width="3"/>
+        <rect x="24" y="15" width="62" height="60"
+          rx="9" fill="#fffaf8" stroke="currentColor"
+          stroke-width="3"/>
+        <circle cx="43" cy="34" r="6"
+          fill="currentColor"/>
+        <path d="M27 65L44 47L54 57L63 48L80 65"
+          stroke="currentColor" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M73 12V28M65 20H81"
+          stroke="#fffaf8" stroke-width="5"
+          stroke-linecap="round"/>
+        <path d="M73 12V28M65 20H81"
+          stroke="currentColor" stroke-width="3"
+          stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h3>Nosso álbum começa aqui</h3>
+    <p>
+      Escolha suas fotos favoritas e guarde
+      nossos momentos em um só lugar.
+    </p>
+
+    <button type="button" id="albumAdicionar"
+      class="album-botao">
+      <span aria-hidden="true">＋</span>
+      Adicionar fotos da galeria
+    </button>
+
+    <small>Suas lembranças, guardadas com carinho. ♡</small>
+  </div>
+
+  <!-- TELA DOS ÁLBUNS -->
+  <div id="albumInicio" hidden>
+    <div class="album-barra">
+      <h3>Meus álbuns</h3>
+
+      <button type="button" id="albumAdicionarTopo"
+        class="album-botao-icone"
+        aria-label="Adicionar fotos">
+        ＋
+      </button>
+    </div>
+
+    <div id="albumMeses" class="album-meses"></div>
+  </div>
+
+  <!-- FOTOS DO MÊS SELECIONADO -->
+  <div id="albumConteudoMes" hidden>
+    <button type="button" id="albumVoltarMes"
+      class="album-voltar-mes">
+      ← Todos os álbuns
+    </button>
+
+    <h3 id="albumTituloMes"></h3>
+
+    <button type="button" id="albumAdicionarMes"
+      class="album-botao">
+      ＋ Adicionar fotos
+    </button>
+
+    <div id="albumGaleria" class="album-galeria"></div>
+  </div>
+
+  <!-- FORMULÁRIO DE ENVIO -->
+  <form id="albumFormulario" class="album-formulario" hidden>
+    <h3>Adicionar lembranças</h3>
+
+    <label for="albumArquivos">Escolha suas fotos</label>
+    <input
+      id="albumArquivos"
+      type="file"
+      accept="image/*"
+      multiple
+      required
+    />
+
+    <label for="albumData">Data das fotos</label>
+    <input
+      id="albumData"
+      type="date"
+      required
+    />
+
+    <label for="albumLegenda">Legenda (opcional)</label>
+    <input
+      id="albumLegenda"
+      type="text"
+      maxlength="200"
+      placeholder="Uma lembrança especial..."
+    />
+
+    <button type="submit" class="album-botao">
+      Salvar fotos
+    </button>
+
+    <button type="button" id="albumCancelar"
+      class="album-cancelar">
+      Cancelar
+    </button>
+
+    <p id="albumUploadStatus" role="status"></p>
+  </form>
+
+  <!-- VISUALIZADOR DE FOTO -->
+  <dialog id="albumVisualizador" class="album-visualizador">
+    <button type="button" id="albumFechar"
+      class="album-fechar" aria-label="Fechar">
+      ×
+    </button>
+
+    <img id="albumFotoAmpliada" src=""
+      alt="Lembrança do casal"/>
+
+    <p id="albumLegendaAmpliada"></p>
+
+    <div class="album-acoes">
+      <a id="albumBaixar" href="#" download
+        class="album-botao">
+        Baixar foto
+      </a>
+
+      <button type="button" id="albumExcluir"
+        class="album-excluir">
+        Excluir foto
+      </button>
+    </div>
+  </dialog>
+
+</section>
     
     <!-- =========================
 CARTA ABERTA
