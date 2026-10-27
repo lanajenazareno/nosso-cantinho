@@ -20,6 +20,7 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
+window.supabaseClient = supabaseClient;
 </script>
 </head>
 
@@ -899,8 +900,6 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
   });
 }
 </script>
-    
-    </div>
 
 <!-- =========================
     NOSSO CANTINHO — ÁLBUM DE FOTOS
