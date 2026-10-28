@@ -218,21 +218,18 @@ function voltarMenu() {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-const SUPABASE_URL = "https://spfgfesqgxfygtgxegvf.supabase.co";
+const SUPABASE_URL = "https://supabase.co";
 const SUPABASE_KEY = "sb_publishable_9gjjw2NYkRvEwwr3zZgPyA_f8jsA8jU";
 const CASAL_ID = "6a9b8c1d-2e3f-4a5b-8c7d-9e0f1a2b3c4d";
 
-const clienteSupabase = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY,
-  {
+// Reutiliza o cliente que já foi criado no cabeçalho do index.html para evitar conflitos de sessão
+const clienteSupabase = window.supabaseClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
     auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-      detectSessionInUrl: true
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
     }
-  }
-);
+});
 window.supabaseClient = clienteSupabase;
 let compromissos = [];
 let usuarioConectado = false;
