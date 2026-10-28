@@ -57,7 +57,7 @@ async function verificarSenha() {
     // 2. FAZ O LOGIN OFICIAL NO SUPABASE DE FORMA INVISÍVEL
     // Substitua pelo e-mail e senha que você cadastrou no Authentication do Supabase
     const EMAIL_ACESSO = "antoniajaysllane525@gmail.com"; 
-    const SENHA_ACESSO = "coracao"; 
+    const SENHA_ACESSO = "Laninhaj02!"; 
 
     try {
         // Usa o cliente cadastrado globalmente no seu site
