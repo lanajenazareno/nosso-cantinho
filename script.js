@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
 // VERIFICAR SENHA
 // =========================
 
-function verificarSenha() {
+// COLE ESTE NOVO BLOCO NO LUGAR:
+async function verificarSenha() {
     const campoSenha = document.getElementById("senha");
     const abertura = document.getElementById("aberturaSite");
     const termos = document.getElementById("login");
@@ -42,38 +43,44 @@ function verificarSenha() {
     const conteudo = document.getElementById("conteudoSite");
     const menu = document.getElementById("menuPrincipal");
 
-    if (!campoSenha || campoSenha.value.trim() !== "coracao") {
+    if (!campoSenha) return;
+    const senhaDigitada = campoSenha.value.trim().toLowerCase();
+
+    // 1. Validação da palavra-chave inicial do site
+    if (senhaDigitada !== "coracao") {
         alert("Senha incorreta. Tente novamente.");
-
-        if (campoSenha) {
-            campoSenha.value = "";
-            campoSenha.focus();
-        }
-
+        campoSenha.value = "";
+        campoSenha.focus();
         return;
     }
 
-    // Esconde as outras telas
-    if (titularidade) {
-        titularidade.style.setProperty("display", "none", "important");
-    }
+    // 2. FAZ O LOGIN OFICIAL NO SUPABASE DE FORMA INVISÍVEL
+    // Substitua pelo e-mail e senha que você cadastrou no Authentication do Supabase
+    const EMAIL_ACESSO = "antoniajaysllane525@gmail.com"; 
+    const SENHA_ACESSO = "Laninhaj02!"; 
 
-    if (conteudo) {
-        conteudo.style.setProperty("display", "none", "important");
-    }
+    try {
+        // Usa o cliente cadastrado globalmente no seu site
+        const db = window.supabaseClient;
+        if (!db) throw new Error("Conexão com o banco não encontrada.");
 
-    if (menu) {
-        menu.style.display = "none";
-    }
+        const { data, error } = await db.auth.signInWithPassword({
+            email: EMAIL_ACESSO,
+            password: SENHA_ACESSO
+        });
 
-    // Esconde a abertura
-    if (abertura) {
-        abertura.style.display = "none";
-    }
+        if (error) throw error;
 
-    // Mostra os termos de uso
-    if (termos) {
-        termos.style.setProperty("display", "block", "important");
+        // Se o login deu certo, segue com as animações originais do seu site
+        if (titularidade) titularidade.style.setProperty("display", "none", "important");
+        if (conteudo) conteudo.style.setProperty("display", "none", "important");
+        if (menu) menu.style.display = "none";
+        if (abertura) abertura.style.display = "none";
+        if (termos) termos.style.setProperty("display", "block", "important");
+
+    } catch (erro) {
+        console.error("Erro na autenticação de segurança:", erro);
+        alert("Erro ao conectar ao servidor seguro: " + erro.message);
     }
 }
 
