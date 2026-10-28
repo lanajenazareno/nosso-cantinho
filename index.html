@@ -906,157 +906,87 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
 ========================= -->
     
 <section id="albumCasal" class="album-casal" hidden>
-
-  <header class="album-cabecalho">
-    <button type="button" id="albumVoltar" class="album-voltar">
-      <span aria-hidden="true">←</span> Voltar
-    </button>
-
-    <div class="album-titulo">
-      <span class="album-icone" aria-hidden="true">♡</span>
-      <div>
-        <h2>Nossas Memórias</h2>
-        <p>Lanaj &amp; Nazareno 🫀</p>
-      </div>
+  <header class="galeria-topo">
+    <button type="button" id="albumVoltar" aria-label="Voltar">←</button>
+    <div>
+      <h2>Galeria</h2>
+      <p id="albumContagem">Suas fotos e vídeos</p>
     </div>
+    <button type="button" id="albumAdicionarTopo" aria-label="Adicionar fotos">＋</button>
   </header>
 
-  <!-- TELA INICIAL: ÁLBUM VAZIO -->
-  <div id="albumVazio" class="album-vazio" hidden>
-    <div class="album-ilustracao" aria-hidden="true">
-      <svg viewBox="0 0 100 100" width="86" height="86"
-        fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="15" y="23" width="62" height="60"
-          rx="9" stroke="currentColor" stroke-width="3"/>
-        <rect x="24" y="15" width="62" height="60"
-          rx="9" fill="#fffaf8" stroke="currentColor"
-          stroke-width="3"/>
-        <circle cx="43" cy="34" r="6"
-          fill="currentColor"/>
-        <path d="M27 65L44 47L54 57L63 48L80 65"
-          stroke="currentColor" stroke-width="3"
-          stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M73 12V28M65 20H81"
-          stroke="#fffaf8" stroke-width="5"
-          stroke-linecap="round"/>
-        <path d="M73 12V28M65 20H81"
-          stroke="currentColor" stroke-width="3"
-          stroke-linecap="round"/>
-      </svg>
+  <div id="albumInicio">
+    <div id="albumVazio" class="galeria-vazia" hidden>
+      <span>▧</span>
+      <p>Nenhuma foto por aqui ainda</p>
+      <button type="button" id="albumAdicionar">Adicionar fotos</button>
     </div>
 
-    <h3>Nosso álbum começa aqui</h3>
-    <p>
-      Escolha suas fotos favoritas e guarde
-      nossos momentos em um só lugar.
-    </p>
-
-    <button type="button" id="albumAdicionar"
-      class="album-botao">
-      <span aria-hidden="true">＋</span>
-      Adicionar fotos da galeria
-    </button>
-
-    <small>Suas lembranças, guardadas com carinho. ♡</small>
+    <div id="albumMeses" class="galeria-grade"></div>
   </div>
 
-  <!-- TELA DOS ÁLBUNS -->
-  <div id="albumInicio" hidden>
-    <div class="album-barra">
-      <h3>Meus álbuns</h3>
-
-      <button type="button" id="albumAdicionarTopo"
-        class="album-botao-icone"
-        aria-label="Adicionar fotos">
-        ＋
-      </button>
-    </div>
-
-    <div id="albumMeses" class="album-meses"></div>
-  </div>
-
-  <!-- FOTOS DO MÊS SELECIONADO -->
   <div id="albumConteudoMes" hidden>
-    <button type="button" id="albumVoltarMes"
-      class="album-voltar-mes">
-      ← Todos os álbuns
-    </button>
+    <header class="galeria-subtopo">
+      <button type="button" id="albumVoltarMes">←</button>
+      <h3 id="albumTituloMes">Fotos</h3>
+      <button type="button" id="albumAdicionarMes" aria-label="Adicionar fotos">＋</button>
+    </header>
 
-    <h3 id="albumTituloMes"></h3>
-
-    <button type="button" id="albumAdicionarMes"
-      class="album-botao">
-      ＋ Adicionar fotos
-    </button>
-
-    <div id="albumGaleria" class="album-galeria"></div>
+    <div id="albumGaleria" class="galeria-grade"></div>
   </div>
 
-  <!-- FORMULÁRIO DE ENVIO -->
-  <form id="albumFormulario" class="album-formulario" hidden>
-    <h3>Adicionar lembranças</h3>
+  <form id="albumFormulario" class="galeria-formulario" hidden>
+    <h3>Adicionar fotos</h3>
 
-    <label for="albumArquivos">Escolha suas fotos</label>
+    <label for="albumArquivos">Escolha fotos ou vídeos</label>
     <input
-      id="albumArquivos"
       type="file"
-      accept="image/*"
+      id="albumArquivos"
+      accept="image/*,video/*"
       multiple
       required
     />
 
-    <label for="albumData">Data das fotos</label>
-    <input
-      id="albumData"
-      type="date"
-      required
-    />
+    <label for="albumData">Data das lembranças</label>
+    <input type="date" id="albumData" required />
 
     <label for="albumLegenda">Legenda (opcional)</label>
     <input
-      id="albumLegenda"
       type="text"
+      id="albumLegenda"
+      placeholder="Adicionar uma legenda"
       maxlength="200"
-      placeholder="Uma lembrança especial..."
     />
 
-    <button type="submit" class="album-botao">
-      Salvar fotos
-    </button>
+    <p id="albumUploadStatus" role="status" aria-live="polite"></p>
 
-    <button type="button" id="albumCancelar"
-      class="album-cancelar">
-      Cancelar
-    </button>
-
-    <p id="albumUploadStatus" role="status"></p>
+    <div class="galeria-acoes-formulario">
+      <button type="button" id="albumCancelar">Cancelar</button>
+      <button type="submit">Salvar</button>
+    </div>
   </form>
 
-  <!-- VISUALIZADOR DE FOTO -->
-  <dialog id="albumVisualizador" class="album-visualizador">
-    <button type="button" id="albumFechar"
-      class="album-fechar" aria-label="Fechar">
-      ×
-    </button>
+  <dialog id="albumVisualizador" class="galeria-visualizador">
+    <header class="visualizador-topo">
+      <button type="button" id="albumFechar" aria-label="Fechar">✕</button>
+      <div>
+        <p id="albumLegendaAmpliada">Foto</p>
+        <small id="albumDataAmpliada"></small>
+      </div>
+      <button type="button" id="albumCompartilhar" aria-label="Compartilhar">↗</button>
+    </header>
 
-    <img id="albumFotoAmpliada" src=""
-      alt="Lembrança do casal"/>
-
-    <p id="albumLegendaAmpliada"></p>
-
-    <div class="album-acoes">
-      <a id="albumBaixar" href="#" download
-        class="album-botao">
-        Baixar foto
-      </a>
-
-      <button type="button" id="albumExcluir"
-        class="album-excluir">
-        Excluir foto
-      </button>
+    <div class="visualizador-imagem">
+      <button type="button" id="albumFotoAnterior" aria-label="Foto anterior">‹</button>
+      <img id="albumFotoAmpliada" alt="Foto da galeria" />
+      <button type="button" id="albumFotoProxima" aria-label="Próxima foto">›</button>
     </div>
-  </dialog>
 
+    <footer class="visualizador-rodape">
+      <a id="albumBaixar" href="#" download>Baixar</a>
+      <button type="button" id="albumExcluir">Excluir</button>
+    </footer>
+  </dialog>
 </section>
     
     <!-- =========================
