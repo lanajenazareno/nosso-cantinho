@@ -960,10 +960,17 @@ botaoNotificacoes.textContent = "🔔 Notificações ativadas";
 
     <p id="albumUploadStatus" role="status" aria-live="polite"></p>
 
-    <div class="galeria-acoes-formulario">
-      <button type="button" id="albumCancelar">Cancelar</button>
-      <button type="submit">Salvar</button>
-    </div>
+    <div class="galeria-acoes-formulario" style="display:flex; gap:12px; margin-top:20px;">
+  <button type="button" id="albumCancelar"
+    style="flex:1; padding:14px; border:1px solid #ccc; border-radius:10px; background:#fff; color:#333;">
+    Cancelar
+  </button>
+
+  <button type="submit"
+    style="flex:1; padding:14px; border:0; border-radius:10px; background:#70283c; color:#fff;">
+    Adicionar fotos
+  </button>
+</div>
   </form>
 
   <dialog id="albumVisualizador" class="galeria-visualizador">
