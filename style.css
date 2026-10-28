@@ -1129,23 +1129,28 @@ margin: 25px 10px;
   }
 }
 
-/* ===== ÁLBUM DO NOSSO CANTINHO ===== */
+/* ===== GALERIA DO NOSSO CANTINHO ===== */
 
 .album-casal {
-  --album-vinho: #702b3b;
-  --album-vinho-escuro: #4b1927;
-  --album-fundo: #fff9fa;
-  --album-texto: #30252a;
+  --album-vinho: #70283c;
+  --album-fundo: #ffffff;
+  --album-texto: #242424;
+  --album-cinza: #777777;
 
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 18px;
-  color: var(--album-texto);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
   background: var(--album-fundo);
-  border-radius: 20px;
+  color: var(--album-texto);
+  font-family: Arial, sans-serif;
   box-sizing: border-box;
-  font-family: inherit;
+}
+
+.album-casal *,
+.album-casal *::before,
+.album-casal *::after {
+  box-sizing: border-box;
 }
 
 .album-casal[hidden],
@@ -1153,338 +1158,362 @@ margin: 25px 10px;
   display: none !important;
 }
 
-.album-cabecalho {
+/* Cabeçalho */
+
+.galeria-topo,
+.galeria-subtopo {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 22px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #eadde1;
+  padding: 14px 16px;
+  background: #fff;
+  border-bottom: 1px solid #eeeeee;
 }
 
-.album-cabecalho h2 {
-  margin: 0;
-  color: var(--album-vinho-escuro);
-  font-size: 1.4rem;
+.galeria-topo {
+  position: sticky;
+  top: 0;
+  z-index: 5;
 }
 
-.album-cabecalho p {
-  margin: 5px 0 0;
-  color: #806c73;
-  font-size: 0.9rem;
-}
-
-.album-casal button,
-.album-casal .album-botao {
-  min-height: 42px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 12px;
-  background: var(--album-vinho);
-  color: white;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.album-casal button:hover {
-  background: var(--album-vinho-escuro);
-}
-
-.album-casal button:active {
-  transform: scale(0.98);
-}
-
-.album-casal button:focus-visible,
-.album-casal a:focus-visible {
-  outline: 3px solid #c89aa7;
-  outline-offset: 3px;
-}
-
-#albumVoltar,
-#albumVoltarMes {
-  flex-shrink: 0;
-  padding: 9px 12px;
-  background: #f0e3e7;
-  color: var(--album-vinho-escuro);
-}
-
-#albumVazio {
-  padding: 35px 15px;
-  text-align: center;
-}
-
-#albumVazio h3 {
-  margin-bottom: 8px;
-  color: var(--album-vinho-escuro);
-}
-
-#albumVazio p {
-  color: #806c73;
-  line-height: 1.6;
-}
-
-#albumInicio h3,
-#albumConteudoMes h3 {
-  margin: 0;
-  color: var(--album-vinho-escuro);
-}
-
-#albumInicio > button,
-#albumConteudoMes > button {
-  margin: 14px 0 20px;
-}
-
-#albumMeses {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.album-mes,
-.album-capa-mes {
+.galeria-topo > div {
+  flex: 1;
   min-width: 0;
-  overflow: hidden;
-  border-radius: 15px;
-  background: #f3e8eb;
-  color: var(--album-vinho-escuro);
-  text-align: left;
 }
 
-.album-casal #albumMeses button {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  padding: 8px;
-  background: #f3e8eb;
-  color: var(--album-vinho-escuro);
-}
-
-.album-capa-mes,
-.album-mes img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
-}
-
-.album-mes-nome {
-  padding: 3px 5px 7px;
-  font-size: 0.95rem;
+.galeria-topo h2,
+.galeria-subtopo h3 {
+  margin: 0;
+  font-size: 19px;
   font-weight: 700;
 }
 
-.album-mes-quantidade {
-  padding: 0 5px 7px;
-  color: #806c73;
-  font-size: 0.8rem;
+.galeria-topo p {
+  margin: 4px 0 0;
+  color: var(--album-cinza);
+  font-size: 12px;
 }
 
-#albumGaleria {
+.galeria-subtopo h3 {
+  flex: 1;
+}
+
+.album-casal button {
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.galeria-topo button,
+.galeria-subtopo button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f4f4f4;
+  color: #222;
+  font-size: 25px;
+}
+
+/* Grade de fotos */
+
+.galeria-grade {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
-  margin-top: 15px;
+  gap: 3px;
+  padding: 3px;
 }
 
-.album-foto {
+.galeria-item {
+  position: relative;
   display: block;
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   padding: 0;
-  border-radius: 4px;
-  background: #f0e3e7;
+  border: 0;
+  border-radius: 0;
+  background: #f0f0f0;
 }
 
-.album-casal #albumGaleria button {
-  min-height: 0;
-  padding: 0;
-  border-radius: 4px;
-  overflow: hidden;
-  background: #f0e3e7;
-}
-
-#albumGaleria img {
+.galeria-item img,
+.galeria-item video {
   display: block;
   width: 100%;
   height: 100%;
-  aspect-ratio: 1 / 1;
   object-fit: cover;
 }
 
-#albumFormulario {
+.galeria-item .galeria-indicador-video {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: #0009;
+  color: #fff;
+  font-size: 12px;
+}
+
+/* Galeria vazia */
+
+.galeria-vazia {
+  min-height: 55vh;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  gap: 13px;
-  margin-top: 20px;
-  padding: 17px;
-  border: 1px solid #eadde1;
-  border-radius: 16px;
-  background: white;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.galeria-vazia > span {
+  color: #999;
+  font-size: 54px;
+}
+
+.galeria-vazia p {
+  color: #555;
+  font-size: 15px;
+}
+
+.galeria-vazia button,
+#albumFormulario .galeria-acoes-formulario button {
+  min-height: 46px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Formulario para adicionar */
+
+#albumFormulario {
+  width: 100%;
+  padding: 20px 16px 28px;
+  background: #fff;
+}
+
+#albumFormulario h3 {
+  margin: 0 0 22px;
+  font-size: 21px;
 }
 
 #albumFormulario label {
-  color: var(--album-vinho-escuro);
+  display: block;
+  margin: 17px 0 8px;
+  font-size: 14px;
   font-weight: 600;
+  color: #333;
 }
 
 #albumFormulario input[type="file"],
 #albumFormulario input[type="date"],
 #albumFormulario input[type="text"] {
+  display: block;
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 11px;
-  border: 1px solid #d9c5cc;
+  min-height: 46px;
+  padding: 12px;
+  border: 1px solid #d8d8d8;
   border-radius: 10px;
   background: #fff;
-  color: var(--album-texto);
+  color: #222;
   font: inherit;
+  font-size: 14px;
 }
 
-#albumFormulario button[type="button"] {
-  background: #f0e3e7;
-  color: var(--album-vinho-escuro);
-}
-
-#albumUploadStatus {
-  min-height: 1.3em;
-  color: var(--album-vinho);
-  font-size: 0.9rem;
-}
-
-#albumVisualizador {
-  width: min(92vw, 700px);
-  max-width: 700px;
-  max-height: 90dvh;
-  padding: 18px;
-  border: none;
-  border-radius: 18px;
-  background: #fff9fa;
-  color: var(--album-texto);
-  box-sizing: border-box;
-}
-
-#albumVisualizador::backdrop {
-  background: rgb(25 10 15 / 78%);
-}
-
-#albumFechar {
-  display: block;
-  margin: 0 0 12px auto;
-  min-width: 42px;
-  font-size: 1.2rem;
-}
-
-#albumFotoAmpliada {
-  display: block;
-  width: 100%;
-  max-height: 58dvh;
-  object-fit: contain;
-  border-radius: 10px;
-  background: #f3e8eb;
-}
-
-#albumLegendaAmpliada {
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-
-#albumBaixar {
-  display: inline-block;
-  margin: 5px 8px 5px 0;
-  color: var(--album-vinho);
-  font-weight: 700;
-}
-
-#albumExcluir {
-  background: #8d2939;
-}
-
-@media (min-width: 600px) {
-  .album-casal {
-    padding: 25px;
-  }
-
-  #albumMeses {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  #albumGaleria {
-    gap: 7px;
-  }
-}
-
-@media (max-width: 360px) {
-  .album-casal {
-    padding: 12px;
-  }
-
-  .album-cabecalho h2 {
-    font-size: 1.15rem;
-  }
-
-  .album-casal button {
-    padding: 9px 11px;
-  }
-}
-
-.album-cartao-mes,
-.album-item-foto {
-  padding: 0;
-  border: 1px solid #ead5dc;
-  background: #fffdfb;
-  color: #571b30;
-  cursor: pointer;
-  text-align: left;
-  font: inherit;
-}
-
-.album-capa-mes {
-  display: grid;
-  place-items: center;
-  min-height: 100px;
-  background: #f5e8eb;
-  color: #762c46;
-  font-size: 32px;
-}
-
-.album-capa-mes img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-
-.album-detalhes-mes {
-  display: grid;
-  gap: 5px;
+#albumFormulario input[type="file"] {
   padding: 10px;
 }
 
-.album-detalhes-mes strong {
-  font-size: 12px;
-  line-height: 1.4;
+#albumFormulario input:focus {
+  outline: 2px solid #b98291;
+  outline-offset: 1px;
 }
 
-.album-detalhes-mes span,
-.album-data-foto {
-  color: #86616e;
-  font-size: 11px;
+#albumUploadStatus {
+  min-height: 20px;
+  margin: 12px 0;
+  color: #555;
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
-.album-item-foto img {
-  display: block;
+.galeria-acoes-formulario {
+  display: flex !important;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+#albumFormulario .galeria-acoes-formulario button {
+  display: inline-flex !important;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #333;
+}
+
+#albumFormulario .galeria-acoes-formulario button[type="submit"] {
+  border-color: var(--album-vinho);
+  background: var(--album-vinho);
+  color: #fff;
+}
+
+#albumFormulario button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Visualizador de fotos */
+
+#albumVisualizador {
   width: 100%;
-  aspect-ratio: 1 / 1.2;
-  object-fit: cover;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: #080808;
+  color: #fff;
 }
 
-.album-data-foto {
+#albumVisualizador::backdrop {
+  background: #080808;
+}
+
+#albumVisualizador[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.visualizador-topo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 10px 14px;
+  background: #111;
+}
+
+.visualizador-topo button {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #292929;
+  color: #fff;
+  font-size: 21px;
+}
+
+.visualizador-topo > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.visualizador-topo p {
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+
+.visualizador-topo small {
+  color: #bbb;
+  font-size: 12px;
+}
+
+.visualizador-imagem {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  min-height: 0;
+  padding: 8px;
+}
+
+.visualizador-imagem img,
+.visualizador-imagem video {
   display: block;
-  padding: 7px;
-  text-align: center;
+  max-width: calc(100% - 70px);
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.visualizador-imagem button {
+  flex-shrink: 0;
+  width: 32px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: #292929;
+  color: #fff;
+  font-size: 28px;
+}
+
+.visualizador-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #111;
+}
+
+.visualizador-rodape a,
+.visualizador-rodape button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid #555;
+  border-radius: 9px;
+  background: #292929;
+  color: #fff;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.visualizador-rodape button {
+  border-color: #a83b48;
+  background: #a83b48;
+}
+
+/* Celulares pequenos */
+
+@media (max-width: 360px) {
+  .galeria-topo,
+  .galeria-subtopo {
+    padding: 11px;
+    gap: 8px;
+  }
+
+  .galeria-topo h2,
+  .galeria-subtopo h3 {
+    font-size: 17px;
+  }
+
+  #albumFormulario {
+    padding: 16px 12px 24px;
+  }
+
+  .galeria-acoes-formulario {
+    gap: 8px;
+  }
+
+  #albumFormulario .galeria-acoes-formulario button {
+    padding: 10px;
+    font-size: 14px;
+  }
 }
