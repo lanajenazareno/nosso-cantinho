@@ -330,7 +330,6 @@ async function carregarCompromissos() {
   }
 }
 
-<script>
 const VAPID_PUBLIC_KEY = "BOD1z2LPVE2HG9TvBdBHaUNSEvfay8DCDmYpqNibKOS3-vp8301E2uiQVr7Z9iW2qca7uu6Fdn4ekdVQx10QKSg";
 
 function converterChaveBase64(valor) {
@@ -449,12 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
   }
 });
-</script>
 
-<script>
-(() => {
-  "use strict";
-    
 // =========================================================
 // QUEM É MAIS?
 // =========================================================
