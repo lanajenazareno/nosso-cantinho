@@ -170,18 +170,19 @@ videoTitularidade.addEventListener("ended", function () {
 function abrirHistoria() {
     const menu = document.getElementById("menuPrincipal");
     const historia = document.getElementById("historiaAniversario");
-    const contrato = document.getElementById("contratoNamoro");
 
-    if (!menu || !historia || !contrato) {
-        alert("Não foi possível abrir as lembranças. Verifique os elementos do menu.");
+    if (!menu || !historia) {
+        alert("Não foi possível abrir nossa história.");
         return;
     }
 
     menu.style.display = "none";
-    contrato.style.display = "none";
     historia.style.display = "block";
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 function abrirContrato() {
