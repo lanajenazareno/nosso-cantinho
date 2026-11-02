@@ -179,10 +179,22 @@ function abrirHistoria() {
     menu.style.display = "none";
     historia.style.display = "block";
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function voltarMenu() {
+    const menu = document.getElementById("menuPrincipal");
+    const historia = document.getElementById("historiaAniversario");
+
+    if (!menu || !historia) {
+        alert("Não foi possível voltar ao menu.");
+        return;
+    }
+
+    historia.style.display = "none";
+    menu.style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function abrirContrato() {
