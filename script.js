@@ -163,73 +163,62 @@ videoTitularidade.addEventListener("ended", function () {
     }, 7000);
 }
 
-// =========================================================
-// MENU PRINCIPAL — NOSSO CANTINHO 
-// =========================================================
+/* =====================================
+   MENU PRINCIPAL — NOSSO CANTINHO
+===================================== */
 
-function abrirHistoria() {
+window.abrirHistoria = function () {
     const menu = document.getElementById("menuPrincipal");
+    const experiencia = document.getElementById("experienciaHistoria");
     const historia = document.getElementById("historiaAniversario");
 
-    if (!menu || !historia) {
+    if (!menu || !experiencia || !historia) {
         alert("Não foi possível abrir nossa história.");
         return;
     }
 
     menu.style.display = "none";
+    experiencia.style.display = "block";
     historia.style.display = "block";
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-}
+};
 
-function voltarMenu() {
+window.abrirContrato = function () {
     const menu = document.getElementById("menuPrincipal");
-    const historia = document.getElementById("historiaAniversario");
-
-    if (!menu || !historia) {
-        alert("Não foi possível voltar ao menu.");
-        return;
-    }
-
-    historia.style.display = "none";
-    menu.style.display = "block";
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function abrirContrato() {
-    const menu = document.getElementById("menuPrincipal");
+    const experiencia = document.getElementById("experienciaHistoria");
     const historia = document.getElementById("historiaAniversario");
     const contrato = document.getElementById("contratoNamoro");
 
-    if (!menu || !historia || !contrato) {
-        alert("Não foi possível abrir o contrato. Verifique os elementos do menu.");
+    if (!menu || !contrato) {
+        alert("Não foi possível abrir o contrato.");
         return;
     }
 
     menu.style.display = "none";
-    historia.style.display = "none";
+
+    if (experiencia) experiencia.style.display = "none";
+    if (historia) historia.style.display = "none";
+
     contrato.style.display = "block";
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-}
+};
 
-function voltarMenu() {
+window.voltarMenu = function () {
     const menu = document.getElementById("menuPrincipal");
+    const experiencia = document.getElementById("experienciaHistoria");
     const historia = document.getElementById("historiaAniversario");
     const contrato = document.getElementById("contratoNamoro");
 
-    if (!menu || !historia || !contrato) {
-        alert("Não foi possível voltar ao menu. Verifique os elementos do menu.");
-        return;
-    }
+    if (experiencia) experiencia.style.display = "none";
+    if (historia) historia.style.display = "none";
+    if (contrato) contrato.style.display = "none";
 
-    historia.style.display = "none";
-    contrato.style.display = "none";
-    menu.style.display = "block";
+    if (menu) menu.style.display = "block";
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-}
+};
 
 const CASAL_ID = "6a9b8c1d-2e3f-4a5b-8c7d-9e0f1a2b3c4d";
 
