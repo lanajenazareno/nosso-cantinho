@@ -71,21 +71,26 @@ ABERTURA DO SITE
 
             <br><br>
 
-            <button
-                type="button"
-                onclick="
-                    if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
-                        document.getElementById('aberturaSite').style.display = 'none';
-                        document.getElementById('titularidadeValidada').style.setProperty('display', 'block', 'important');
-                        document.getElementById('login').style.display = 'none';
-                        document.getElementById('conteudoSite').style.display = 'none';
-                    } else {
-                        alert('Senha incorreta. Tente novamente.');
-                    }
-                "
-            >
-                ENTRAR
-            </button>
+           <button
+    type="button"
+    onclick="
+        if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
+
+            document.getElementById('aberturaSite').style.display = 'none';
+
+            document.getElementById('titularidadeValidada').style.display = 'none';
+
+            document.getElementById('conteudoSite').style.display = 'none';
+
+            document.getElementById('login').style.setProperty('display', 'block', 'important');
+
+        } else {
+            alert('Senha incorreta. Tente novamente.');
+        }
+    "
+>
+    ENTRAR
+</button>
 
         </section>
 
