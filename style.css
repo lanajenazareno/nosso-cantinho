@@ -1508,3 +1508,22 @@ margin: 25px 10px;
 #menuPrincipal .entradaEspecial h3 {
     color: #701d32;
 }
+
+/* =========================================
+   ESPAÇAMENTO INTERNO DOS CARTÕES
+========================================= */
+
+#menuPrincipal .entradaEspecial {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+#menuPrincipal .entradaEspecial h3 {
+    margin: 0;
+}
+
+#menuPrincipal .entradaEspecial > button {
+    margin: 0;
+}
