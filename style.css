@@ -1129,3 +1129,263 @@ margin: 25px 10px;
   }
 }
 
+/* =========================================
+   NOSSO CÉU PARTICULAR — LANAj & NAZARENO
+   Fundo dinâmico da capa
+========================================= */
+
+#menuPrincipal .capa {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: transparent !important;
+}
+
+#menuPrincipal .capa > :not(.ceu-capa) {
+    position: relative;
+    z-index: 2;
+}
+
+#menuPrincipal .capa .ceu-capa {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+
+    background: linear-gradient(
+        155deg,
+        #74a9d4,
+        #b8d9e8,
+        #f1c6a1
+    );
+
+    transition: background 3s ease;
+}
+
+/* CORES DO CÉU */
+
+#menuPrincipal .capa[data-period="dawn"] .ceu-capa {
+    background: linear-gradient(
+        155deg,
+        #657cae,
+        #c58f94,
+        #f2c9a0
+    );
+}
+
+#menuPrincipal .capa[data-period="morning"] .ceu-capa {
+    background: linear-gradient(
+        155deg,
+        #63a5d5,
+        #b8d9e8,
+        #e8d7c6
+    );
+}
+
+#menuPrincipal .capa[data-period="day"] .ceu-capa {
+    background: linear-gradient(
+        155deg,
+        #4b9bd0,
+        #8dc6e2,
+        #d7e4e4
+    );
+}
+
+#menuPrincipal .capa[data-period="afternoon"] .ceu-capa {
+    background: linear-gradient(
+        155deg,
+        #477eaa,
+        #d9a27e,
+        #f0bd9a
+    );
+}
+
+#menuPrincipal .capa[data-period="sunset"] .ceu-capa {
+    background: linear-gradient(
+        155deg,
+        #51436d,
+        #a65f72,
+        #e49a78
+    );
+}
+
+#menuPrincipal .capa[data-period="night"] .ceu-capa {
+    background: linear-gradient(
+        155deg,
+        #080f26,
+        #17203c,
+        #442638
+    );
+}
+
+/* BRILHO DO HORIZONTE */
+
+.ceu-horizonte {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(255, 204, 160, .24),
+        transparent 55%
+    );
+    opacity: .7;
+    transition: opacity 3s ease;
+}
+
+/* SOL */
+
+.ceu-sol {
+    position: absolute;
+    left: var(--sun-x, 50%);
+    top: var(--sun-y, 45%);
+
+    width: clamp(42px, 10vw, 66px);
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle at 35% 35%,
+        #fff9d9,
+        #ffe49a 48%,
+        #f4b65e
+    );
+
+    box-shadow:
+        0 0 25px rgba(255, 220, 145, .7),
+        0 0 65px rgba(255, 190, 110, .35);
+
+    opacity: var(--sun-opacity, 1);
+
+    transform: translate(-50%, -50%);
+
+    transition:
+        left 30s linear,
+        top 30s linear,
+        opacity 2s ease;
+}
+
+/* LUA */
+
+.ceu-lua {
+    position: absolute;
+    top: 18%;
+    right: 13%;
+
+    width: clamp(35px, 8vw, 48px);
+    aspect-ratio: 1;
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle at 35% 30%,
+        #fffef0,
+        #deded2 65%,
+        #b5b5ad
+    );
+
+    box-shadow:
+        0 0 20px rgba(230, 231, 255, .45),
+        0 0 50px rgba(200, 205, 255, .15);
+
+    opacity: 0;
+    overflow: hidden;
+
+    animation: flutuarLua 7s ease-in-out infinite;
+}
+
+.ceu-lua::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: var(--lua-sombra, 0%);
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 50%;
+
+    background: #17203c;
+
+    transition: left 1s ease;
+}
+
+#menuPrincipal .capa[data-period="night"] .ceu-lua {
+    opacity: 1;
+}
+
+/* ESTRELAS */
+
+.ceu-estrelas {
+    position: absolute;
+    inset: 0;
+
+    opacity: 0;
+
+    background-image:
+        radial-gradient(1.5px 1.5px at 12% 20%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 25% 42%, #fff 98%, transparent),
+        radial-gradient(2px 2px at 42% 17%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 57% 32%, #fff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 75% 14%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 88% 43%, #fff 98%, transparent),
+        radial-gradient(1.5px 1.5px at 34% 70%, #fff 98%, transparent),
+        radial-gradient(1px 1px at 68% 76%, #fff 98%, transparent),
+        radial-gradient(2px 2px at 92% 78%, #fff 98%, transparent);
+
+    transition: opacity 3s ease;
+}
+
+#menuPrincipal .capa[data-period="night"] .ceu-estrelas {
+    opacity: .85;
+    animation: brilhoEstrelas 4s ease-in-out infinite alternate;
+}
+
+#menuPrincipal .capa[data-period="sunset"] .ceu-estrelas,
+#menuPrincipal .capa[data-period="dawn"] .ceu-estrelas {
+    opacity: .2;
+}
+
+/* PROTEÇÃO DA LEITURA */
+
+#menuPrincipal .capa .ceu-capa::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(12, 12, 25, .05),
+        rgba(12, 12, 25, .24)
+    );
+}
+
+#menuPrincipal .capa h2,
+#menuPrincipal .capa h3,
+#menuPrincipal .capa p {
+    color: #fffaf2;
+    text-shadow: 0 2px 12px rgba(15, 12, 25, .55);
+}
+
+@keyframes flutuarLua {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes brilhoEstrelas {
+    from { filter: brightness(.7); }
+    to { filter: brightness(1.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ceu-lua,
+    .ceu-estrelas {
+        animation: none !important;
+    }
+}
