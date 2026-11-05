@@ -1561,3 +1561,25 @@ button:focus-visible {
     outline: 3px solid #b77b89;
     outline-offset: 4px;
 }
+
+/* =========================================
+   AJUSTE DOS BOTÕES PARA CELULARES
+========================================= */
+
+@media (max-width: 600px) {
+    button {
+        min-height: 44px;
+        touch-action: manipulation;
+    }
+}
+
+/* Respeita quem prefere menos animações */
+@media (prefers-reduced-motion: reduce) {
+    button {
+        transition: none !important;
+    }
+
+    button:active {
+        transform: none;
+    }
+}
