@@ -1410,3 +1410,22 @@ margin: 25px 10px;
     width: 100%;
     height: 100%;
 }
+
+/* =========================================
+   REFINAMENTO DOS CARTÕES DO MENU
+========================================= */
+
+#menuPrincipal .entradaEspecial {
+    padding: 18px 22px;
+    margin: 18px auto;
+    border-radius: 22px;
+}
+
+#menuPrincipal .entradaEspecial h3 {
+    margin: 0 0 10px;
+    line-height: 1.4;
+}
+
+#menuPrincipal .entradaEspecial button {
+    padding: 11px 30px;
+}
