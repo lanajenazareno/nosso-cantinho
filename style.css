@@ -1539,3 +1539,25 @@ margin: 25px 10px;
     line-height: 1.4;
     color: #701d32;
 }
+
+/* =========================================
+   INTERAÇÃO GLOBAL DOS BOTÕES
+========================================= */
+
+button {
+    transition: transform .2s ease,
+                background-color .2s ease,
+                color .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(.96);
+}
+
+button:focus-visible {
+    outline: 3px solid #b77b89;
+    outline-offset: 4px;
+}
