@@ -1602,3 +1602,22 @@ button:hover:active {
         transform: none !important;
     }
 }
+
+/* =========================================
+   CAMPOS DE PREENCHIMENTO — AGENDA LN
+========================================= */
+
+#nossaAgenda input:not([type="checkbox"]),
+#nossaAgenda textarea {
+    border-radius: 13px;
+    border: 1px solid #dfc5c7;
+    background: #fffdfb;
+    transition: border-color .2s ease,
+                box-shadow .2s ease;
+}
+
+#nossaAgenda input:focus,
+#nossaAgenda textarea:focus {
+    border-color: #701d32;
+    box-shadow: 0 0 0 3px rgba(112, 29, 50, .10);
+}
