@@ -2028,3 +2028,281 @@ if ("serviceWorker" in navigator) {
             });
     });
 }
+
+/* =========================================
+   NOSSO CÉU PARTICULAR
+   Demerval Lobão - Piauí
+========================================= */
+
+(function iniciarNossoCeu() {
+
+    const iniciar = () => {
+
+        const capa = document.querySelector(
+            "#menuPrincipal .capa"
+        );
+
+        if (!capa || capa.dataset.ceuInicializado) return;
+
+        capa.dataset.ceuInicializado = "true";
+
+        const ceu = document.createElement("div");
+
+        ceu.className = "ceu-capa";
+
+        ceu.setAttribute("aria-hidden", "true");
+
+        ceu.innerHTML = `
+            <div class="ceu-horizonte"></div>
+            <div class="ceu-estrelas"></div>
+            <div class="ceu-sol"></div>
+            <div class="ceu-lua"></div>
+        `;
+
+        capa.prepend(ceu);
+
+        const latitude = -5.35;
+        const longitude = -42.68;
+        const fuso = "America/Fortaleza";
+
+        const rad = graus => graus * Math.PI / 180;
+
+        function calcularNascerPorDoSol(dia, nascer) {
+
+            const lngHour = longitude / 15;
+
+            const t = dia + (
+                (nascer ? 6 : 18) - lngHour
+            ) / 24;
+
+            const M = 0.9856 * t - 3.289;
+
+            let L = (
+                M +
+                1.916 * Math.sin(rad(M)) +
+                0.020 * Math.sin(rad(2 * M)) +
+                282.634
+            ) % 360;
+
+            if (L < 0) L += 360;
+
+            let RA = Math.atan(
+                0.91764 * Math.tan(rad(L))
+            ) / rad(1);
+
+            RA = (RA + 360) % 360;
+
+            RA += (
+                Math.floor(L / 90) * 90 -
+                Math.floor(RA / 90) * 90
+            );
+
+            RA /= 15;
+
+            const sinDec =
+                0.39782 * Math.sin(rad(L));
+
+            const cosDec = Math.cos(
+                Math.asin(sinDec)
+            );
+
+            const cosH = (
+                Math.cos(rad(90.833)) -
+                sinDec * Math.sin(rad(latitude))
+            ) / (
+                cosDec * Math.cos(rad(latitude))
+            );
+
+            if (cosH > 1 || cosH < -1) return null;
+
+            let H = nascer
+                ? 360 - Math.acos(cosH) / rad(1)
+                : Math.acos(cosH) / rad(1);
+
+            H /= 15;
+
+            const T = H + RA - 0.06571 * t - 6.622;
+
+            const UT = (
+                (T - lngHour) % 24 + 24
+            ) % 24;
+
+            // Piauí: UTC-3
+            return (UT * 60 - 180 + 1440) % 1440;
+        }
+
+        function atualizarCeu() {
+
+            const agora = new Date();
+
+            const partes = new Intl.DateTimeFormat(
+                "en-US",
+                {
+                    timeZone: fuso,
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hourCycle: "h23"
+                }
+            ).formatToParts(agora);
+
+            const valor = tipo =>
+                Number(partes.find(p => p.type === tipo).value);
+
+            const ano = valor("year");
+            const mes = valor("month");
+            const dia = valor("day");
+
+            const hora = valor("hour");
+            const minuto = valor("minute");
+
+            const minutosAtuais = hora * 60 + minuto;
+
+            const diaDoAno = Math.floor(
+                (
+                    Date.UTC(ano, mes - 1, dia) -
+                    Date.UTC(ano, 0, 0)
+                ) / 86400000
+            );
+
+            const nascer = calcularNascerPorDoSol(
+                diaDoAno, true
+            );
+
+            const por = calcularNascerPorDoSol(
+                diaDoAno, false
+            );
+
+            if (nascer === null || por === null) return;
+
+            const duracao = por - nascer;
+
+            const progresso = Math.max(
+                0,
+                Math.min(
+                    1,
+                    (minutosAtuais - nascer) / duracao
+                )
+            );
+
+            let periodo = "night";
+
+            if (
+                minutosAtuais >= nascer - 35 &&
+                minutosAtuais < nascer + 45
+            ) {
+                periodo = "dawn";
+
+            } else if (
+                minutosAtuais >= nascer + 45 &&
+                progresso < 0.28
+            ) {
+                periodo = "morning";
+
+            } else if (progresso < 0.62 && minutosAtuais < por) {
+                periodo = "day";
+
+            } else if (progresso < 0.84 && minutosAtuais < por) {
+                periodo = "afternoon";
+
+            } else if (
+                minutosAtuais <= por + 35 &&
+                minutosAtuais >= por - 45
+            ) {
+                periodo = "sunset";
+            }
+
+            capa.dataset.period = periodo;
+
+            // Movimento do Sol
+
+            let opacidadeSol = 1;
+
+            if (minutosAtuais < nascer) {
+                opacidadeSol = Math.max(
+                    0,
+                    1 - (nascer - minutosAtuais) / 35
+                );
+            }
+
+            if (minutosAtuais > por) {
+                opacidadeSol = Math.max(
+                    0,
+                    1 - (minutosAtuais - por) / 35
+                );
+            }
+
+            const posicaoX = 8 + progresso * 84;
+
+            const posicaoY =
+                70 - 48 * Math.sin(Math.PI * progresso);
+
+            capa.style.setProperty(
+                "--sun-x",
+                posicaoX + "%"
+            );
+
+            capa.style.setProperty(
+                "--sun-y",
+                posicaoY + "%"
+            );
+
+            capa.style.setProperty(
+                "--sun-opacity",
+                opacidadeSol
+            );
+
+            // FASE LUNAR REAL APROXIMADA
+
+            const cicloLunar = 29.530588853;
+
+            const luaReferencia = Date.UTC(
+                2000, 0, 6, 18, 14
+            );
+
+            const fase = (
+                (
+                    (agora.getTime() - luaReferencia) /
+                    86400000
+                ) % cicloLunar + cicloLunar
+            ) % cicloLunar / cicloLunar;
+
+            let sombraLua;
+
+            if (fase < 0.5) {
+                sombraLua = -fase * 200;
+            } else {
+                sombraLua = (fase - 0.5) * 200;
+            }
+
+            capa.style.setProperty(
+                "--lua-sombra",
+                sombraLua + "%"
+            );
+        }
+
+        atualizarCeu();
+
+        setInterval(atualizarCeu, 30000);
+
+        document.addEventListener(
+            "visibilitychange",
+            () => {
+                if (!document.hidden) atualizarCeu();
+            }
+        );
+    };
+
+    if (document.readyState === "loading") {
+        document.addEventListener(
+            "DOMContentLoaded",
+            iniciar,
+            { once: true }
+        );
+    } else {
+        iniciar();
+    }
+
+})();
