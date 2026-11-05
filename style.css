@@ -1429,3 +1429,41 @@ margin: 25px 10px;
 #menuPrincipal .entradaEspecial button {
     padding: 11px 30px;
 }
+
+/* =========================================
+   BOTÕES DO MENU — IDENTIDADE VINHO
+========================================= */
+
+#menuPrincipal .entradaEspecial > button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 190px;
+    min-height: 54px;
+    padding: 12px 24px;
+
+    color: #701d32;
+    background: #fffaf7;
+
+    border: 1.5px solid #b77b89;
+    border-radius: 30px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    box-shadow: 0 3px 10px rgba(112, 29, 50, .07);
+
+    transition: all .25s ease;
+}
+
+#menuPrincipal .entradaEspecial > button:hover {
+    color: #fffaf8;
+    background: #701d32;
+    border-color: #701d32;
+    transform: translateY(-2px);
+}
+
+#menuPrincipal .entradaEspecial > button:active {
+    transform: scale(.97);
+}
