@@ -33,25 +33,34 @@ ABERTURA DO SITE
 <div id="aberturaSite">
 
     <video
-    id="videoAbertura"
-    autoplay
-    muted
-    playsinline
-    onended="document.getElementById('sistemaTitularidade').style.setProperty('display', 'block', 'important')"
->
-    <source src="videos/videos/abertura eleicao.mp4" type="video/mp4">
-</video>
+        id="videoAbertura"
+        autoplay
+        muted
+        playsinline
+        onended="document.getElementById('sistemaTitularidade').style.setProperty('display', 'block', 'important')"
+    >
+        <source src="videos/videos/abertura eleicao.mp4" type="video/mp4">
+    </video>
 
     <div id="sistemaTitularidade" style="display:none;">
 
         <section class="card capa">
 
-            <h2>⚖️ SISTEMA DE TITULARIDADE</h2>
+            <h2>NOSSO CANTINHO</h2>
 
-            <h3>ACESSO RESTRITO AO TITULAR</h3>
+            <h3>ACESSO PRIVADO</h3>
 
             <p>
-                Informe a senha de acesso:
+                <strong>Titularidade:</strong><br>
+                Lanaj & Nazareno
+            </p>
+
+            <p>
+                <strong>Acesso:</strong> Compartilhado
+            </p>
+
+            <p>
+                Digite a senha para entrar no nosso mundo:
             </p>
 
             <input
@@ -63,27 +72,26 @@ ABERTURA DO SITE
             <br><br>
 
             <button
-    type="button"
-    onclick="
-        if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
-            document.getElementById('aberturaSite').style.display = 'none';
-            document.getElementById('titularidadeValidada').style.display = 'none';
-            document.getElementById('conteudoSite').style.display = 'none';
-            document.getElementById('login').style.setProperty('display', 'block', 'important');
-        } else {
-            alert('Senha incorreta. Tente novamente.');
-        }
-    "
->
-    CONFIRMAR ACESSO
-</button>
+                type="button"
+                onclick="
+                    if (document.getElementById('senha').value.trim().toLowerCase() === 'coracao') {
+                        document.getElementById('aberturaSite').style.display = 'none';
+                        document.getElementById('titularidadeValidada').style.setProperty('display', 'block', 'important');
+                        document.getElementById('login').style.display = 'none';
+                        document.getElementById('conteudoSite').style.display = 'none';
+                    } else {
+                        alert('Senha incorreta. Tente novamente.');
+                    }
+                "
+            >
+                ENTRAR
+            </button>
 
         </section>
 
     </div>
 
 </div>
-
 
 <!-- =========================
 TERMOS DE USO
@@ -170,39 +178,38 @@ TERMOS DE USO
 </div>
 
 <!-- =========================
-TITULARIDADE VALIDADA
+TITULARIDADE COMPARTILHADA
 ========================= -->
 
 <div id="titularidadeValidada" style="display:none;">
 
     <!-- VÍDEO DE FUNDO -->
-   <video
-    id="videoTitularidade"
-    autoplay
-    muted
-    playsinline
-    onended="
-    document.getElementById('titularidadeValidada').style.setProperty('display', 'none', 'important');
-    document.getElementById('login').style.setProperty('display', 'none', 'important');
-    document.getElementById('conteudoSite').style.setProperty('display', 'block', 'important');
-    document.getElementById('menuPrincipal').style.setProperty('display', 'block', 'important');
-"
->
-    <source src="videos/videos/continuacao eleicao.mp4" type="video/mp4">
-</video>
+
+    <video
+        id="videoTitularidade"
+        autoplay
+        muted
+        playsinline
+        onended="
+            document.getElementById('titularidadeValidada').style.setProperty('display', 'none', 'important');
+            document.getElementById('login').style.setProperty('display', 'none', 'important');
+            document.getElementById('conteudoSite').style.setProperty('display', 'block', 'important');
+            document.getElementById('menuPrincipal').style.setProperty('display', 'block', 'important');
+        "
+    >
+        <source src="videos/videos/continuacao eleicao.mp4" type="video/mp4">
+    </video>
 
     <!-- MENSAGEM SOBRE O VÍDEO -->
+
     <section class="card mensagemTitularidade">
 
-        <h2>⚖️ Titularidade Validada</h2>
+        <h2>Titularidade Compartilhada</h2>
+
+        <h3>Lanaj & Nazareno</h3>
 
         <p>
-            <strong>Titular:</strong><br>
-            Nazareno Lima
-        </p>
-
-        <p>
-            Sua identidade foi reconhecida.
+            <strong>NOSSO CANTINHO</strong>
         </p>
 
         <h3>
@@ -210,11 +217,7 @@ TITULARIDADE VALIDADA
         </h3>
 
         <p>
-            <strong>Nosso Cantinho</strong>
-        </p>
-
-        <p>
-            Preparando sua experiência...
+            Desde 09.05.2026
         </p>
 
     </section>
