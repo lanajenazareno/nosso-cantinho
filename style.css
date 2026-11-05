@@ -1527,3 +1527,15 @@ margin: 25px 10px;
 #menuPrincipal .entradaEspecial > button {
     margin: 0;
 }
+
+/* =========================================
+   TIPOGRAFIA DOS CARTÕES DO MENU
+========================================= */
+
+#menuPrincipal .entradaEspecial h3 {
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #701d32;
+}
