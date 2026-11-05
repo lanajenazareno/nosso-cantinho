@@ -1492,3 +1492,19 @@ margin: 25px 10px;
 
     box-shadow: 0 3px 10px rgba(112, 29, 50, .07);
 }
+
+/* =========================================
+   CARTÕES DO MENU — ACABAMENTO
+========================================= */
+
+#menuPrincipal .entradaEspecial {
+    background: #fffaf7;
+    border: 1px solid #eadde0;
+    border-radius: 22px;
+    box-shadow: 0 5px 16px rgba(112, 29, 50, .08);
+    box-sizing: border-box;
+}
+
+#menuPrincipal .entradaEspecial h3 {
+    color: #701d32;
+}
