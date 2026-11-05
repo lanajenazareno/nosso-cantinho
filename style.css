@@ -1583,3 +1583,22 @@ button:focus-visible {
         transform: none;
     }
 }
+
+/* =========================================
+   AJUSTE DOS EFEITOS DOS BOTÕES
+========================================= */
+
+button:hover:active {
+    transform: scale(.96);
+    filter: brightness(.94);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    button,
+    button:hover,
+    button:active,
+    button:hover:active {
+        transition: none !important;
+        transform: none !important;
+    }
+}
