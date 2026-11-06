@@ -451,6 +451,56 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+/* =================================
+   NOSSAS MEMÓRIAS — NAVEGAÇÃO
+================================= */
+
+window.abrirNossasMemorias = function () {
+    const menu = document.getElementById("menuPrincipal");
+    const cartao = document.getElementById("cartaoNossasMemorias");
+    const agendaCartao = document.getElementById("cartaoNossaAgenda");
+    const album = document.getElementById("nossasMemorias");
+
+    if (!album) {
+        alert("Não foi possível localizar o álbum.");
+        return;
+    }
+
+    if (cartao) cartao.style.display = "none";
+    if (agendaCartao) agendaCartao.style.display = "none";
+
+    album.classList.remove("escondido");
+    album.style.display = "block";
+
+    if (menu) {
+        menu.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+};
+
+window.fecharNossasMemorias = function () {
+    const album = document.getElementById("nossasMemorias");
+    const cartao = document.getElementById("cartaoNossasMemorias");
+    const agendaCartao = document.getElementById("cartaoNossaAgenda");
+
+    if (album) {
+        album.classList.add("escondido");
+        album.style.display = "none";
+    }
+
+    if (cartao) cartao.style.display = "block";
+    if (agendaCartao) agendaCartao.style.display = "block";
+
+    if (cartao) {
+        cartao.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+};
+
 // =========================================================
 // QUEM É MAIS?
 // =========================================================
