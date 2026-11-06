@@ -318,20 +318,26 @@ async function mostrarFotos(fotos) {
    BOTÃO ADICIONAR FOTOS
 ========================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+function iniciarSeletorAlbum() {
     const seletor = document.getElementById(
         "albumSelecionarFotos"
     );
 
-    if (!seletor) return;
+    if (!seletor || seletor.dataset.iniciado === "sim") {
+        return;
+    }
+
+    seletor.dataset.iniciado = "sim";
 
     seletor.addEventListener("change", async () => {
         const arquivos = Array.from(seletor.files || []);
 
         if (!arquivos.length) return;
 
+        alert("Foto selecionada! Iniciando envio...");
+
         if (!tokenGoogle) {
-            alert("Primeiro conecte ao Google Drive.");
+            alert("Conecte ao Google Drive primeiro.");
             seletor.value = "";
             return;
         }
@@ -347,12 +353,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (erro) {
             console.error(erro);
-            alert(erro.message);
+            alert("Erro ao enviar: " + erro.message);
 
         } finally {
             seletor.value = "";
         }
     });
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        iniciarSeletorAlbum
+    );
+} else {
+    iniciarSeletorAlbum();
+}
 
 window.conectarGoogleDrive = conectarGoogleDrive;
