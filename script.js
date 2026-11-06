@@ -340,12 +340,6 @@ window.voltarMenu = function () {
         cartao.appendChild(p);
       }
 
-      if (item.lembrete) {
-        const p = document.createElement("p");
-        p.textContent = "🔔 Lembrete desejado";
-        cartao.appendChild(p);
-      }
-
       const acoes = document.createElement("div");
       acoes.className = "agenda-acoes";
 
@@ -401,7 +395,6 @@ window.voltarMenu = function () {
     $("agendaHora").value = item.hora || "";
     $("agendaLocal").value = item.local || "";
     $("agendaDetalhes").value = item.detalhes || "";
-    $("agendaLembrete").checked = Boolean(item.lembrete);
     $("agendaFormularioTitulo").textContent = "Editar compromisso";
     $("agendaSalvar").textContent = "Salvar alterações";
     $("agendaCancelarEdicao").style.display = "inline-block";
@@ -451,7 +444,6 @@ window.voltarMenu = function () {
       hora: $("agendaHora").value,
       local: $("agendaLocal").value.trim(),
       detalhes: $("agendaDetalhes").value.trim(),
-      lembrete: $("agendaLembrete").checked,
       concluido: anterior ? Boolean(anterior.concluido) : false
     };
 
@@ -508,26 +500,13 @@ window.abrirNossaAgenda = function () {
   renderizar();
 })();
 
-/* Registro do Service Worker para o Nosso Cantinho */
+// LIMPEZA DO SERVICE WORKER ANTIGO
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      const registro = await navigator.serviceWorker.register(
-        "/nosso-cantinho/sw.js",
-        { scope: "/nosso-cantinho/" }
-      );
-
-      console.log(
-        "Service Worker registrado:",
-        registro.scope
-      );
-    } catch (erro) {
-      console.error(
-        "Erro ao registrar notificações:",
-        erro
-      );
-    }
-  });
+  navigator.serviceWorker.getRegistrations()
+    .then(registros => {
+      registros.forEach(registro => registro.unregister());
+      console.log("Registros antigos removidos.");
+    });
 }
 
 /* =================================
