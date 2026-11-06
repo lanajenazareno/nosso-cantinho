@@ -261,6 +261,22 @@ AGENDA LN
 </button>
 </section>
 
+<!-- =========================
+NOSSAS MEMÓRIAS
+========================= -->
+
+<section class="card entradaEspecial" id="cartaoNossasMemorias">
+    <h3>♡ Nossas Memórias</h3>
+
+    <button type="button" onclick="abrirNossasMemorias()">
+        Abrir álbum →
+    </button>
+</section>
+
+<!-- =========================
+AGENDA LN
+========================= -->
+    
 <section class="card" id="nossaAgenda" style="display:none;">
   <button type="button" onclick="fecharNossaAgenda()">← Voltar ao Nosso Cantinho</button>
 
@@ -329,6 +345,68 @@ AGENDA LN
   </form>
 </section>
 
+<!-- =========================
+ABA NOSSAS MEMÓRIAS
+========================= -->
+    
+<section id="nossasMemorias" class="secao escondido">
+
+    <div class="album-container">
+
+        <header class="album-header">
+            <div>
+                <span class="album-subtitulo">LANAJ & NAZARENO</span>
+                <h2>Nossas Memórias</h2>
+                <p>Cada foto, um pedacinho da nossa história.</p>
+            </div>
+            <span class="album-coracao">♡</span>
+        </header>
+
+        <div class="album-painel">
+            <div class="album-painel-topo">
+                <h3>Nosso álbum</h3>
+                <span class="album-privado">♡ Privado</span>
+            </div>
+
+            <p>Um cantinho para guardar nossos momentos.</p>
+
+            <label for="albumSelecionarFotos" class="album-adicionar">
+                <span class="album-mais">＋</span>
+                <strong>Adicionar fotos</strong>
+                <small>Escolher da galeria do celular</small>
+            </label>
+
+            <input
+                type="file"
+                id="albumSelecionarFotos"
+                accept="image/*"
+                multiple
+                hidden
+            >
+        </div>
+
+        <div class="album-mes">
+            <h3>Novembro de 2026</h3>
+            <div class="album-grade" id="albumFotosNovembro">
+                <!-- Fotos de novembro -->
+            </div>
+        </div>
+
+        <div class="album-mes">
+            <h3>Outubro de 2026</h3>
+            <div class="album-grade" id="albumFotosOutubro">
+                <!-- Fotos de outubro -->
+            </div>
+        </div>
+
+        <div class="album-vazio" id="albumVazio">
+            <span>♡</span>
+            <p>Nossas próximas lembranças começam aqui.</p>
+        </div>
+
+    </div>
+</section>
+    
 <style>
 #nossaAgenda .agenda-calendario,
 #nossaAgenda .agenda-dia-selecionado {
