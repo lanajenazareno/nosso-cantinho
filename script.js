@@ -500,15 +500,6 @@ window.abrirNossaAgenda = function () {
   renderizar();
 })();
 
-// LIMPEZA DO SERVICE WORKER ANTIGO
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations()
-    .then(registros => {
-      registros.forEach(registro => registro.unregister());
-      console.log("Registros antigos removidos.");
-    });
-}
-
 /* =================================
    NOSSAS MEMÓRIAS — NAVEGAÇÃO
 ================================= */
