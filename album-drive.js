@@ -5,7 +5,7 @@
 const GOOGLE_CLIENT_ID =
 "162069055708-3o0uiev4n06h364c2fon0l1id644kttv.apps.googleusercontent.com";
 
-const GOOGLE_API_KEY = "COLE_SUA_CHAVE_DE_API_AQUI";
+const GOOGLE_API_KEY = "AIzaSyAW-QJQHmfF1uCRbhrVOOSaPPtq95ExOZk";
 
 const GOOGLE_PROJECT_NUMBER = "162069055708";
 
