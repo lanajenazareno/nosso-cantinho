@@ -34,8 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // VERIFICAR SENHA
 // =========================
 
-// COLE ESTE NOVO BLOCO NO LUGAR:
-async function verificarSenha() {
+function verificarSenha() {
     const campoSenha = document.getElementById("senha");
     const abertura = document.getElementById("aberturaSite");
     const termos = document.getElementById("login");
@@ -44,44 +43,19 @@ async function verificarSenha() {
     const menu = document.getElementById("menuPrincipal");
 
     if (!campoSenha) return;
-    const senhaDigitada = campoSenha.value.trim().toLowerCase();
 
-    // 1. Validação da palavra-chave inicial do site
-    if (senhaDigitada !== "coracao") {
+    if (campoSenha.value.trim().toLowerCase() !== "coracao") {
         alert("Senha incorreta. Tente novamente.");
         campoSenha.value = "";
         campoSenha.focus();
         return;
     }
 
-    // 2. FAZ O LOGIN OFICIAL NO SUPABASE DE FORMA INVISÍVEL
-    // Substitua pelo e-mail e senha que você cadastrou no Authentication do Supabase
-    const EMAIL_ACESSO = "antoniajaysllane525@gmail.com"; 
-    const SENHA_ACESSO = "Laninhaj02!"; 
-
-    try {
-        // Usa o cliente cadastrado globalmente no seu site
-        const db = window.supabaseClient;
-        if (!db) throw new Error("Conexão com o banco não encontrada.");
-
-        const { data, error } = await db.auth.signInWithPassword({
-            email: EMAIL_ACESSO,
-            password: SENHA_ACESSO
-        });
-
-        if (error) throw error;
-
-        // Se o login deu certo, segue com as animações originais do seu site
-        if (titularidade) titularidade.style.setProperty("display", "none", "important");
-        if (conteudo) conteudo.style.setProperty("display", "none", "important");
-        if (menu) menu.style.display = "none";
-        if (abertura) abertura.style.display = "none";
-        if (termos) termos.style.setProperty("display", "block", "important");
-
-    } catch (erro) {
-        console.error("Erro na autenticação de segurança:", erro);
-        alert("Erro ao conectar ao servidor seguro: " + erro.message);
-    }
+    if (titularidade) titularidade.style.display = "none";
+    if (conteudo) conteudo.style.display = "none";
+    if (menu) menu.style.display = "none";
+    if (abertura) abertura.style.display = "none";
+    if (termos) termos.style.display = "block";
 }
 
 /* =========================
