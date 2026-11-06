@@ -1769,3 +1769,103 @@ button:hover:active {
         gap: 12px;
     }
 }
+
+#nossaAgenda .agenda-calendario,
+#nossaAgenda .agenda-dia-selecionado {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #ead5dd;
+  border-radius: 16px;
+}
+
+#nossaAgenda .agenda-navegacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#nossaAgenda .agenda-navegacao h3 {
+  text-align: center;
+}
+
+#nossaAgenda .agenda-dias-semana,
+#nossaAgenda .agenda-grade {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 10px;
+}
+
+#nossaAgenda .agenda-dias-semana span {
+  text-align: center;
+  font-size: 12px;
+}
+
+#nossaAgenda .agenda-data {
+  min-width: 0;
+  min-height: 40px;
+  padding: 4px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+}
+
+#nossaAgenda .agenda-data.vazio {
+  visibility: hidden;
+}
+
+#nossaAgenda .agenda-data.hoje {
+  border-color: #c47d95;
+}
+
+#nossaAgenda .agenda-data.selecionado {
+  background: #f4dfe6;
+  color: #482b35;
+}
+
+#nossaAgenda .agenda-data.tem-compromisso::after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 2px auto 0;
+  border-radius: 50%;
+  background: #b45f7b;
+}
+
+#nossaAgenda form {
+  display: grid;
+  gap: 8px;
+}
+
+#nossaAgenda form input:not([type="checkbox"]),
+#nossaAgenda form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddc5ce;
+  border-radius: 10px;
+  font: inherit;
+}
+
+#nossaAgenda .agenda-aviso {
+  font-size: 13px;
+  opacity: .75;
+}
+
+#nossaAgenda .agenda-compromisso {
+  padding: 12px 0;
+  border-bottom: 1px solid #ead5dd;
+}
+
+#nossaAgenda .agenda-compromisso.concluido h4 {
+  text-decoration: line-through;
+  opacity: .65;
+}
+
+#nossaAgenda .agenda-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
