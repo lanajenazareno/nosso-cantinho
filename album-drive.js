@@ -1,21 +1,32 @@
-Esse
 /* =========================================
    NOSSO CANTINHO — ÁLBUM GOOGLE DRIVE
+   NOSSAS MEMÓRIAS
 ========================================= */
 
+// Identificação do aplicativo Google
 const GOOGLE_CLIENT_ID =
-"162069055708-3o0uiev4n06h364c2fon0l1id644kttv.apps.googleusercontent.com";
+    "162069055708-3o0uiev4n06h364c2fon0l1id644kttv.apps.googleusercontent.com";
 
-const GOOGLE_API_KEY = "AIzaSyAW-QJQHmfF1uCRbhrVOOSaPPtq95ExOZk";
+// Insira aqui a NOVA chave de API, depois de regenerá-la
+const GOOGLE_API_KEY = "INSIRA_SUA_NOVA_CHAVE_AQUI";
 
 const GOOGLE_PROJECT_NUMBER = "162069055708";
 
 let tokenGoogle = null;
 let pickerCarregado = false;
+let fotosAlbum = [];
+let urlsImagensAlbum = [];
+
+/* =========================================
+   CARREGAR GOOGLE PICKER
+========================================= */
 
 function carregarGooglePicker() {
     return new Promise((resolve, reject) => {
-        if (pickerCarregado) return resolve();
+        if (pickerCarregado) {
+            resolve();
+            return;
+        }
 
         if (!window.gapi) {
             reject(new Error("Biblioteca Google não carregada."));
@@ -27,12 +38,16 @@ function carregarGooglePicker() {
                 pickerCarregado = true;
                 resolve();
             },
-            onerror: () => reject(
-                new Error("Não foi possível carregar o Google Picker.")
-            )
+            onerror: () => {
+                reject(new Error("Erro ao carregar Google Picker."));
+            }
         });
     });
 }
+
+/* =========================================
+   CONECTAR AO GOOGLE DRIVE
+========================================= */
 
 function conectarGoogleDrive() {
     if (!window.google?.accounts?.oauth2) {
@@ -40,12 +55,21 @@ function conectarGoogleDrive() {
         return;
     }
 
+    if (
+        !GOOGLE_API_KEY ||
+        GOOGLE_API_KEY === "INSIRA_SUA_NOVA_CHAVE_AQUI"
+    ) {
+        alert("Configure a nova chave de API do Google.");
+        return;
+    }
+
     const cliente = google.accounts.oauth2.initTokenClient({
         client_id: GOOGLE_CLIENT_ID,
+
         scope: "https://www.googleapis.com/auth/drive.file",
 
         callback: async (resposta) => {
-            if (resposta.error) {
+            if (resposta.error || !resposta.access_token) {
                 alert("Não foi possível conectar ao Google Drive.");
                 return;
             }
@@ -74,6 +98,10 @@ function conectarGoogleDrive() {
     cliente.requestAccessToken();
 }
 
+/* =========================================
+   ESCOLHER A PASTA COMPARTILHADA
+========================================= */
+
 function abrirSeletorPasta() {
     const visualizacao = new google.picker.DocsView(
         google.picker.ViewId.FOLDERS
@@ -88,6 +116,7 @@ function abrirSeletorPasta() {
         .setOAuthToken(tokenGoogle)
         .addView(visualizacao)
         .setCallback(async (dados) => {
+
             if (dados.action === google.picker.Action.PICKED) {
                 const pasta = dados.docs[0];
 
@@ -112,7 +141,7 @@ function abrirSeletorPasta() {
 }
 
 /* =========================================
-   ENVIAR FOTOS PARA O DRIVE
+   ENVIAR FOTO PARA O DRIVE
 ========================================= */
 
 async function enviarFotoDrive(arquivo) {
@@ -130,9 +159,7 @@ async function enviarFotoDrive(arquivo) {
         );
     }
 
-    const limiteTipo = arquivo.type.startsWith("image/");
-
-    if (!limiteTipo) {
+    if (!arquivo.type.startsWith("image/")) {
         throw new Error("Selecione somente imagens.");
     }
 
@@ -142,19 +169,15 @@ async function enviarFotoDrive(arquivo) {
         parents: [pasta]
     };
 
-    const boundary = "nossoCantinhoBoundary" +
-        Date.now();
+    const boundary = "nossoCantinhoBoundary" + Date.now();
 
     const corpo = new Blob([
         "--" + boundary + "\r\n" +
         "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
         JSON.stringify(metadata) + "\r\n" +
-
         "--" + boundary + "\r\n" +
         "Content-Type: " + arquivo.type + "\r\n\r\n",
-
         arquivo,
-
         "\r\n--" + boundary + "--"
     ]);
 
@@ -181,7 +204,7 @@ async function enviarFotoDrive(arquivo) {
 }
 
 /* =========================================
-   CARREGAR FOTOS DO DRIVE
+   BUSCAR FOTOS NO DRIVE
 ========================================= */
 
 async function carregarFotosDrive() {
@@ -190,7 +213,8 @@ async function carregarFotosDrive() {
     if (!pasta || !tokenGoogle) return;
 
     const consulta = encodeURIComponent(
-        "'" + pasta + "' in parents and trashed = false and mimeType contains 'image/'"
+        "'" + pasta +
+        "' in parents and trashed = false and mimeType contains 'image/'"
     );
 
     const url =
@@ -198,6 +222,8 @@ async function carregarFotosDrive() {
         "?q=" + consulta +
         "&orderBy=createdTime desc" +
         "&pageSize=100" +
+        "&supportsAllDrives=true" +
+        "&includeItemsFromAllDrives=true" +
         "&fields=files(id,name,mimeType,createdTime)";
 
     const resposta = await fetch(url, {
@@ -212,29 +238,54 @@ async function carregarFotosDrive() {
 
     const dados = await resposta.json();
 
-    await mostrarFotos(dados.files || []);
+    fotosAlbum = dados.files || [];
+
+    await mostrarFotos(fotosAlbum);
 }
 
 /* =========================================
-   ORGANIZAR E EXIBIR FOTOS POR MÊS
+   LIBERAR IMAGENS ANTIGAS DA MEMÓRIA
+========================================= */
+
+function limparUrlsAlbum() {
+    urlsImagensAlbum.forEach(url => {
+        URL.revokeObjectURL(url);
+    });
+
+    urlsImagensAlbum = [];
+}
+
+/* =========================================
+   EXIBIR FOTOS POR MÊS
 ========================================= */
 
 async function mostrarFotos(fotos) {
-    const container = document.querySelector(
-        "#nossasMemorias .album-container"
+    const painel = document.querySelector(
+        "#nossasMemorias .album-painel"
     );
 
     const vazio = document.getElementById("albumVazio");
 
-    if (!container || !vazio) return;
+    if (!painel || !vazio) return;
 
-    container.querySelectorAll(".album-mes").forEach(secao => {
+    limparUrlsAlbum();
+
+    // Remove somente os grupos mensais anteriores
+    painel.querySelectorAll("[data-drive-mes]").forEach(secao => {
         secao.remove();
     });
 
+    const pesquisa = (
+        document.getElementById("albumPesquisar")?.value || ""
+    ).trim().toLocaleLowerCase("pt-BR");
+
+    const filtradas = fotos.filter(foto =>
+        foto.name.toLocaleLowerCase("pt-BR").includes(pesquisa)
+    );
+
     const grupos = {};
 
-    fotos.forEach(foto => {
+    filtradas.forEach(foto => {
         const data = new Date(foto.createdTime);
 
         const chave =
@@ -259,8 +310,10 @@ async function mostrarFotos(fotos) {
     for (const mes of meses) {
         const secao = document.createElement("div");
         secao.className = "album-mes";
+        secao.dataset.driveMes = "sim";
 
         const titulo = document.createElement("h3");
+
         titulo.textContent =
             grupos[mes].titulo.charAt(0).toUpperCase() +
             grupos[mes].titulo.slice(1);
@@ -271,7 +324,7 @@ async function mostrarFotos(fotos) {
         secao.appendChild(titulo);
         secao.appendChild(grade);
 
-        container.insertBefore(secao, vazio);
+        painel.insertBefore(secao, vazio);
 
         for (const foto of grupos[mes].fotos) {
             const imagem = document.createElement("img");
@@ -279,17 +332,11 @@ async function mostrarFotos(fotos) {
             imagem.alt = foto.name;
             imagem.loading = "lazy";
 
-            imagem.style.width = "100%";
-            imagem.style.aspectRatio = "1 / 1";
-            imagem.style.objectFit = "cover";
-            imagem.style.borderRadius = "12px";
-
-            grade.appendChild(imagem);
-
             try {
-                const arquivo = await fetch(
+                const resposta = await fetch(
                     "https://www.googleapis.com/drive/v3/files/" +
-                    encodeURIComponent(foto.id) + "?alt=media",
+                    encodeURIComponent(foto.id) +
+                    "?alt=media",
                     {
                         headers: {
                             Authorization: "Bearer " + tokenGoogle
@@ -297,25 +344,52 @@ async function mostrarFotos(fotos) {
                     }
                 );
 
-                if (!arquivo.ok) {
+                if (!resposta.ok) {
                     throw new Error("Falha ao carregar imagem.");
                 }
 
-                const blob = await arquivo.blob();
-                imagem.src = URL.createObjectURL(blob);
+                const blob = await resposta.blob();
+                const urlImagem = URL.createObjectURL(blob);
+
+                urlsImagensAlbum.push(urlImagem);
+                imagem.src = urlImagem;
 
             } catch (erro) {
                 console.error(erro);
                 imagem.alt = "Não foi possível carregar esta foto.";
             }
+
+            grade.appendChild(imagem);
         }
     }
 
-    vazio.style.display = fotos.length ? "none" : "block";
+    const temFotos = fotosAlbum.length > 0;
+
+    if (!temFotos) {
+        vazio.style.display = "block";
+
+        const mensagem = vazio.querySelector("p");
+        if (mensagem) {
+            mensagem.textContent =
+                "Nossas próximas lembranças começam aqui.";
+        }
+
+    } else if (!filtradas.length) {
+        vazio.style.display = "block";
+
+        const mensagem = vazio.querySelector("p");
+        if (mensagem) {
+            mensagem.textContent =
+                "Nenhuma lembrança encontrada na pesquisa.";
+        }
+
+    } else {
+        vazio.style.display = "none";
+    }
 }
 
 /* =========================================
-   BOTÃO ADICIONAR FOTOS
+   SELECIONAR E ENVIAR FOTOS
 ========================================= */
 
 function iniciarSeletorAlbum() {
@@ -333,8 +407,6 @@ function iniciarSeletorAlbum() {
         const arquivos = Array.from(seletor.files || []);
 
         if (!arquivos.length) return;
-
-        alert("Foto selecionada! Iniciando envio...");
 
         if (!tokenGoogle) {
             alert("Conecte ao Google Drive primeiro.");
@@ -361,13 +433,36 @@ function iniciarSeletorAlbum() {
     });
 }
 
-if (document.readyState === "loading") {
-    document.addEventListener(
-        "DOMContentLoaded",
-        iniciarSeletorAlbum
-    );
-} else {
-    iniciarSeletorAlbum();
+/* =========================================
+   PESQUISAR MEMÓRIAS
+========================================= */
+
+function iniciarPesquisaAlbum() {
+    const campo = document.getElementById("albumPesquisar");
+
+    if (!campo || campo.dataset.iniciado === "sim") return;
+
+    campo.dataset.iniciado = "sim";
+
+    campo.addEventListener("input", () => {
+        mostrarFotos(fotosAlbum);
+    });
 }
 
+/* =========================================
+   INICIALIZAÇÃO
+========================================= */
+
+function iniciarAlbumDrive() {
+    iniciarSeletorAlbum();
+    iniciarPesquisaAlbum();
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", iniciarAlbumDrive);
+} else {
+    iniciarAlbumDrive();
+}
+
+// Função utilizada pelo botão do HTML
 window.conectarGoogleDrive = conectarGoogleDrive;
