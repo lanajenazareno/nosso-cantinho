@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_ID =
     "162069055708-3o0uiev4n06h364c2fon0l1id644kttv.apps.googleusercontent.com";
 
 // Insira aqui a NOVA chave de API, depois de regenerá-la
-const GOOGLE_API_KEY = "INSIRA_SUA_NOVA_CHAVE_AQUI";
+const GOOGLE_API_KEY = "AIzaSyDtYJhel7z7RN5powysLOp_yb02lFBs96Q";
 
 const GOOGLE_PROJECT_NUMBER = "162069055708";
 
