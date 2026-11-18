@@ -326,83 +326,395 @@ AGENDA LN
 </section>
 
 <!-- =========================
-ABA NOSSAS MEMÓRIAS
+     NOSSAS MEMÓRIAS
+     VISUAL INSPIRADO NO PINTEREST
 ========================= -->
-    
+
 <section id="nossasMemorias" class="secao escondido">
 
-    <div class="album-container">
+<style>
+#nossasMemorias {
+    background: #080808;
+    color: #fff;
+    min-height: 100vh;
+    padding: 15px 12px 35px;
+    margin: 0;
+    box-sizing: border-box;
+}
 
-<button type="button" onclick="fecharNossasMemorias()">
-    ← Voltar ao Nosso Cantinho
-</button>
-        
-        <header class="album-header">
+#nossasMemorias * {
+    box-sizing: border-box;
+}
+
+#nossasMemorias .album-container {
+    max-width: 700px;
+    width: 100%;
+    margin: auto;
+}
+
+#nossasMemorias .album-voltar {
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 14px;
+    padding: 12px 4px 22px;
+}
+
+#nossasMemorias .album-perfil {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 3px 25px;
+}
+
+#nossasMemorias .album-identidade {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+#nossasMemorias .album-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #762d48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+}
+
+#nossasMemorias .album-nomes {
+    font-size: 16px;
+    font-weight: 650;
+}
+
+#nossasMemorias .album-descricao {
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+#nossasMemorias .album-adicionar-topo {
+    font-size: 35px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+#nossasMemorias .album-abas {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 23px;
+}
+
+#nossasMemorias .album-aba {
+    color: #999;
+    padding: 12px 5px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+#nossasMemorias .album-aba.ativa {
+    color: #fff;
+    border-bottom: 3px solid #fff;
+    font-weight: 700;
+}
+
+#nossasMemorias .album-busca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+#nossasMemorias .album-busca input {
+    width: 100%;
+    min-width: 0;
+    padding: 15px 18px;
+    border: 1px solid #777;
+    border-radius: 30px;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+    outline: none;
+}
+
+#nossasMemorias .album-busca input::placeholder {
+    color: #999;
+}
+
+#nossasMemorias .album-filtros {
+    display: flex;
+    gap: 9px;
+    overflow-x: auto;
+    padding-bottom: 24px;
+    scrollbar-width: none;
+}
+
+#nossasMemorias .album-filtros::-webkit-scrollbar {
+    display: none;
+}
+
+#nossasMemorias .album-filtro {
+    border: 0;
+    border-radius: 13px;
+    background: #292929;
+    color: #fff;
+    padding: 11px 15px;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+#nossasMemorias .album-titulo {
+    font-size: 19px;
+    font-weight: 650;
+    margin: 5px 3px 17px;
+}
+
+#nossasMemorias .album-mes {
+    margin-bottom: 25px;
+}
+
+#nossasMemorias .album-mes h3 {
+    color: #ddd;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 20px 3px 13px;
+}
+
+#nossasMemorias .album-grade {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    align-items: start;
+}
+
+#nossasMemorias .album-grade img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 13px;
+    object-fit: cover;
+    background: #242424;
+}
+
+#nossasMemorias .album-painel {
+    margin-bottom: 20px;
+}
+
+#nossasMemorias .album-vazio {
+    text-align: center;
+    padding: 45px 15px;
+    color: #aaa;
+}
+
+#nossasMemorias .album-vazio span {
+    font-size: 43px;
+    color: #a45b76;
+}
+
+#nossasMemorias .album-vazio p {
+    font-size: 14px;
+}
+
+#nossasMemorias .album-conectar {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin: 12px 0 24px;
+    background: #202020;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 25px;
+    font-size: 14px;
+}
+
+#nossasMemorias .album-rodape {
+    text-align: center;
+    color: #777;
+    font-size: 11px;
+    margin-top: 35px;
+}
+
+@media (max-width: 380px) {
+    #nossasMemorias .album-abas {
+        gap: 22px;
+    }
+
+    #nossasMemorias .album-grade {
+        gap: 5px;
+    }
+}
+</style>
+
+<div class="album-container">
+
+    <button type="button"
+        class="album-voltar"
+        onclick="fecharNossasMemorias()">
+        ← Voltar ao Nosso Cantinho
+    </button>
+
+    <!-- PERFIL DO CASAL -->
+
+    <header class="album-perfil">
+
+        <div class="album-identidade">
+
+            <div class="album-avatar">LN</div>
+
             <div>
-                <span class="album-subtitulo">LANAJ & NAZARENO</span>
-                <h2>Nossas Memórias</h2>
-                <p>Cada foto, um pedacinho da nossa história.</p>
+                <div class="album-nomes">
+                    Lanaj & Nazareno
+                </div>
 
-                <button type="button" onclick="conectarGoogleDrive()">
-    Conectar ao Google Drive
-</button>
-                
-            </div>
-            <span class="album-coracao">♡</span>
-        </header>
-
-        <div class="album-painel">
-            <div class="album-painel-topo">
-                <h3>Nosso álbum</h3>
-                <span class="album-privado">♡ Privado</span>
+                <div class="album-descricao">
+                    Nosso cantinho de lembranças ♡
+                </div>
             </div>
 
-            <p>Um cantinho para guardar nossos momentos.</p>
-
-            <label for="albumSelecionarFotos" class="album-adicionar">
-                <span class="album-mais">＋</span>
-                <strong>Adicionar fotos</strong>
-                <small>Escolher da galeria do celular</small>
-            </label>
-
-            <input
-                type="file"
-                id="albumSelecionarFotos"
-                accept="image/*"
-                multiple
-                hidden
-            >
         </div>
 
+        <label
+            for="albumSelecionarFotos"
+            class="album-adicionar-topo"
+            title="Adicionar fotos">
+            +
+        </label>
+
+    </header>
+
+    <!-- NAVEGAÇÃO DO PERFIL -->
+
+    <nav class="album-abas">
+
+        <span class="album-aba ativa">Pins</span>
+
+        <span class="album-aba">Pastas</span>
+
+        <span class="album-aba">Colagens</span>
+
+    </nav>
+
+    <!-- PESQUISA -->
+
+    <div class="album-busca">
+
+        <input
+            type="search"
+            id="albumPesquisar"
+            placeholder="⌕  Pesquisar nossas memórias">
+
+    </div>
+
+    <!-- FILTROS VISUAIS -->
+
+    <div class="album-filtros">
+
+        <button type="button" class="album-filtro">
+            ▦
+        </button>
+
+        <button type="button" class="album-filtro">
+            ♡ Favoritos
+        </button>
+
+        <button type="button" class="album-filtro">
+            Criado por nós
+        </button>
+
+    </div>
+
+    <!-- ARMAZENAMENTO -->
+
+    <button
+        type="button"
+        class="album-conectar"
+        onclick="conectarGoogleDrive()">
+
+        ☁ Conectar ao Google Drive
+
+    </button>
+
+    <!-- SELEÇÃO DE FOTOS -->
+
+    <input
+        type="file"
+        id="albumSelecionarFotos"
+        accept="image/*"
+        multiple
+        hidden
+    >
+
+    <!-- ÁLBUM -->
+
+    <div class="album-painel">
+
+        <h2 class="album-titulo">
+            Nossas memórias salvas
+        </h2>
+
+        <!-- NOVEMBRO -->
+
         <div class="album-mes">
+
             <h3>Novembro de 2026</h3>
-            <div class="album-grade" id="albumFotosNovembro">
-                <!-- Fotos de novembro -->
+
+            <div
+                class="album-grade"
+                id="albumFotosNovembro">
             </div>
+
         </div>
 
+        <!-- OUTUBRO -->
+
         <div class="album-mes">
+
             <h3>Outubro de 2026</h3>
-            <div class="album-grade" id="albumFotosOutubro">
-                <!-- Fotos de outubro -->
+
+            <div
+                class="album-grade"
+                id="albumFotosOutubro">
             </div>
+
         </div>
+
+        <!-- ESTADO VAZIO -->
 
         <div class="album-vazio" id="albumVazio">
+
             <span>♡</span>
-            <p>Nossas próximas lembranças começam aqui.</p>
+
+            <p>
+                Nossas próximas lembranças começam aqui.
+            </p>
+
+            <label
+                for="albumSelecionarFotos"
+                style="color:white;cursor:pointer;">
+
+                + Adicionar nossas primeiras fotos
+
+            </label>
+
         </div>
 
     </div>
-</section>
-    
+
+    <footer class="album-rodape">
+        NOSSO CANTINHO • DESDE 09.05.2026
+    </footer>
+
 </div>
 
-<div id="experienciaHistoria" style="display:none;">
-
-    <button type="button" onclick="voltarMenu()">
-        ← Voltar ao Nosso Cantinho
-    </button>
+</section>
     
 <!-- =========================
 CARTA ABERTA
