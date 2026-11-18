@@ -1869,3 +1869,227 @@ button:hover:active {
   gap: 6px;
   margin-top: 8px;
 }
+
+<!-- =========================
+     NOSSAS MEMÓRIAS
+     VISUAL INSPIRADO NO PINTEREST
+========================= -->
+
+#nossasMemorias {
+    background: #080808;
+    color: #fff;
+    min-height: 100vh;
+    padding: 15px 12px 35px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#nossasMemorias * {
+    box-sizing: border-box;
+}
+
+#nossasMemorias .album-container {
+    max-width: 700px;
+    width: 100%;
+    margin: auto;
+}
+
+#nossasMemorias .album-voltar {
+    background: transparent;
+    border: 0;
+    color: #fff;
+    font-size: 14px;
+    padding: 12px 4px 22px;
+}
+
+#nossasMemorias .album-perfil {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px 3px 25px;
+}
+
+#nossasMemorias .album-identidade {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+#nossasMemorias .album-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #762d48;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 700;
+    color: #fff;
+}
+
+#nossasMemorias .album-nomes {
+    font-size: 16px;
+    font-weight: 650;
+}
+
+#nossasMemorias .album-descricao {
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+#nossasMemorias .album-adicionar-topo {
+    font-size: 35px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 0 8px;
+}
+
+#nossasMemorias .album-abas {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 23px;
+}
+
+#nossasMemorias .album-aba {
+    color: #999;
+    padding: 12px 5px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+#nossasMemorias .album-aba.ativa {
+    color: #fff;
+    border-bottom: 3px solid #fff;
+    font-weight: 700;
+}
+
+#nossasMemorias .album-busca {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+#nossasMemorias .album-busca input {
+    width: 100%;
+    min-width: 0;
+    padding: 15px 18px;
+    border: 1px solid #777;
+    border-radius: 30px;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+    outline: none;
+}
+
+#nossasMemorias .album-busca input::placeholder {
+    color: #999;
+}
+
+#nossasMemorias .album-filtros {
+    display: flex;
+    gap: 9px;
+    overflow-x: auto;
+    padding-bottom: 24px;
+    scrollbar-width: none;
+}
+
+#nossasMemorias .album-filtros::-webkit-scrollbar {
+    display: none;
+}
+
+#nossasMemorias .album-filtro {
+    border: 0;
+    border-radius: 13px;
+    background: #292929;
+    color: #fff;
+    padding: 11px 15px;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+#nossasMemorias .album-titulo {
+    font-size: 19px;
+    font-weight: 650;
+    margin: 5px 3px 17px;
+}
+
+#nossasMemorias .album-mes {
+    margin-bottom: 25px;
+}
+
+#nossasMemorias .album-mes h3 {
+    color: #ddd;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 20px 3px 13px;
+}
+
+#nossasMemorias .album-grade {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    align-items: start;
+}
+
+#nossasMemorias .album-grade img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 13px;
+    object-fit: cover;
+    background: #242424;
+}
+
+#nossasMemorias .album-painel {
+    margin-bottom: 20px;
+}
+
+#nossasMemorias .album-vazio {
+    text-align: center;
+    padding: 45px 15px;
+    color: #aaa;
+}
+
+#nossasMemorias .album-vazio span {
+    font-size: 43px;
+    color: #a45b76;
+}
+
+#nossasMemorias .album-vazio p {
+    font-size: 14px;
+}
+
+#nossasMemorias .album-conectar {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    margin: 12px 0 24px;
+    background: #202020;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 25px;
+    font-size: 14px;
+}
+
+#nossasMemorias .album-rodape {
+    text-align: center;
+    color: #777;
+    font-size: 11px;
+    margin-top: 35px;
+}
+
+@media (max-width: 380px) {
+    #nossasMemorias .album-abas {
+        gap: 22px;
+    }
+
+    #nossasMemorias .album-grade {
+        gap: 5px;
+    }
+}
