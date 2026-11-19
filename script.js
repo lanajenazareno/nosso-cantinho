@@ -184,12 +184,48 @@ window.voltarMenu = function () {
     const experiencia = document.getElementById("experienciaHistoria");
     const historia = document.getElementById("historiaAniversario");
     const contrato = document.getElementById("contratoNamoro");
+    const album = document.getElementById("nossasMemorias");
 
     if (experiencia) experiencia.style.display = "none";
     if (historia) historia.style.display = "none";
     if (contrato) contrato.style.display = "none";
+    if (album) album.style.display = "none";
 
     if (menu) menu.style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+/* =====================================
+   NOSSAS MEMÓRIAS — ABRIR E FECHAR
+===================================== */
+
+window.abrirNossasMemorias = function () {
+    const menu = document.getElementById("menuPrincipal");
+    const album = document.getElementById("nossasMemorias");
+
+    if (!menu || !album) {
+        alert("Não foi possível abrir nossas memórias.");
+        return;
+    }
+
+    menu.style.display = "none";
+    album.classList.remove("escondido");
+    album.style.display = "block";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+window.fecharNossasMemorias = function () {
+    const menu = document.getElementById("menuPrincipal");
+    const album = document.getElementById("nossasMemorias");
+
+    if (!menu || !album) return;
+
+    album.style.display = "none";
+    album.classList.add("escondido");
+
+    menu.style.display = "block";
 
     window.scrollTo({ top: 0, behavior: "smooth" });
 };
