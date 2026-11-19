@@ -1870,14 +1870,15 @@ button:hover:active {
   margin-top: 8px;
 }
 
-<!-- =========================
-     NOSSAS MEMÓRIAS
-     VISUAL INSPIRADO NO PINTEREST
-========================= -->
+/* =========================
+   NOSSAS MEMÓRIAS
+   VISUAL PINTEREST — NOSSO CANTINHO
+   PALETA VINHO, BORDÔ E ROSÉ
+========================= */
 
 #nossasMemorias {
-    background: #080808;
-    color: #fff;
+    background: #f8f0e6;
+    color: #392027;
     min-height: 100vh;
     padding: 15px 12px 35px;
     margin: 0;
@@ -1892,14 +1893,16 @@ button:hover:active {
     max-width: 700px;
     width: 100%;
     margin: auto;
+    color: #392027;
 }
 
 #nossasMemorias .album-voltar {
     background: transparent;
     border: 0;
-    color: #fff;
+    color: #701d32;
     font-size: 14px;
     padding: 12px 4px 22px;
+    cursor: pointer;
 }
 
 #nossasMemorias .album-perfil {
@@ -1919,29 +1922,30 @@ button:hover:active {
     width: 58px;
     height: 58px;
     border-radius: 50%;
-    background: #762d48;
+    background: #701d32;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 19px;
     font-weight: 700;
-    color: #fff;
+    color: #fffaf8;
 }
 
 #nossasMemorias .album-nomes {
     font-size: 16px;
     font-weight: 650;
+    color: #701d32;
 }
 
 #nossasMemorias .album-descricao {
-    color: #aaa;
+    color: #80646b;
     font-size: 12px;
     margin-top: 5px;
 }
 
 #nossasMemorias .album-adicionar-topo {
     font-size: 35px;
-    color: #fff;
+    color: #8e344b;
     text-decoration: none;
     cursor: pointer;
     padding: 0 8px;
@@ -1951,20 +1955,20 @@ button:hover:active {
     display: flex;
     justify-content: center;
     gap: 30px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #e8d2d2;
     margin-bottom: 23px;
 }
 
 #nossasMemorias .album-aba {
-    color: #999;
+    color: #92747c;
     padding: 12px 5px;
     font-size: 15px;
     font-weight: 500;
 }
 
 #nossasMemorias .album-aba.ativa {
-    color: #fff;
-    border-bottom: 3px solid #fff;
+    color: #701d32;
+    border-bottom: 3px solid #701d32;
     font-weight: 700;
 }
 
@@ -1979,16 +1983,16 @@ button:hover:active {
     width: 100%;
     min-width: 0;
     padding: 15px 18px;
-    border: 1px solid #777;
+    border: 1px solid #dfc5c7;
     border-radius: 30px;
-    background: transparent;
-    color: white;
+    background: #fffaf8;
+    color: #392027;
     font-size: 14px;
     outline: none;
 }
 
 #nossasMemorias .album-busca input::placeholder {
-    color: #999;
+    color: #987783;
 }
 
 #nossasMemorias .album-filtros {
@@ -2004,19 +2008,27 @@ button:hover:active {
 }
 
 #nossasMemorias .album-filtro {
-    border: 0;
+    border: 1px solid #ead2d5;
     border-radius: 13px;
-    background: #292929;
-    color: #fff;
+    background: #f4e5e3;
+    color: #701d32;
     padding: 11px 15px;
     white-space: nowrap;
     font-size: 13px;
+    cursor: pointer;
+}
+
+#nossasMemorias .album-filtro.ativo {
+    background: #701d32;
+    color: #fffaf8;
+    border-color: #701d32;
 }
 
 #nossasMemorias .album-titulo {
     font-size: 19px;
     font-weight: 650;
     margin: 5px 3px 17px;
+    color: #701d32;
 }
 
 #nossasMemorias .album-mes {
@@ -2024,7 +2036,7 @@ button:hover:active {
 }
 
 #nossasMemorias .album-mes h3 {
-    color: #ddd;
+    color: #701d32;
     font-size: 15px;
     font-weight: 600;
     margin: 20px 3px 13px;
@@ -2043,7 +2055,7 @@ button:hover:active {
     height: auto;
     border-radius: 13px;
     object-fit: cover;
-    background: #242424;
+    background: #eadde0;
 }
 
 #nossasMemorias .album-painel {
@@ -2053,12 +2065,12 @@ button:hover:active {
 #nossasMemorias .album-vazio {
     text-align: center;
     padding: 45px 15px;
-    color: #aaa;
+    color: #80646b;
 }
 
 #nossasMemorias .album-vazio span {
     font-size: 43px;
-    color: #a45b76;
+    color: #8e344b;
 }
 
 #nossasMemorias .album-vazio p {
@@ -2070,16 +2082,21 @@ button:hover:active {
     width: 100%;
     padding: 13px;
     margin: 12px 0 24px;
-    background: #202020;
-    color: #fff;
-    border: 1px solid #555;
+    background: #701d32;
+    color: #fffaf8;
+    border: 1px solid #701d32;
     border-radius: 25px;
     font-size: 14px;
+    cursor: pointer;
+}
+
+#nossasMemorias .album-conectar:hover {
+    background: #501020;
 }
 
 #nossasMemorias .album-rodape {
     text-align: center;
-    color: #777;
+    color: #987783;
     font-size: 11px;
     margin-top: 35px;
 }
